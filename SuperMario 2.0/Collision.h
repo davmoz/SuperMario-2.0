@@ -1,0 +1,18 @@
+#pragma once
+#include <SFML/Graphics.hpp>
+#include "Mario.h"
+#include "Enemy.h"
+#include "Map.h"
+using namespace sf;
+class Collision
+{
+private:
+	Mario *mario;
+	Map *map;
+public:
+	Collision();
+	~Collision();
+	Mario& getMario() const;
+	Map& getMap() const;
+};
+
