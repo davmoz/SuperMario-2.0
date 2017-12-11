@@ -14,7 +14,7 @@ private:
 	int width;
 	int height;
 	Texture *tileSet;
-	VertexArray *vertexArray;
+	VertexArray vertexArray;
 	Sprite background;
 	float tileWorldDimension;
 	float tileTextureDimension;

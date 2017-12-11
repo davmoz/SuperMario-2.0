@@ -23,16 +23,16 @@ void Game::runGame(RenderWindow *window)
 		}
 		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right))
 		{
-			this->collision.getMario().moveRight();
+			this->collision.MarioMoveRight();
 		}
 		else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left))
 		{
-			this->collision.getMario().moveLeft();
+			this->collision.MarioMoveLeft();
 		}
 		else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Space))
 		{
-
-		}this->collision.getMario().jump();
+			//this->collision.getMario().jump();
+		}
 		window->clear(/*sf::Color(0, 150, 255)*/);
 		draw(window);
 		window->display();
@@ -42,6 +42,6 @@ void Game::runGame(RenderWindow *window)
 void Game::draw(RenderWindow * window)
 {
 	window->draw(collision.getMap());
-	window->draw(collision.getMario().getBoundry());
-	window->draw(collision.getMario().getSprite());
+	window->draw(collision.getMarioSprite());
+	window->draw(collision.getRect());
 }

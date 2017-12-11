@@ -8,11 +8,14 @@ class Collision
 {
 private:
 	Mario *mario;
-	Map *map;
+	Map map;
 public:
 	Collision();
 	virtual ~Collision();
-	Mario& getMario() const;
-	Map& getMap() const;
+	void MarioMoveLeft();
+	void MarioMoveRight();
+	Map getMap() const;
+	Sprite getMarioSprite() const;
+	RectangleShape getRect() const;
 };
 

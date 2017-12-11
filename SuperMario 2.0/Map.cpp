@@ -2,16 +2,16 @@
 
 void Map::addTilesToVertexArray(const int x, const int y, Vector2f position)
 {
-	this->vertexArray->append(Vertex((Vector2f(0.0f, 0.0f) + position) * this->tileWorldDimension, 
+	this->vertexArray.append(Vertex((Vector2f(0.0f, 0.0f) + position) * this->tileWorldDimension, 
 		Vector2f(this->tileTextureDimension * x, this->tileTextureDimension * y)));
 	
-	this->vertexArray->append(Vertex((Vector2f(1.0f, 0.0f) + position) * this->tileWorldDimension,
+	this->vertexArray.append(Vertex((Vector2f(1.0f, 0.0f) + position) * this->tileWorldDimension,
 		Vector2f(this->tileTextureDimension * x + this->tileTextureDimension, this->tileTextureDimension * y)));
 	
-	this->vertexArray->append(Vertex((Vector2f(1.0f, 1.0f) + position) * this->tileWorldDimension,
+	this->vertexArray.append(Vertex((Vector2f(1.0f, 1.0f) + position) * this->tileWorldDimension,
 		Vector2f(this->tileTextureDimension * x + this->tileTextureDimension, this->tileTextureDimension * y + this->tileTextureDimension)));
 	
-	this->vertexArray->append(Vertex((Vector2f(0.0f, 1.0f) + position)* this->tileWorldDimension,
+	this->vertexArray.append(Vertex((Vector2f(0.0f, 1.0f) + position)* this->tileWorldDimension,
 		Vector2f(this->tileTextureDimension * x, this->tileTextureDimension * y + this->tileTextureDimension)));
 }
 
@@ -21,14 +21,13 @@ Map::Map(int width, int height, float tileTextureDimension, float tileWorldDimen
 	this->height = height;
 	this->tileTextureDimension = tileTextureDimension;
 	this->tileWorldDimension = tileWorldDimension;
-	this->vertexArray = new VertexArray();
 	this->tileSet = new Texture[this->nrOfTiles];
 	this->tileSet[0].loadFromFile("Ground.png");
 	this->tileSet[1].loadFromFile("Mario_BG.JPG");
 	this->tileSet[1].setSmooth(true);
 	this->background.setTexture(tileSet[1]);
-	this->vertexArray->setPrimitiveType(Quads);
-	this->vertexArray->resize(this->width * this->height * 4);
+	this->vertexArray.setPrimitiveType(Quads);
+	this->vertexArray.resize(this->width * this->height * 4);
 
 	for (int x = 0; x < this->width; x++)
 	{
@@ -69,13 +68,12 @@ Map::Map()
 
 Map::~Map()
 {
-	delete this->tileSet;
-	delete this->vertexArray;
+
 }
 
 void Map::draw(RenderTarget& target, RenderStates states) const
 {
 	states.texture = &tileSet[0];
 	target.draw(background);
-	target.draw(*vertexArray, states);
+	target.draw(vertexArray, states);
 }

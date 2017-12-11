@@ -17,29 +17,39 @@ Character::~Character()
 
 Sprite Character::getSprite() const
 {
-	return this->sprite;
+	return this->appearence;
 }
 
-void Character::moveRight()
+float Character::getX() const
 {
-	this->xPosition = sprite.getPosition().x;
-	this->boundry.setPosition(sf::Vector2f(this->xPosition + 0.5, 500));
-	this->sprite.setPosition(boundry.getPosition());
+	return this->xPosition;
+}
+
+float Character::getY() const
+{
+	return this->yPosition;
 }
 
 void Character::moveLeft()
 {
-	this->xPosition = sprite.getPosition().x;
-	this->boundry.setPosition(sf::Vector2f(this->xPosition -0.5, 500));
-	this->sprite.setPosition(boundry.getPosition());
+	this->xPosition = appearence.getPosition().x;
+	this->boundry.setPosition(sf::Vector2f(this->xPosition - 0.5, 500));
+	this->appearence.setPosition(boundry.getPosition());
 }
 
-void Character::setSprite(const Sprite sprite)
+void Character::moveRight()
 {
-	this->sprite = sprite;
+	this->xPosition = appearence.getPosition().x;
+	this->boundry.setPosition(sf::Vector2f(this->xPosition + 0.5, 500));
+	this->appearence.setPosition(boundry.getPosition());
 }
 
-RectangleShape Character::getBoundry() const
+RectangleShape Character::getRect() const
 {
 	return this->boundry;
+}
+
+void Character::setSprite(const Sprite appearence)
+{
+	this->appearence = appearence;
 }

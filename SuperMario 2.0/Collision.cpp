@@ -4,22 +4,35 @@
 Collision::Collision()
 {
 	this->mario = new Mario;
-	this->map = new Map(30, 16, 16.0f, 32.0f);
+	this->map = Map(30, 16, 16.0f, 32.0f);
 }
-
 
 Collision::~Collision()
 {
 	delete this->mario;
-	delete this->map;
 }
 
-Mario& Collision::getMario() const
+void Collision::MarioMoveLeft()
 {
-	return *this->mario;
+	this->mario->moveLeft();
 }
 
-Map & Collision::getMap() const
+void Collision::MarioMoveRight()
 {
-	return *this->map;
+	this->mario->moveRight();
+}
+
+Sprite Collision::getMarioSprite() const
+{
+	return this->mario->getSprite();
+}
+
+RectangleShape Collision::getRect() const
+{
+	return this->mario->getRect();
+}
+
+Map Collision::getMap() const
+{
+	return this->map;
 }

@@ -16,27 +16,18 @@ Mario::~Mario()
 {
 }
 
-void Mario::setXPosition(const float x)
+void Mario::moveLeft()
 {
-	this->setXPosition(x);
+	Character::moveLeft();
 }
 
-void Mario::setYPosition(const float y)
+void Mario::moveRight()
 {
-	this->setYPosition(y);
+	Character::moveRight();
 }
 
-int Mario::getXPosition() const
-{
-	return this->getXPosition();
-}
-
-int Mario::getYPosition() const
-{
-	return this->getYPosition();
-}
 
 void Mario::jump()
 {
-	this->getSprite().setPosition(0, 200);
+
 }

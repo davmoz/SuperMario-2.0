@@ -4,7 +4,7 @@ using namespace sf;
 class Character
 {
 private:
-	Sprite sprite;
+	Sprite appearence;
 	RectangleShape boundry;
 	float xPosition;
 	float yPosition;
@@ -14,12 +14,10 @@ public:
 	Character();
 	~Character();
 	Sprite getSprite() const;
-	void moveRight();
+	float getX() const;
+	float getY() const;
 	void moveLeft();
-	void setSprite(const Sprite sprite);
-	virtual int getXPosition() const = 0;
-	virtual int getYPosition() const = 0;
-	virtual void setXPosition(const float x) = 0;
-	virtual void setYPosition(const float y) = 0;
-	virtual RectangleShape getBoundry() const;
+	void moveRight();
+	RectangleShape getRect() const;
+	void setSprite(const Sprite appearence);
 };

@@ -9,10 +9,8 @@ private:
 public:
 	Mario();
 	~Mario();
-	void setXPosition(const float x);
-	void setYPosition(const float y);
-	int getXPosition() const;
-	int getYPosition() const;
+	void moveLeft();
+	void moveRight();
 	void jump();
 };
 
