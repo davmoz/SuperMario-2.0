@@ -11,7 +11,7 @@ private:
 	Map *map;
 public:
 	Collision();
-	~Collision();
+	virtual ~Collision();
 	Mario& getMario() const;
 	Map& getMap() const;
 };

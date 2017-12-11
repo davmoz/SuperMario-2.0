@@ -9,7 +9,7 @@ private:
 	Collision collision;
 public:
 	Game();
-	~Game();
+	virtual ~Game();
 	void runGame(RenderWindow *window);
 	void draw(RenderWindow *window);
 

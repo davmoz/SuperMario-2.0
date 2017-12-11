@@ -1,6 +1,5 @@
 #pragma once
 #include <SFML/Graphics.hpp>
-#include "Tile.h"
 /*
 	Textures: 
 		1. Background
@@ -11,20 +10,19 @@ using namespace sf;
 class Map : public Drawable
 {
 private:
-	
+	int nrOfTiles = 2;
 	int width;
 	int height;
-	Texture *tileSet[2];
+	Texture *tileSet;
 	VertexArray *vertexArray;
 	Sprite background;
 	float tileWorldDimension;
 	float tileTextureDimension;
-	void addTileVertices(Tile tile, Vector2f position);
-	
 public:
 	Map(int width, int height, float tileTextureDimension, float tileWorldDimension);
 	Map();
-	~Map();
+	virtual ~Map();
 	void draw(RenderTarget& target, RenderStates states) const;
+	void addTilesToVertexArray(const int x, const int y, Vector2f position);
 };
 

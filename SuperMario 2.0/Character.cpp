@@ -4,7 +4,7 @@
 Character::Character()
 {
 	this->boundry.setSize(sf::Vector2f(30, 30));
-	this->boundry.setPosition(sf::Vector2f(0, 535));
+	this->boundry.setPosition(sf::Vector2f(0, 500));
 	this->boundry.setFillColor(sf::Color::Transparent);
 	this->boundry.setOutlineThickness(1);
 	this->boundry.setOutlineColor(sf::Color(250, 150, 100));
@@ -23,14 +23,14 @@ Sprite Character::getSprite() const
 void Character::moveRight()
 {
 	this->xPosition = sprite.getPosition().x;
-	this->boundry.setPosition(sf::Vector2f(this->xPosition + 0.5, 535));
+	this->boundry.setPosition(sf::Vector2f(this->xPosition + 0.5, 500));
 	this->sprite.setPosition(boundry.getPosition());
 }
 
 void Character::moveLeft()
 {
 	this->xPosition = sprite.getPosition().x;
-	this->boundry.setPosition(sf::Vector2f(this->xPosition -0.5, 535));
+	this->boundry.setPosition(sf::Vector2f(this->xPosition -0.5, 500));
 	this->sprite.setPosition(boundry.getPosition());
 }
 
