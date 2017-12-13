@@ -5,7 +5,6 @@ using namespace sf;
 class Game
 {
 private:
-	RenderWindow *window;
 	Collision collision;
 public:
 	Game();
@@ -15,4 +14,3 @@ public:
 	void draw(RenderWindow *window);
 
 };
-

@@ -1,23 +1,23 @@
 #pragma once
 #include <SFML/Graphics.hpp>
+#include <string>
+using namespace std;
 using namespace sf;
 class Character
 {
 private:
 	Sprite appearence;
+	Texture texture;
 	RectangleShape boundry;
 	float xPosition;
 	float yPosition;
 	int healthPoints;
 	bool healthState;
 public:
-	Character();
-	~Character();
+	Character(const string TileLocation, const IntRect tilePositionInFile);
+	virtual ~Character();
 	Sprite getSprite() const;
-	float getX() const;
-	float getY() const;
 	void moveLeft();
 	void moveRight();
 	RectangleShape getRect() const;
-	void setSprite(const Sprite appearence);
 };

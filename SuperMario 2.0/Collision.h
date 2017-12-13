@@ -7,8 +7,8 @@ using namespace sf;
 class Collision
 {
 private:
-	Mario *mario;
-	Map map;
+	Mario *mario = nullptr;
+	Map *map;
 public:
 	Collision();
 	virtual ~Collision();
@@ -19,5 +19,6 @@ public:
 	RectangleShape getRect() const;
 	void moveViewRight();
 	void moveViewLeft();
+	void setBackgroundPos(const float x, const float y);
 };
 

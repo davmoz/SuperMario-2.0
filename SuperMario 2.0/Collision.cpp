@@ -3,13 +3,14 @@
 
 Collision::Collision()
 {
-	this->mario = new Mario;
-	this->map = Map(500, 16, 16.0f, 32.0f);
+	this->mario = new Mario("Mario.png", IntRect(20, 505, 20, 20));
+	this->map = new Map(500, 16, 16.0f, 32.0f);
 }
 
 Collision::~Collision()
 {
 	delete this->mario;
+	delete this->map;
 }
 
 void Collision::MarioMoveLeft()
@@ -34,15 +35,20 @@ RectangleShape Collision::getRect() const
 
 void Collision::moveViewRight()
 {
-	this->map.moveViewRight();
+	this->map->moveViewRight();
 }
 
 void Collision::moveViewLeft()
 {
-	this->map.moveViewLeft();
+	this->map->moveViewLeft();
+}
+
+void Collision::setBackgroundPos(const float x, const float y)
+{
+	this->map->setBackgroundPos(x, y);
 }
 
 Map Collision::getMap() const
 {
-	return this->map;
+	return *this->map;
 }

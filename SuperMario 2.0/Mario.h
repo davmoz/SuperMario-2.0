@@ -5,12 +5,10 @@ using namespace sf;
 class Mario : public Character
 {
 private:
-	Texture texture;
+	
 public:
-	Mario();
-	~Mario();
-	void moveLeft();
-	void moveRight();
+	Mario(const string TileLocation, const IntRect tilePositionInFile);
+	virtual ~Mario();
 	void jump();
 };
 

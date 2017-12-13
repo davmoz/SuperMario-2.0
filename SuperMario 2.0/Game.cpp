@@ -8,6 +8,7 @@ Game::Game()
 
 Game::~Game()
 {
+
 }
 
 void Game::runGame(RenderWindow *window)
@@ -19,7 +20,6 @@ void Game::runGame(RenderWindow *window)
 		{
 			if (event.type == sf::Event::Closed)
 				window->close();
-			
 		}
 		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right))
 		{
@@ -35,7 +35,7 @@ void Game::runGame(RenderWindow *window)
 		{
 			//this->collision.getMario().jump();
 		}
-		// window->update();
+		update();
 		window->clear();
 		draw(window);
 		window->display();
@@ -44,7 +44,7 @@ void Game::runGame(RenderWindow *window)
 
 void Game::update()
 {
-	this->collision.
+	this->collision.setBackgroundPos(this->collision.getMarioSprite().getPosition().x - 250 , this->collision.getMarioSprite().getPosition().y - 550);
 }
 
 void Game::draw(RenderWindow * window)
