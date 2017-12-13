@@ -11,7 +11,7 @@ Game::~Game()
 }
 
 void Game::runGame(RenderWindow *window)
-{       
+{
 	while (window->isOpen())
 	{
 		Event event;
@@ -24,19 +24,27 @@ void Game::runGame(RenderWindow *window)
 		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right))
 		{
 			this->collision.MarioMoveRight();
+			this->collision.moveViewRight();
 		}
 		else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left))
 		{
 			this->collision.MarioMoveLeft();
+			this->collision.moveViewLeft();
 		}
 		else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Space))
 		{
 			//this->collision.getMario().jump();
 		}
-		window->clear(/*sf::Color(0, 150, 255)*/);
+		// window->update();
+		window->clear();
 		draw(window);
 		window->display();
 	}
+}
+
+void Game::update()
+{
+	this->collision.
 }
 
 void Game::draw(RenderWindow * window)

@@ -4,7 +4,7 @@
 Collision::Collision()
 {
 	this->mario = new Mario;
-	this->map = Map(30, 16, 16.0f, 32.0f);
+	this->map = Map(500, 16, 16.0f, 32.0f);
 }
 
 Collision::~Collision()
@@ -30,6 +30,16 @@ Sprite Collision::getMarioSprite() const
 RectangleShape Collision::getRect() const
 {
 	return this->mario->getRect();
+}
+
+void Collision::moveViewRight()
+{
+	this->map.moveViewRight();
+}
+
+void Collision::moveViewLeft()
+{
+	this->map.moveViewLeft();
 }
 
 Map Collision::getMap() const

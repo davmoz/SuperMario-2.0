@@ -4,7 +4,7 @@
 Character::Character()
 {
 	this->boundry.setSize(sf::Vector2f(30, 30));
-	this->boundry.setPosition(sf::Vector2f(0, 500));
+	this->boundry.setPosition(sf::Vector2f(250, 500));
 	this->boundry.setFillColor(sf::Color::Transparent);
 	this->boundry.setOutlineThickness(1);
 	this->boundry.setOutlineColor(sf::Color(250, 150, 100));

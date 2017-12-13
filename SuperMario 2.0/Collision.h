@@ -17,5 +17,7 @@ public:
 	Map getMap() const;
 	Sprite getMarioSprite() const;
 	RectangleShape getRect() const;
+	void moveViewRight();
+	void moveViewLeft();
 };
 

@@ -16,6 +16,7 @@ private:
 	Texture *tileSet;
 	VertexArray vertexArray;
 	Sprite background;
+	View view;
 	float tileWorldDimension;
 	float tileTextureDimension;
 public:
@@ -24,5 +25,7 @@ public:
 	virtual ~Map();
 	void draw(RenderTarget& target, RenderStates states) const;
 	void addTilesToVertexArray(const int x, const int y, Vector2f position);
+	void moveViewRight();
+	void moveViewLeft();
 };
 

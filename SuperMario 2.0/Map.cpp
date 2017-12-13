@@ -15,15 +15,30 @@ void Map::addTilesToVertexArray(const int x, const int y, Vector2f position)
 		Vector2f(this->tileTextureDimension * x, this->tileTextureDimension * y + this->tileTextureDimension)));
 }
 
+void Map::moveViewRight()
+{
+	this->view.move(0.5f, 0.0f);
+}
+
+void Map::moveViewLeft()
+{
+	this->view.move(-0.5f, 0.0f);
+}
+
 Map::Map(int width, int height, float tileTextureDimension, float tileWorldDimension)
 {
+	this->view.setSize(sf::Vector2f(900, 600));
+	this->view.setCenter(sf::Vector2f(450, 300));
+
 	this->width = width;
 	this->height = height;
 	this->tileTextureDimension = tileTextureDimension;
 	this->tileWorldDimension = tileWorldDimension;
+
 	this->tileSet = new Texture[this->nrOfTiles];
 	this->tileSet[0].loadFromFile("Ground.png");
 	this->tileSet[1].loadFromFile("Mario_BG.JPG");
+	this->tileSet[1].setRepeated(true);
 	this->tileSet[1].setSmooth(true);
 	this->background.setTexture(tileSet[1]);
 	this->vertexArray.setPrimitiveType(Quads);
@@ -74,6 +89,7 @@ Map::~Map()
 void Map::draw(RenderTarget& target, RenderStates states) const
 {
 	states.texture = &tileSet[0];
-	target.draw(background);
-	target.draw(vertexArray, states);
+	target.draw(this->background);
+	target.draw(this->vertexArray, states);
+	target.setView(this->view);
 }

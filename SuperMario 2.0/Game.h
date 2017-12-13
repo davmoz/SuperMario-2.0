@@ -11,6 +11,7 @@ public:
 	Game();
 	virtual ~Game();
 	void runGame(RenderWindow *window);
+	void update();
 	void draw(RenderWindow *window);
 
 };
