@@ -7,7 +7,7 @@ using namespace sf;
 class Collision
 {
 private:
-	Mario *mario = nullptr;
+	Mario *mario;
 	Map *map;
 public:
 	Collision();
@@ -16,6 +16,7 @@ public:
 	void MarioMoveRight();
 	Map getMap() const;
 	Sprite getMarioSprite() const;
+	void animateMario(float &elapsedTime, const int direction);
 	RectangleShape getRect() const;
 	void moveViewRight();
 	void moveViewLeft();

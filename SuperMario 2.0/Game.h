@@ -9,8 +9,8 @@ private:
 public:
 	Game();
 	virtual ~Game();
-	void runGame(RenderWindow *window);
-	void update();
+	void runGame(RenderWindow *window, Clock *clock);
+	void update(float &totaltime);
 	void draw(RenderWindow *window);
 
 };

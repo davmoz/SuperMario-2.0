@@ -1,23 +1,27 @@
 #pragma once
 #include <SFML/Graphics.hpp>
+#include <SFML/System/Clock.hpp>
+#include <iostream> // För testing
 #include <string>
 using namespace std;
 using namespace sf;
 class Character
 {
 private:
-	Sprite appearence;
-	Texture texture;
-	RectangleShape boundry;
 	float xPosition;
 	float yPosition;
 	int healthPoints;
 	bool healthState;
+	Texture texture;
+	Sprite appearence;
+	RectangleShape boundry;
+	
 public:
 	Character(const string TileLocation, const IntRect tilePositionInFile);
 	virtual ~Character();
-	Sprite getSprite() const;
 	void moveLeft();
 	void moveRight();
-	RectangleShape getRect() const;
+	Sprite getSprite() const;
+	RectangleShape getRectShape() const;
+	void updateTexture(float &elapsedTime, const int direction);
 };

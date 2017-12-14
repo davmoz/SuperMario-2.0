@@ -3,7 +3,7 @@
 
 Collision::Collision()
 {
-	this->mario = new Mario("Mario.png", IntRect(20, 505, 20, 20));
+	this->mario = new Mario("Ground.png", IntRect(0, 32, 16, 16));
 	this->map = new Map(500, 16, 16.0f, 32.0f);
 }
 
@@ -28,9 +28,14 @@ Sprite Collision::getMarioSprite() const
 	return this->mario->getSprite();
 }
 
+void Collision::animateMario(float &elapsedTime, const int direction)
+{
+	this->mario->updateTexture(elapsedTime, direction);
+}
+
 RectangleShape Collision::getRect() const
 {
-	return this->mario->getRect();
+	return this->mario->getRectShape();
 }
 
 void Collision::moveViewRight()
