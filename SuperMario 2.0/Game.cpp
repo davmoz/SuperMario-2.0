@@ -36,7 +36,8 @@ void Game::runGame(RenderWindow *window, Clock *clock)
 
 void Game::update(float &totaltime)
 {
-	
+	this->collision.setBackgroundPos(this->collision.getMarioSprite().getPosition().x - 250, 0);
+	this->collision.updateCharacter();
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right))
 	{
 		this->collision.MarioMoveRight();
@@ -49,17 +50,15 @@ void Game::update(float &totaltime)
 		this->collision.moveViewLeft();
 		this->collision.animateMario(totaltime, -1);
 	}
-	else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Space))
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Space))
 	{
-		//this->collision.getMario().jump();
+		this->collision.jump();
 	}
-
-	this->collision.setBackgroundPos(this->collision.getMarioSprite().getPosition().x - 250, this->collision.getMarioSprite().getPosition().y - 550);
+	
 }
 
 void Game::draw(RenderWindow * window)
 {
 	window->draw(collision.getMap());
 	window->draw(collision.getMarioSprite());
-	window->draw(collision.getRect());
 }

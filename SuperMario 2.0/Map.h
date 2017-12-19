@@ -1,5 +1,7 @@
 #pragma once
 #include <SFML/Graphics.hpp>
+#include <iostream>
+#include <fstream>
 /*
 	Textures: 
 		1. Background
@@ -28,5 +30,6 @@ public:
 	void setBackgroundPos(const float x, const float y);
 	void draw(RenderTarget& target, RenderStates states) const;
 	void addTilesToVertexArray(const int x, const int y, Vector2f position);
+	void importMap();
 };
 

@@ -3,21 +3,21 @@
 
 Character::Character(const string TileLocation, const IntRect tilePositionInFile)
 {
-	
+	this->xPosition = 250.0f;
+	this->yPosition = 520.0f;
+	this->xVelocity = 2.5f;
+	this->yVelocity = 0.0f;
+	this->xAcceleration = 5.0f;
+	this->yAcceleration = 15.0f;
+	this->gravity = 0.5f;
+	this->isJumping = false;
 
 	this->texture.loadFromFile(TileLocation);
 	this->appearence.setTexture(texture);
 	this->appearence.setOrigin(8, 8);
-	this->appearence.setPosition(sf::Vector2f(250, 500));
+	this->appearence.setPosition(Vector2f(xPosition, yPosition));
 	this->appearence.setTextureRect(tilePositionInFile);
 	this->appearence.scale(Vector2f(2, 2));
-
-	this->boundry.setSize(sf::Vector2f(30, 30));
-	this->boundry.setPosition(sf::Vector2f(250, 500));
-	this->boundry.setFillColor(sf::Color::Transparent);
-	this->boundry.setOutlineThickness(1);
-	this->boundry.setOutlineColor(sf::Color(250, 150, 100));
-	this->boundry.setOrigin(8, 8);
 
 }
 
@@ -33,37 +33,50 @@ Sprite Character::getSprite() const
 void Character::moveLeft()
 {
 	this->xPosition = appearence.getPosition().x;
-	this->boundry.setPosition(sf::Vector2f(this->xPosition - 2.5f, 500));
-	this->appearence.setPosition(boundry.getPosition());
+	this->appearence.move(-this->xVelocity, 0);
 }
 
 void Character::moveRight()
 {
 	this->xPosition = appearence.getPosition().x;
-	this->boundry.setPosition(sf::Vector2f(this->xPosition + 2.5f, 500));
-	this->appearence.setPosition(boundry.getPosition());
+	this->appearence.move(this->xVelocity, 0);
 }
 
-RectangleShape Character::getRectShape() const
+void Character::jump()
 {
-	return this->boundry;
-}
-
-void Character::updateTexture(float &elapsedTime, const int direction)
-{
-	float leftRectPos = this->appearence.getTextureRect().left;
-	if (elapsedTime > 0.09f)
+	if (!this->isJumping)
 	{
-		if (leftRectPos > 48.0f)
-		{
-			this->appearence.setTextureRect(IntRect(0, 32, 16, 16));
-			this->appearence.setScale(direction * 2, 2);
-		}
-		else
-		{
-			this->appearence.setTextureRect(IntRect(leftRectPos + 16, 32, 16, 16));
-			this->appearence.setScale(direction * 2, 2);
-		}
-		elapsedTime = 0;
+		this->yVelocity = -yAcceleration;
 	}
+	
+}
+
+void Character::updateCharacter()
+{
+	if (this->appearence.getPosition().y < 520.0f || this->yVelocity < 0)
+	{
+		this->yVelocity += this->gravity;
+	}
+	else
+	{
+		this->yVelocity = 0;
+		this->appearence.setPosition(this->appearence.getPosition().x, 520.0f - this->appearence.getGlobalBounds().height);
+	}
+	if (this->appearence.getPosition().y + this->appearence.getGlobalBounds().height == 520.0f)
+	{
+		this->isJumping = false;
+	}
+	else
+	{
+		this->isJumping = true;
+	}
+	this->yPosition += this->yVelocity;
+	this->appearence.setPosition(appearence.getPosition().x, this->yPosition);
+	
+}
+
+void Character::setTexture(const IntRect tilePositionInFile, const int direction)
+{
+	this->appearence.setTextureRect(tilePositionInFile);
+	this->appearence.setScale(direction * 2, 2);
 }

@@ -15,11 +15,12 @@ public:
 	void MarioMoveLeft();
 	void MarioMoveRight();
 	Map getMap() const;
-	Sprite getMarioSprite() const;
-	void animateMario(float &elapsedTime, const int direction);
-	RectangleShape getRect() const;
-	void moveViewRight();
 	void moveViewLeft();
+	void moveViewRight();
+	void jump() const;
+	Sprite getMarioSprite() const;
 	void setBackgroundPos(const float x, const float y);
+	void animateMario(float &elapsedTime, const int direction);
+	void updateCharacter();
 };
 

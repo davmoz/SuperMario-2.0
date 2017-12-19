@@ -9,6 +9,5 @@ private:
 public:
 	Mario(const string TileLocation, const IntRect tilePositionInFile);
 	virtual ~Mario();
-	void jump();
+	void updateTexture(float &elapsedTime, const int direction);
 };
-
