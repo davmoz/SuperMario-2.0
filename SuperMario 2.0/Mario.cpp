@@ -1,29 +1,71 @@
 #include "Mario.h"
 #include <iostream>
 
-Mario::Mario(const string TileLocation, const IntRect tilePositionInFile) : Character(TileLocation, tilePositionInFile)
+Mario::Mario(const string TileLocation, const IntRect tilePositionInFile, Vector2f position, const float xVelocity)
+	: Character(TileLocation, tilePositionInFile, position, xVelocity)
 {
-
+	this->coins = 0;
+	this->marioTime = 0;
+	this->boostTime = 0;
+	this->boosted = false;
+	this->font.loadFromFile("Fonts/Chunkfive.otf");
 }
-
 
 Mario::~Mario()
 {
+
 }
 
-void Mario::updateTexture(float & elapsedTime, const int direction)
+void Mario::drawCoinsAndTime(RenderWindow * window, const bool paused)
 {
-	float leftRectPos = this->getSprite().getTextureRect().left;
-	if (elapsedTime > 0.09f)
+	this->timeSpent.setFont(this->font);
+	this->coinsTaken.setFont(this->font);
+
+	if (!paused)
 	{
-		if (leftRectPos > 48.0f)
+		if (clock.getElapsedTime().asSeconds() > 1.0f)
 		{
-			this->setTexture(IntRect(0, 32, 16, 16), direction);
+			this->marioTime++;
+			clock.restart();
 		}
-		else
-		{
-			this->setTexture(IntRect(leftRectPos + 16, 32, 16, 16), direction);
-		}
-		elapsedTime = 0;
 	}
+	if (this->boosted)
+	{
+		if (this->boostTime == this->marioTime)
+		{
+			this->boosted = false;
+			this->changeVelocityX(boosted);
+		}
+	}
+	
+	this->timeSpent.setString("TIME: " + to_string(this->marioTime));
+	this->coinsTaken.setString("$: " + to_string(this->coins));
+	this->coinsTaken.setPosition(this->getSprite().getPosition().x, 0);
+	this->timeSpent.setPosition(this->getSprite().getPosition().x - 150, 0);
+	window->draw(this->timeSpent);
+	window->draw(this->coinsTaken);
+}
+
+void Mario::increaseCoins()
+{
+	this->coins++;
+}
+
+void Mario::changeMarioVelocityX(const bool effected)
+{
+	if (!this->boosted)
+	{
+		boostTime = marioTime + 10;
+		this->boosted = true;
+		this->changeVelocityX(boosted);
+	}
+	else
+	{
+		boostTime += 10;
+	}
+}
+
+bool Mario::isBoosted()
+{
+	return this->boosted;
 }

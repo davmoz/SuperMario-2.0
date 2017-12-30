@@ -1,16 +1,30 @@
 #pragma once
+#include <SFML/Audio.hpp>
 #include <SFML/Graphics.hpp>
 #include "Collision.h"
+#include "Audio.h"
 using namespace sf;
+const int nrOfMenuOptions = 4;
 class Game
 {
 private:
-	Collision collision;
+	Audio audio;
+	// Collision Handler
+	Collision *collision;
+	bool gamePaused;
+	bool gameOver;
+	Font menuFont;
+	int selectedMenu;
+	Text menu[nrOfMenuOptions];
+	string menuOptions[nrOfMenuOptions] = { "Resume", "Restart", "Highscore", "Quit" };
 public:
+	Game(RenderWindow *window);
 	Game();
 	virtual ~Game();
 	void runGame(RenderWindow *window, Clock *clock);
 	void update(float &totaltime);
+	void loadMenu(RenderWindow *window);
 	void draw(RenderWindow *window);
-
+	void drawMenu(RenderWindow *window);
+	void handleMenuInput(RenderWindow * window);
 };
