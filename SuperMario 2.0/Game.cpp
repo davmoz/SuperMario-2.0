@@ -5,7 +5,7 @@ Game::Game(RenderWindow *window)
 {
 	this->collision = new Collision;
 	
-	this->menuFont.loadFromFile("Fonts/Chunkfive.otf");
+	this->menuFont.loadFromFile("Fonts/Super Mario Bros.ttf");
 	this->gamePaused = false;
 	this->gameOver = false;
 	this->selectedMenu = 0;
@@ -21,6 +21,7 @@ Game::Game(RenderWindow *window)
 
 Game::Game()
 {
+
 }
 
 Game::~Game()
@@ -40,6 +41,7 @@ void Game::runGame(RenderWindow *window, Clock *clock)
 		Event event;
 		
 		window->setFramerateLimit(90);
+		
 		while (window->pollEvent(event))
 		{
 			if (event.type == Event::Closed)
@@ -93,7 +95,6 @@ void Game::runGame(RenderWindow *window, Clock *clock)
 
 void Game::update(float &totaltime)
 {
-	
 	if (Keyboard::isKeyPressed(Keyboard::Right))
 	{
 		this->collision->MarioMoveRight();
@@ -175,16 +176,16 @@ void Game::handleMenuInput(RenderWindow * window)
 		switch (this->selectedMenu)
 		{
 		case 0: {
-			if (this->gameOver)
+			if (this->gameOver) // New Game
 			{
 				delete this->collision;
 				this->collision = new Collision;
 				this->gameOver = false;
 				this->gamePaused = false;
-				this->audio.themeMusicPause();
 				this->audio.themeMusicReset();
+				this->audio.themeMusicPlay();
 			}
-			else
+			else // Resume Game
 			{
 				this->audio.themeMusicPlay();
 				this->gamePaused = false;
@@ -192,18 +193,21 @@ void Game::handleMenuInput(RenderWindow * window)
 			break;
 		}
 		case 1: {
+			// Restart Game
 			delete this->collision;
 			this->collision = new Collision;
 			this->gameOver = false;
 			this->gamePaused = false;
+			this->audio.themeMusicReset();
 			this->audio.themeMusicPlay();
 			break;
 		}
 		case 2: {
-
+			// HighScore
 			break;
 		}
 		case 3: {
+			// Quit Game
 			window->close();
 			break;
 		}

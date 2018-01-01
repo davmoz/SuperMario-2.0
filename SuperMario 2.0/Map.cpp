@@ -7,6 +7,7 @@ Map::Map(int width, int height, float tileTextureDimension, float tileWorldDimen
 	this->view.setCenter(sf::Vector2f(450, 300));
 	this->width = width;
 	this->height = height;
+	this->viewVelocity = Vector2f(2.0f, 0.0f);
 	this->tileTextureDimension = tileTextureDimension;
 	this->tileWorldDimension = tileWorldDimension;
 	this->tileSet.loadFromFile("Tiles/main.png");
@@ -31,13 +32,13 @@ void Map::moveViewRight(const bool isBoosted)
 {
 	if (isBoosted)
 	{
-		this->view.move(2.0f * 2, 0.0f);
-		this->background.move(2.0f * 2, 0.0f);
+		this->view.move(viewVelocity.x * 2, viewVelocity.y);
+		this->background.move(viewVelocity.x * 2, viewVelocity.y);
 	}
 	else
 	{
-		this->view.move(2.0f, 0.0f);
-		this->background.move(2.0f, 0.0f);
+		this->view.move(viewVelocity);
+		this->background.move(viewVelocity);
 	}
 	
 }
@@ -46,14 +47,15 @@ void Map::moveViewLeft(const bool isBoosted)
 {
 	if (isBoosted)
 	{
-		this->view.move(-2.0f * 2, 0.0f);
-		this->background.move(-2.0f * 2, 0.0f);
+		this->view.move(-viewVelocity.x * 2, viewVelocity.y);
+		this->background.move(-viewVelocity.x * 2, viewVelocity.y);
 	}
 	else
 	{
-		this->view.move(-2.0f, 0.0f);
-		this->background.move(-2.0f, 0.0f);
+		this->view.move(-viewVelocity.x, viewVelocity.y);
+		this->background.move(-viewVelocity.x, viewVelocity.y);
 	}
+	
 }
 
 void Map::addTilesToVertexArray(const int x, const int y, Vector2f position)

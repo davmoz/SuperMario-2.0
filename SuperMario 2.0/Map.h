@@ -10,6 +10,7 @@ private:
 	int width;
 	int height;
 	View view;
+	Vector2f viewVelocity;
 	Texture tileSet;
 	Sprite background;
 	VertexArray vertexArray;

@@ -1,10 +1,9 @@
 #include "Character.h"
 
 
-Character::Character(const string TileLocation, const IntRect tilePositionInFile, Vector2f position, const float xVelocity)
+Character::Character(const string TileLocation, const IntRect tilePositionInFile, Vector2f position, const Vector2f velocity)
 {
-	this->xVelocity = xVelocity;
-	this->yVelocity = 0.0f;
+	this->velocity = velocity;
 	this->isJumping = false;
 	this->healthState = true;
 
@@ -28,7 +27,7 @@ Character::~Character()
 
 void Character::moveLeft(bool trulyMoving)
 {
-	this->appearence.move(-this->xVelocity, 0);
+	this->appearence.move(-this->velocity.x, 0.0f);
 	this->isMovingRight = false;
 	if (trulyMoving)
 	{
@@ -42,7 +41,7 @@ void Character::moveLeft(bool trulyMoving)
 
 void Character::moveRight(bool trulyMoving)
 {
-	this->appearence.move(this->xVelocity, 0);
+	this->appearence.move(this->velocity.x, 0.0f);
 	this->isMovingRight = true;
 	if (trulyMoving)
 	{
@@ -58,39 +57,44 @@ void Character::jump()
 {
 	if (!this->isJumping)
 	{
-		this->yVelocity = -this->jumpHeight;
+		this->velocity.y = -this->jumpHeight;
 		isJumping = true;
 	}
 }
 
-void Character::changeVelocityX(const bool isBoosted)
+void Character::doubleVelocityX(const bool isBoosted)
 {
 	if (isBoosted)
 	{
-		this->xVelocity += 2.0f;
+		this->velocity.x += 2.0f;
 	}
 	else if(!isBoosted)
 	{
-		this->xVelocity -= 2.0f;
+		this->velocity.x -= 2.0f;
 	}
 }
 
 void Character::updateCharacter(const bool topCollision, const bool botCollision)
 {
+
 	if (topCollision)
 	{
-		this->yVelocity = 1;
+		this->velocity.y = 0.0f;
 	}
-	if (!botCollision || this->yVelocity < 0)
+	if (!botCollision || this->velocity.y < 0.0f)
 	{
-		this->yVelocity += gravity;
-		this->appearence.move(0, this->yVelocity);
+		this->velocity.y += gravity;
+		
+		this->appearence.move(0.0f, this->velocity.y);
+		this->position = appearence.getPosition();
 	}
 	else if (botCollision)
 	{
+		//this->appearence.move(0.0f, this->velocity.y - gravity);
 		this->isJumping = false;
-		this->yVelocity = 0;
-		this->appearence.move(0, -1);
+		this->velocity.y = 0.0f;
+		this->appearence.setPosition(this->appearence.getPosition().x, this->appearence.getPosition().y - gravity);
+		this->position = appearence.getPosition();
 	}
 }
 
@@ -134,13 +138,13 @@ void Character::autoMove(const bool collidedWithRight, const bool collidedWithLe
 {
 	if (collidedWithRight)
 	{
-		this->xVelocity *= -1;
+		this->velocity.x *= -1;
 	}
 	else if (collidedWithLeft)
 	{
-		this->xVelocity *= -1;
+		this->velocity.x *= -1;
 	}
-	this->appearence.move(xVelocity, 0);
+	this->appearence.move(this->velocity);
 }
 
 string Character::collidesWithChar(const Character & otherChar)
@@ -181,6 +185,12 @@ Sprite Character::getSprite() const
 	{
 		return this->appearence;
 	}
+}
+
+Vector2f Character::getPosition() const
+{
+	cout << "X: " << position.x << " Y: " << position.y << endl;
+	return this->position;
 }
 
 void Character::kill()

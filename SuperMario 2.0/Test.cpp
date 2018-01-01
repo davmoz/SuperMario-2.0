@@ -1,39 +1,21 @@
 #include <SFML/Graphics.hpp>
 #include <iostream>
+#include <string>
+
 using namespace sf;
-
-float x = 0;
-float y = 0;
-float velocityX = 0;
-float velocityY = 0;
-float accelerationX = 0;
-float accelerationY = 0;
-
-float gravity = 2;
-
-void updateMovement() {
-
-	if (y < 500)                  //If you are above ground
-		velocityY += gravity;    //Add gravity
-	else if (y > 500)             //If you are below ground
-		y = 500;                 //That's not supposed to happen, put him back up
-
-	velocityX += accelerationX;
-	velocityY += accelerationY;
-
-	x += velocityX;
-	y += velocityY;
-}
+using namespace std;
 
 int main() {
 	sf::RenderWindow ventana(sf::VideoMode(800, 600), "mi ventana");
 	ventana.setFramerateLimit(60);
-	sf::Texture Image;
-	Image.loadFromFile("Tiles/main.png", IntRect(0, 32, 16, 16));
-	sf::Sprite sprite(Image);
-	sprite.setPosition(-230, 100);
-
+	Font font;
+	font.loadFromFile("Fonts/Super Mario Bros.ttf");
 	sf::CircleShape figura(10);
+	Text text;
+	string txt = "Name: ";
+	text.setFont(font);
+	text.setFillColor(Color::Red);
+	text.setCharacterSize(32);
 
 	while (ventana.isOpen())
 	{
@@ -44,21 +26,40 @@ int main() {
 				ventana.close();
 			}
 			else if (miEvento.type == sf::Event::KeyPressed && miEvento.key.code == sf::Keyboard::Space) {
-				velocityY = -30;
+				
+			}
+			else if (Event::TextEntered)
+			{
+				if (miEvento.text.unicode == 32)
+				{
+					txt += " ";
+					text.setString(txt);
+				}
+				else if (miEvento.text.unicode == Keyboard::BackSpace)
+				{
+					txt = txt.substr(0, txt.length() - 1);
+					text.setString(txt);
+				}
+				else if((miEvento.text.unicode >= 48 
+					&& miEvento.text.unicode <= 57 
+					&& miEvento.text.unicode != Keyboard::Space) 
+					|| (miEvento.text.unicode >= 65 
+						&& miEvento.text.unicode <= 122))
+				{
+					txt += (char)(miEvento.text.unicode);
+					text.setString(txt);
+				}
+				else if (miEvento.text.unicode == Keyboard::Return)
+				{
+					txt = "Enter";
+					text.setString(txt);
+				}
 			}
 		}
 
-		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left))
-			velocityX = -5;
-		else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right))
-			velocityX = 5;
-
-		updateMovement();
-		sprite.setPosition(x, y);
-
 		//Renderizado
 		ventana.clear();
-		ventana.draw(sprite);
+		ventana.draw(text);
 		ventana.display();
 	}
 

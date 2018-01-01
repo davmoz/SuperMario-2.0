@@ -10,29 +10,29 @@ class Character
 private:
 	Texture texture;
 	Sprite appearence;
-	float xVelocity;
-	float yVelocity;
+	Vector2f position;
+	Vector2f velocity;
 	bool isMovingRight;
 	bool isJumping;
 	bool healthState;
 public:
-	Character(const string TileLocation, const IntRect tilePositionInFile, Vector2f position, const float xVelocity);
+	Character(const string TileLocation, const IntRect tilePositionInFile, Vector2f position, const Vector2f velocity);
 	Character();
 	virtual ~Character();
 
-	const float gravity = 0.8f;
-	const float jumpHeight = 20.0f;
-	const float groundHeight = 550.0f;
+	const float gravity = 0.4f;
+	const float jumpHeight = 16.0f;
 
 	void moveLeft(bool trulyMoving = true);
 	void moveRight(bool trulyMoving = true);
 	void jump();
-	void changeVelocityX(const bool isBoosted);
+	void doubleVelocityX(const bool isBoosted);
 	void updateCharacter(const bool topCollision, const bool botCollision);
 	void updateTexture(float &elapsedTime, const int tileCoordX, const int tileCoordY, const int nrOfTilesToView, const int tileSize);
 	void autoMove(const bool collidedWithRight, const bool collidedWithLeft);
 	string collidesWithChar(const Character & otherChar);
 	Sprite getSprite() const;
+	Vector2f getPosition() const;
 	void kill();
 	void drawCharacter(RenderWindow * window);
 };

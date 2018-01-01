@@ -8,6 +8,7 @@ private:
 	Music deadSound;
 	Music coinSound;
 	Music shroomSound;
+	Music stompSound;
 	Music mainTheme;
 public:
 	Audio();
@@ -19,5 +20,6 @@ public:
 	void deadMusicPlay();
 	void shroomMusicPlay();
 	void coinMusicPlay();
+	void stompMusicPlay();
 };
 

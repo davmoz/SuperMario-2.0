@@ -8,6 +8,7 @@ Audio::Audio()
 	this->deadSound.openFromFile("Music/dead.wav");
 	this->coinSound.openFromFile("Music/coin.wav");
 	this->shroomSound.openFromFile("Music/shroom.wav");
+	this->stompSound.openFromFile("Music/stomp.wav");
 	this->mainTheme.openFromFile("Music/maintheme.ogg");
 }
 
@@ -50,4 +51,9 @@ void Audio::shroomMusicPlay()
 void Audio::coinMusicPlay()
 {
 	this->coinSound.play();
+}
+
+void Audio::stompMusicPlay()
+{
+	this->stompSound.play();
 }

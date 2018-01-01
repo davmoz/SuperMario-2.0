@@ -13,7 +13,7 @@ private:
 	Text coinsTaken, timeSpent;
 	Clock clock;
 public:
-	Mario(const string TileLocation, const IntRect tilePositionInFile, Vector2f position, const float xVelocity);
+	Mario(const string TileLocation, const IntRect tilePositionInFile, Vector2f position, const Vector2f velocity);
 	virtual ~Mario();
 	void drawCoinsAndTime(RenderWindow *window, const bool paused);
 	void increaseCoins();

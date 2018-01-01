@@ -1,6 +1,7 @@
 #pragma once
 #include <SFML/Graphics.hpp>
 #include <fstream>
+#include <ctime>
 #include "Mario.h"
 #include "Enemy.h"
 #include "Map.h"
@@ -24,6 +25,8 @@ private:
 	Enemy* *enemy;
 	Loot * *loot;
 	Shroom* *shroom;
+
+
 	int collisionMap[144][19];
 public:
 	Collision();
@@ -45,7 +48,7 @@ public:
 	bool collidingWithRight(Vector2f currentPosition);
 	bool collidingWithTop(Vector2f currentPosition);
 	bool collidingWithBottom(Vector2f currentPosition);
-	bool checkMarioEnemyCollision() const;
+	bool checkMarioEnemyCollision();
 	void checkMarioCoinCollision();
 	void checkMarioShroomCollision();
 	void draw(RenderWindow *window, const bool paused);

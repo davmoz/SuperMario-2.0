@@ -1,14 +1,14 @@
 #include "Mario.h"
 #include <iostream>
 
-Mario::Mario(const string TileLocation, const IntRect tilePositionInFile, Vector2f position, const float xVelocity)
-	: Character(TileLocation, tilePositionInFile, position, xVelocity)
+Mario::Mario(const string TileLocation, const IntRect tilePositionInFile, Vector2f position, const Vector2f velocity)
+	: Character(TileLocation, tilePositionInFile, position, velocity)
 {
 	this->coins = 0;
 	this->marioTime = 0;
 	this->boostTime = 0;
 	this->boosted = false;
-	this->font.loadFromFile("Fonts/Chunkfive.otf");
+	this->font.loadFromFile("Fonts/Super Mario Bros.ttf");
 }
 
 Mario::~Mario()
@@ -34,7 +34,7 @@ void Mario::drawCoinsAndTime(RenderWindow * window, const bool paused)
 		if (this->boostTime == this->marioTime)
 		{
 			this->boosted = false;
-			this->changeVelocityX(boosted);
+			this->doubleVelocityX(boosted);
 		}
 	}
 	
@@ -57,7 +57,7 @@ void Mario::changeMarioVelocityX(const bool effected)
 	{
 		boostTime = marioTime + 10;
 		this->boosted = true;
-		this->changeVelocityX(boosted);
+		this->doubleVelocityX(boosted);
 	}
 	else
 	{

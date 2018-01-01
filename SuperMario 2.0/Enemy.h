@@ -7,8 +7,11 @@ class Enemy : public Character
 private:
 	bool canFly;
 public:
-	Enemy(const string TileLocation, const IntRect tilePositionInFile, Vector2f position, const float xVelocity);
+	Enemy(const string TileLocation, const IntRect tilePositionInFile, Vector2f position, const Vector2f velocity, const bool canFly);
 	Enemy();
+
+	void fly(float elapsedTime);
+
 	virtual ~Enemy();
 	void moveEnemy();
 };

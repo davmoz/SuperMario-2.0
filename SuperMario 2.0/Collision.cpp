@@ -3,13 +3,15 @@
 
 Collision::Collision()
 {
-	this->mario = new Mario("Tiles/main.png", IntRect(0, 32, 16, 16), Vector2f(160.0f, 0), 2.0f);
+	srand(time(0));
+	bool canFly;
+	this->mario = new Mario("Tiles/main.png", IntRect(0, 32, 16, 16), Vector2f(160.0f, 0), Vector2f(2.0f, 0.0f));
 	this->shroom = new Shroom*[this->shroomArrayCapacity];
 	this->enemy = new Enemy*[this->enemyArrayCapacity];
 	this->loot = new Loot*[this->coinArrayCapacity];
 	this->map = new Map(50, 16, 16.0f, 32.0f);
 	this->loadCollisionMap();
-
+	IntRect enemyRect;
 	for (int y = 0; y < 19; y++)
 	{
 		for (int x = 0; x < 144; x++)
@@ -22,8 +24,18 @@ Collision::Collision()
 			}
 			else if (this->collisionMap[x][y] == 8)
 			{
+				//fixas senare...........................................................
+				if (rand() % 20 > 9) {
+					canFly = false;
+					enemyRect = IntRect(64, 0, 16, 16);
+				}
+				else {
+					canFly = true;
+					enemyRect = IntRect(0, 96, 16, 16);
+				}
+
 				this->expandArray(enemy, this->nrOfEnemies, this->enemyArrayCapacity);
-				this->enemy[this->nrOfEnemies] = new Enemy("Tiles/main.png", IntRect(64, 0, 16, 16), Vector2f(32.0f * x, 32.0f * y), 1.0f);
+				this->enemy[this->nrOfEnemies] = new Enemy("Tiles/main.png", enemyRect, Vector2f(32.0f * x, 32.0f * y), Vector2f(1.0f, 0.0f), canFly);
 				this->nrOfEnemies++;
 			} 
 			else if (this->collisionMap[x][y] == -1) {
@@ -76,7 +88,6 @@ void Collision::MarioMoveLeft()
 	this->mario->moveLeft();
 	if (this->collidingWithLeft(this->mario->getSprite().getPosition()))
 	{
-		this->mario->increaseCoins();
 		this->mario->moveRight(false);
 		this->map->moveViewRight(mario->isBoosted());
 	}
@@ -149,41 +160,6 @@ void Collision::loadCollisionMap()
 	fromFile.close();
 }
 
-//void Collision::expandEnemyArray()
-//{
-//	if (this->nrOfEnemies == this->enemyArrayCapacity)
-//	{
-//		Enemy* *tempArray = new Enemy*[this->enemyArrayCapacity * 2];
-//		for (int i = 0; i < this->nrOfEnemies; i++)
-//		{
-//			tempArray[i] = new Enemy(*enemy[i]);
-//			delete this->enemy[i];
-//			this->enemy[i] = nullptr;
-//		}
-//		delete[] this->enemy;
-//		this->enemy = tempArray;
-//		this->enemyArrayCapacity *= 2;
-//	}
-//}
-//
-//void Collision::expandCoinArray()
-//{
-//	if (this->nrOfCoins == this->coinArrayCapacity)
-//	{
-//		Loot* *tempArray = new Loot*[this->coinArrayCapacity * 2];
-//		for (int i = 0; i < this->nrOfCoins; i++)
-//		{
-//			//tempArray[i] = new Loot(*loot[i]);
-//			//delete this->loot[i];
-//			tempArray[i] = loot[i];
-//			//this->loot[i] = nullptr;
-//		}
-//		delete[] this->loot;
-//		this->loot = tempArray;
-//		this->coinArrayCapacity *= 2;
-//	}
-//}
-
 template<typename T>
 void Collision::expandArray(T **&arr, int nrOfItems, int & capacity)
 {
@@ -205,18 +181,21 @@ void Collision::expandArray(T **&arr, int nrOfItems, int & capacity)
 // Mario dies cause below height
 void Collision::updateCharacter(float elapsedTime)
 {
+	this->mario->getPosition();
 	this->mario->updateCharacter(this->collidingWithTop(this->mario->getSprite().getPosition()), this->collidingWithBottom(this->mario->getSprite().getPosition()));
 	for (int i = 0; i < this->nrOfEnemies; i++)
 	{
 		if (this->enemy[i] != nullptr)
 		{
+			this->enemy[i]->fly(elapsedTime);
 			this->enemy[i]->updateCharacter(this->collidingWithTop(this->enemy[i]->getSprite().getPosition()), this->collidingWithBottom(this->enemy[i]->getSprite().getPosition()));
+			
 		}
 	}
-	if (this->mario->getSprite().getPosition().y > this->mario->groundHeight)
+	/*if (this->mario->getSprite().getPosition().y > this->mario->groundHeight)
 	{
 		cout << "Mario got rekt" << endl;
-	}
+	}*/
 } 
 
 void Collision::updateCharTexture(float & elapsedTime, const int tileCoordX, const int tileCoordY, const int nrOfTilesToView, const int tileSize)
@@ -298,7 +277,7 @@ bool Collision::collidingWithBottom(Vector2f currentPosition)
 	int quarterOrTile = 8;
 	bool collided = false;
 	float x = currentPosition.x;
-	float y = currentPosition.y;
+	float y = currentPosition.y + 0.5;
 
 	Vector2f firstBottom = Vector2f(x + quarterOrTile * 1,	y + quarterOrTile * 2);
 	Vector2f secondBottom = Vector2f(x,						y + quarterOrTile * 2);
@@ -312,7 +291,7 @@ bool Collision::collidingWithBottom(Vector2f currentPosition)
 	return collided;
 }
 
-bool Collision::checkMarioEnemyCollision() const
+bool Collision::checkMarioEnemyCollision()
 {
 	bool marioIsDead = false;
 	string collisionSide = "";
@@ -323,6 +302,7 @@ bool Collision::checkMarioEnemyCollision() const
 			collisionSide = this->mario->collidesWithChar(*this->enemy[i]);
 			if (collisionSide == "BOTTOM")
 			{
+				this->audio.stompMusicPlay();
 				delete this->enemy[i];
 				this->enemy[i] = nullptr;
 			}
