@@ -83,7 +83,7 @@ void Mario::exportScoreToFile(const string name)
 	/*
 	READ FROM FILE
 	#####################################################################################################
-	Opening file to READ any scores are registered. If there are scores registered, 4 array are dynamically 
+	Opening file to READ if any scores are registered. If there are scores registered, 4 array are dynamically 
 	allocated with the size of [registered scores + 1] for the new score to be registered. If the file is 
 	empty, the first score will be added in the WRITE TO FILE section below.
 	#####################################################################################################
