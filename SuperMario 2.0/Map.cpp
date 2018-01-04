@@ -55,7 +55,6 @@ void Map::moveViewLeft(const bool isBoosted)
 		this->view.move(-viewVelocity.x, viewVelocity.y);
 		this->background.move(-viewVelocity.x, viewVelocity.y);
 	}
-	
 }
 
 void Map::addTilesToVertexArray(const int x, const int y, Vector2f position)

@@ -309,6 +309,7 @@ bool Collision::checkMarioEnemyCollision()
 			else if(collisionSide == "LEFT" || collisionSide == "RIGHT")
 			{
 				marioIsDead = true;
+				this->mario->exportScoreToFile("lol");
 			}
 		}
 	}

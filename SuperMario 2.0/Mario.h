@@ -1,7 +1,9 @@
 #pragma once
 #include <SFML/Graphics.hpp>
+#include <fstream>
 #include "Character.h"
 using namespace sf;
+using namespace std;
 class Mario : public Character
 {
 private:
@@ -19,4 +21,5 @@ public:
 	void increaseCoins();
 	void changeMarioVelocityX(const bool effected = false);
 	bool isBoosted();
+	void exportScoreToFile(const string name);
 };
