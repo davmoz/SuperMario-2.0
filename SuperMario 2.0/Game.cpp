@@ -3,20 +3,20 @@
 
 Game::Game(RenderWindow *window)
 {
-	this->collision = new Collision;
+	collision = new Collision;
 	
-	this->menuFont.loadFromFile("Fonts/Super Mario Bros.ttf");
-	this->gamePaused = false;
-	this->gameOver = false;
-	this->selectedMenu = 0;
+	menuFont.loadFromFile("Fonts/Super Mario Bros.ttf");
+	gamePaused = false;
+	gameOver = false;
+	viewingScores = false;
+	viewingRegistrationPage = false;
+	selectedMenu = 0;
 	for (int i = 0; i < nrOfMenuOptions; i++)
 	{
-		this->menu[i].setFont(this->menuFont);
-		this->menu[i].setString(menuOptions[i]);
-		this->menu[i].setPosition(Vector2f(window->getView().getCenter().x, window->getView().getCenter().y / 2.5f * (i + 1)));
-		this->menu[i].setOrigin(menu[i].getLocalBounds().left + menu[i].getLocalBounds().width / 2.0f, menu[i].getLocalBounds().top + menu[i].getLocalBounds().height / 2.0f);
+		menu[i].setFont(menuFont);
+		menu[i].setString(menuOptions[i]);
 	}
-	this->menu[0].setFillColor(Color(Color::Red));
+	menu[0].setFillColor(Color(Color::Red));
 }
 
 Game::Game()
@@ -26,19 +26,17 @@ Game::Game()
 
 Game::~Game()
 {
-	delete this->collision;
+	delete collision;
 }
 
 void Game::runGame(RenderWindow *window, Clock *clock)
 {
-	this->audio.themeMusicPlay();
+	audio.themeMusicPlay();
 	float totaltime = 0.0f;
 
 	while (window->isOpen())
 	{
 		totaltime += clock->restart().asSeconds(); 
-		
-		Event event;
 		
 		window->setFramerateLimit(90);
 		
@@ -46,48 +44,49 @@ void Game::runGame(RenderWindow *window, Clock *clock)
 		{
 			if (event.type == Event::Closed)
 				window->close();
-			if (Keyboard::isKeyPressed(Keyboard::Escape) && event.key.code == Keyboard::Escape)
+			if (Keyboard::isKeyPressed(Keyboard::Escape) && event.key.code == Keyboard::Escape && !gameOver)
 			{
 				if (!gamePaused)
 				{
-					this->audio.themeMusicPause();
-					this->gamePaused = true;
+					audio.themeMusicPause();
+					gamePaused = true;
 				}
 				else
 				{
-					this->audio.themeMusicPlay();
-					this->gamePaused = false;
+					audio.themeMusicPlay();
+					gamePaused = false;
 				}
 			}
 			else if (Keyboard::isKeyPressed(Keyboard::Space) && event.key.code == Keyboard::Space)
 			{
-				this->collision->jump();
-				this->audio.jumpMusicPlay();
+				collision->jump();
+				audio.jumpMusicPlay();
 			}
 		}
-		if (!this->gamePaused)	
+		if (!gamePaused)	
 		{
-			this->update(totaltime);
-			this->collision->updateCharacter(totaltime);
-			this->collision->moveEnemy();
-			if (this->collision->checkMarioEnemyCollision())
+			update(totaltime);
+			collision->updateCharacter(totaltime);
+			collision->moveEnemy();
+			collision->checkMarioCoinCollision();
+			collision->checkMarioShroomCollision();
+			if (collision->checkMarioEnemyCollision())
 			{
-				this->audio.themeMusicPause();
-				this->audio.deadMusicPlay();
-				this->gameOver = true;
-				this->gamePaused = true;
+				audio.themeMusicPause();
+				audio.deadMusicPlay();
+				gameOver = true;
+				gamePaused = true;
+				viewingRegistrationPage = true;
 			}
-			this->collision->checkMarioCoinCollision();
-			this->collision->checkMarioShroomCollision();
 			window->clear();
-			this->draw(window);
+			draw(window);
 			window->display();
 		}
 		else
 		{
 			window->setFramerateLimit(10);
 			window->clear();
-			this->draw(window);
+			draw(window);
 			window->display();
 		}
 	}
@@ -97,53 +96,66 @@ void Game::update(float &totaltime)
 {
 	if (Keyboard::isKeyPressed(Keyboard::Right))
 	{
-		this->collision->MarioMoveRight();
-		this->collision->moveViewRight();
-		this->collision->updateCharTexture(totaltime, 0, 32, 3, 16);
+		collision->MarioMoveRight();
+		collision->moveViewRight();
+		collision->updateCharTexture(totaltime, 0, 32, 3, 16);
 	}
 	else if (Keyboard::isKeyPressed(Keyboard::Left))
 	{
-		this->collision->MarioMoveLeft();
-		this->collision->moveViewLeft();
-		this->collision->updateCharTexture(totaltime, 0, 32, 3, 16);
+		collision->MarioMoveLeft();
+		collision->moveViewLeft();
+		collision->updateCharTexture(totaltime, 0, 32, 3, 16);
 	}
 }
 
 void Game::loadMenu(RenderWindow *window)
 {
-	if (this->gameOver)
+	if (gameOver && !viewingScores && !viewingRegistrationPage)
 	{
-		this->menuOptions[0] = "New Game";
-		this->menu[0].setString(menuOptions[0]);
+		menuOptions[0] = "New Game";
+		menu[0].setString(menuOptions[0]);
+
+		for (int i = 1; i < nrOfMenuOptions; i++)
+		{
+			menu[i].setString(menuOptions[i]);
+		}
 	}
-	else
+	else if(!gameOver && !viewingScores && !viewingRegistrationPage)
 	{
-		this->menuOptions[0] = "Resume";
-		this->menu[0].setString(menuOptions[0]);
+		menuOptions[0] = "Resume";
+		menu[0].setString(menuOptions[0]);
+
+		for (int i = 1; i < nrOfMenuOptions; i++)
+		{
+			menu[i].setString(menuOptions[i]);
+		}
 	}
 	for (int i = 0; i < nrOfMenuOptions; i++)
 	{
-		this->menu[i].setPosition(Vector2f(window->getView().getCenter().x, window->getView().getCenter().y / 2.5f * (i + 1)));
-		this->menu[i].setOrigin(menu[i].getLocalBounds().left + menu[i].getLocalBounds().width / 2.0f, menu[i].getLocalBounds().top + menu[i].getLocalBounds().height / 2.0f);
+		menu[i].setPosition(Vector2f(window->getView().getCenter().x, window->getView().getCenter().y / 2.5f * (i + 1)));
+		menu[i].setOrigin(menu[i].getLocalBounds().left + menu[i].getLocalBounds().width / 2.0f, menu[i].getLocalBounds().top + menu[i].getLocalBounds().height / 2.0f);
 	}
 }
 
 void Game::draw(RenderWindow * window)
 {
-	if (!this->gamePaused)
+	if (!gamePaused)
 	{
-		this->collision->draw(window, this->gamePaused);
+		collision->draw(window, gamePaused);
 	}
 	else
 	{
-		this->drawMenu(window);
+		drawMenu(window);
 		handleMenuInput(window);
 	}
 }
 
 void Game::drawMenu(RenderWindow * window)
 {
-	this->loadMenu(window);
+	if (!viewingScores && !viewingRegistrationPage)
+	{
+		loadMenu(window);
+	}
 	for (int i = 0; i < nrOfMenuOptions; i++)
 	{
 		window->draw(menu[i]);
@@ -154,65 +166,135 @@ void Game::handleMenuInput(RenderWindow * window)
 {
 	if (Keyboard::isKeyPressed(Keyboard::Up))
 	{
-		if (this->selectedMenu - 1 >= 0)
+		if (selectedMenu - 1 >= 0)
 		{
-			this->menu[this->selectedMenu].setFillColor(Color(Color::White));
-			this->selectedMenu--;
-			this->menu[this->selectedMenu].setFillColor(Color(Color::Red));
+			menu[selectedMenu].setFillColor(Color(Color::White));
+			selectedMenu--;
+			menu[selectedMenu].setFillColor(Color(Color::Red));
 		}
-		
 	}
 	else if (Keyboard::isKeyPressed(Keyboard::Down))
 	{
-		if (this->selectedMenu + 1 < nrOfMenuOptions)
+		if (selectedMenu + 1 < nrOfMenuOptions)
 		{
-			this->menu[this->selectedMenu].setFillColor(Color(Color::White));
-			this->selectedMenu++;
-			this->menu[this->selectedMenu].setFillColor(Color(Color::Red));
+			menu[selectedMenu].setFillColor(Color(Color::White));
+			selectedMenu++;
+			menu[selectedMenu].setFillColor(Color(Color::Red));
 		}
 	}
 	else if (Keyboard::isKeyPressed(Keyboard::Return))
 	{
-		switch (this->selectedMenu)
+		switch (selectedMenu)
 		{
 		case 0: {
-			if (this->gameOver) // New Game
+			if (gameOver && !viewingScores) // New Game
 			{
-				delete this->collision;
-				this->collision = new Collision;
-				this->gameOver = false;
-				this->gamePaused = false;
-				this->audio.themeMusicReset();
-				this->audio.themeMusicPlay();
+				delete collision;
+				collision = new Collision;
+				gameOver = false;
+				gamePaused = false;
+				audio.themeMusicReset();
+				audio.themeMusicPlay();
 			}
-			else // Resume Game
+			else if (!gameOver && !viewingScores) // Resume Game
 			{
-				this->audio.themeMusicPlay();
-				this->gamePaused = false;
+				audio.themeMusicPlay();
+				gamePaused = false;
 			}
 			break;
 		}
 		case 1: {
 			// Restart Game
-			delete this->collision;
-			this->collision = new Collision;
-			this->gameOver = false;
-			this->gamePaused = false;
-			this->audio.themeMusicReset();
-			this->audio.themeMusicPlay();
+			if (!viewingScores)
+			{
+				delete collision;
+				collision = new Collision;
+				gameOver = false;
+				gamePaused = false;
+				audio.themeMusicReset();
+				audio.themeMusicPlay();
+			}
 			break;
 		}
 		case 2: {
+			viewingScores = true;
+			importHighScores("Score/scores.txt", 3);
+			loadMenu(window);
+			drawMenu(window);
 			// HighScore
 			break;
 		}
 		case 3: {
-			// Quit Game
-			window->close();
+			if (viewingScores)
+			{
+				viewingScores = false;
+			}
+			else
+			{
+				// Quit Game
+				window->close();
+			}
+
 			break;
 		}
 		default:
 			break;
+		}
+	}
+}
+
+void Game::importHighScores(const string fileLocation, int NrOfScoresToView)
+{
+	ifstream fromFile;
+	fromFile.open(fileLocation);
+	if (fromFile.is_open())
+	{
+		int nrOfScores;
+		string name;
+		int time = 0;
+		int coins = 0;
+		int coinsPerSecond = 0;
+		fromFile >> nrOfScores;
+		for (int i = 0; i < NrOfScoresToView; i++)
+		{
+			fromFile >> name;
+			fromFile >> time;
+			fromFile.ignore();
+			fromFile >> coins;
+			fromFile.ignore();
+			fromFile >> coinsPerSecond;
+			fromFile.ignore();
+			containerString = to_string(i + 1) + ". Name: " + name + " Coins: " + to_string(coins) + " time: " + to_string(time) + " Coins/Sec: " + to_string(coinsPerSecond);
+			menu[i].setString(containerString);
+		}
+		containerString = "Back";
+		menu[NrOfScoresToView].setString(containerString);
+	}
+	fromFile.close();
+}
+
+void Game::registerPlayerName()
+{
+	menu[1].setString("Name:");
+	if (Event::TextEntered)
+	{
+		if (event.text.unicode == 32)
+		{
+
+		}
+		else if (event.text.unicode == Keyboard::BackSpace)
+		{
+			containerString = containerString.substr(0, containerString.length() - 1);
+			menu[2].setString(containerString);
+		}
+		else if ((event.text.unicode >= 48 && event.text.unicode <= 57 && event.text.unicode != Keyboard::Space) || (event.text.unicode >= 65 && event.text.unicode <= 122))
+		{
+			containerString += (char)(event.text.unicode);
+			menu[2].setString(containerString);
+		}
+		else if (event.text.unicode == Keyboard::Return)
+		{
+			viewingRegistrationPage = false;
 		}
 	}
 }

@@ -79,7 +79,7 @@ void Mario::exportScoreToFile(const string name)
 	string *names = nullptr;
 	int *times = nullptr;
 	int *coins = nullptr;
-	double *coinsPerSecond = nullptr;
+	int *coinsPerSecond = nullptr;
 	/*
 	READ FROM FILE
 	#####################################################################################################
@@ -105,7 +105,7 @@ void Mario::exportScoreToFile(const string name)
 			names = new string[nrOfScores + 1];
 			times = new int[nrOfScores + 1];
 			coins = new int[nrOfScores + 1];
-			coinsPerSecond = new double[nrOfScores + 1];
+			coinsPerSecond = new int[nrOfScores + 1];
 
 			for (int i = 0; i < nrOfScores; i++)
 			{
@@ -116,8 +116,8 @@ void Mario::exportScoreToFile(const string name)
 			}
 		}
 		fromFile.close();
-		
 	}
+
 	/*
 	WRITE TO FILE
 	#####################################################################################################
@@ -143,9 +143,9 @@ void Mario::exportScoreToFile(const string name)
 			times[nrOfScores] = this->marioTime;
 			coins[nrOfScores] = this->coins;
 			coinsPerSecond[nrOfScores] = this->coins / (double)this->marioTime;
-			// Sortera
-
-			// Skriv till fil
+			// Sorting the list before writing to file
+			sortScoreList(names, times, coins, coinsPerSecond, nrOfScores + 1);
+			
 			toFile << nrOfScores + 1 << endl;
 			for (int i = 0; i < nrOfScores + 1; i++)
 			{
@@ -161,4 +161,39 @@ void Mario::exportScoreToFile(const string name)
 	delete[] coins;
 	delete[] times;
 	delete[] coinsPerSecond;
+}
+
+void Mario::sortScoreList(string names[], int times[], int coins[], int coinsPerSecond[], int nrOfScores)
+{
+	int greatestCoinPerSecond = 0;
+
+	string tempName;
+	int tempCoin;
+	int tempTime;
+	int tempCoinsPerSecond;
+
+	for (int i = 0; i < nrOfScores; i++)
+	{
+		for (int k = i + 1; k < nrOfScores; k++)
+		{
+			if (coinsPerSecond[k] > coinsPerSecond[i])
+			{
+				greatestCoinPerSecond = k;
+			}
+		}
+		tempName = names[i];
+		tempTime = times[i];
+		tempCoin = coins[i];
+		tempCoinsPerSecond = coinsPerSecond[i];
+
+		names[i] = names[greatestCoinPerSecond];
+		times[i] = times[greatestCoinPerSecond];
+		coins[i] = coins[greatestCoinPerSecond];
+		coinsPerSecond[i] = coinsPerSecond[greatestCoinPerSecond];
+
+		names[greatestCoinPerSecond] = tempName;
+		times[greatestCoinPerSecond] = tempTime;
+		coins[greatestCoinPerSecond] = tempCoin;
+		coinsPerSecond[greatestCoinPerSecond] = tempCoinsPerSecond;
+	}
 }

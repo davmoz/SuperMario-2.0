@@ -22,4 +22,5 @@ public:
 	void changeMarioVelocityX(const bool effected = false);
 	bool isBoosted();
 	void exportScoreToFile(const string name);
+	void sortScoreList(string names[], int times[], int coins[], int coinsPerSecond[], int nrOfScores);
 };
