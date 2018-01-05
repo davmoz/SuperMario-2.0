@@ -28,7 +28,7 @@ public:
 	virtual ~Game();
 	void runGame(RenderWindow *window, Clock *clock);
 	void update(float &totaltime);
-	void loadMenu(RenderWindow *window);
+	void loadMainMenu(RenderWindow *window);
 	void draw(RenderWindow *window);
 	void drawMenu(RenderWindow *window);
 	void handleMenuInput(RenderWindow * window);

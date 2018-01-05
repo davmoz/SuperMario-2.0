@@ -52,6 +52,6 @@ public:
 	void checkMarioCoinCollision();
 	void checkMarioShroomCollision();
 	void draw(RenderWindow *window, const bool paused);
-	
+	void saveMarioStats(const string name) const;
 };
 

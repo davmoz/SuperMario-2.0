@@ -309,7 +309,6 @@ bool Collision::checkMarioEnemyCollision()
 			else if(collisionSide == "LEFT" || collisionSide == "RIGHT")
 			{
 				marioIsDead = true;
-				this->mario->exportScoreToFile("lol");
 			}
 		}
 	}
@@ -377,4 +376,9 @@ void Collision::draw(RenderWindow * window, const bool paused)
 			window->draw(this->shroom[i]->getShroomSprite());
 		}
 	}
+}
+
+void Collision::saveMarioStats(const string name) const
+{
+	mario->exportScoreToFile(name);
 }

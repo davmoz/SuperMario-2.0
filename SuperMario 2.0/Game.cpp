@@ -44,6 +44,10 @@ void Game::runGame(RenderWindow *window, Clock *clock)
 		{
 			if (event.type == Event::Closed)
 				window->close();
+			if (viewingRegistrationPage)
+			{
+				registerPlayerName();
+			}
 			if (Keyboard::isKeyPressed(Keyboard::Escape) && event.key.code == Keyboard::Escape && !gameOver)
 			{
 				if (!gamePaused)
@@ -77,6 +81,7 @@ void Game::runGame(RenderWindow *window, Clock *clock)
 				gameOver = true;
 				gamePaused = true;
 				viewingRegistrationPage = true;
+				selectedMenu = 2;
 			}
 			window->clear();
 			draw(window);
@@ -108,7 +113,7 @@ void Game::update(float &totaltime)
 	}
 }
 
-void Game::loadMenu(RenderWindow *window)
+void Game::loadMainMenu(RenderWindow *window)
 {
 	if (gameOver && !viewingScores && !viewingRegistrationPage)
 	{
@@ -139,22 +144,22 @@ void Game::loadMenu(RenderWindow *window)
 
 void Game::draw(RenderWindow * window)
 {
-	if (!gamePaused)
-	{
-		collision->draw(window, gamePaused);
-	}
-	else
+	if (gamePaused)
 	{
 		drawMenu(window);
 		handleMenuInput(window);
+	}
+	else
+	{
+		collision->draw(window, gamePaused);
 	}
 }
 
 void Game::drawMenu(RenderWindow * window)
 {
-	if (!viewingScores && !viewingRegistrationPage)
+	if (!viewingScores)
 	{
-		loadMenu(window);
+		loadMainMenu(window);
 	}
 	for (int i = 0; i < nrOfMenuOptions; i++)
 	{
@@ -164,7 +169,7 @@ void Game::drawMenu(RenderWindow * window)
 
 void Game::handleMenuInput(RenderWindow * window)
 {
-	if (Keyboard::isKeyPressed(Keyboard::Up))
+	if (Keyboard::isKeyPressed(Keyboard::Up) && event.text.unicode == Keyboard::Up)
 	{
 		if (selectedMenu - 1 >= 0)
 		{
@@ -173,7 +178,7 @@ void Game::handleMenuInput(RenderWindow * window)
 			menu[selectedMenu].setFillColor(Color(Color::Red));
 		}
 	}
-	else if (Keyboard::isKeyPressed(Keyboard::Down))
+	else if (Keyboard::isKeyPressed(Keyboard::Down) && event.text.unicode == Keyboard::Down)
 	{
 		if (selectedMenu + 1 < nrOfMenuOptions)
 		{
@@ -182,12 +187,12 @@ void Game::handleMenuInput(RenderWindow * window)
 			menu[selectedMenu].setFillColor(Color(Color::Red));
 		}
 	}
-	else if (Keyboard::isKeyPressed(Keyboard::Return))
+	else if (Keyboard::isKeyPressed(Keyboard::Return) || event.text.unicode == Keyboard::Return)
 	{
 		switch (selectedMenu)
 		{
 		case 0: {
-			if (gameOver && !viewingScores) // New Game
+			if (gameOver && !viewingScores && !viewingRegistrationPage) // New Game
 			{
 				delete collision;
 				collision = new Collision;
@@ -196,7 +201,7 @@ void Game::handleMenuInput(RenderWindow * window)
 				audio.themeMusicReset();
 				audio.themeMusicPlay();
 			}
-			else if (!gameOver && !viewingScores) // Resume Game
+			else if (!gameOver && !viewingScores && !viewingRegistrationPage) // Resume Game
 			{
 				audio.themeMusicPlay();
 				gamePaused = false;
@@ -205,7 +210,7 @@ void Game::handleMenuInput(RenderWindow * window)
 		}
 		case 1: {
 			// Restart Game
-			if (!viewingScores)
+			if (!viewingScores && !viewingRegistrationPage)
 			{
 				delete collision;
 				collision = new Collision;
@@ -217,17 +222,23 @@ void Game::handleMenuInput(RenderWindow * window)
 			break;
 		}
 		case 2: {
-			viewingScores = true;
-			importHighScores("Score/scores.txt", 3);
-			loadMenu(window);
-			drawMenu(window);
-			// HighScore
+			if (!viewingRegistrationPage)
+			{
+				viewingScores = true;
+				importHighScores("Score/scores.txt", 3);
+				loadMainMenu(window);
+			}
 			break;
 		}
 		case 3: {
+			cout << "times entered " << endl;
 			if (viewingScores)
 			{
 				viewingScores = false;
+			}
+			else if (viewingRegistrationPage)
+			{
+				viewingRegistrationPage = false;
 			}
 			else
 			{
@@ -255,6 +266,7 @@ void Game::importHighScores(const string fileLocation, int NrOfScoresToView)
 		int coins = 0;
 		int coinsPerSecond = 0;
 		fromFile >> nrOfScores;
+		
 		for (int i = 0; i < NrOfScoresToView; i++)
 		{
 			fromFile >> name;
@@ -275,7 +287,9 @@ void Game::importHighScores(const string fileLocation, int NrOfScoresToView)
 
 void Game::registerPlayerName()
 {
+	menu[0].setString("");
 	menu[1].setString("Name:");
+	menu[3].setString("Enter");
 	if (Event::TextEntered)
 	{
 		if (event.text.unicode == 32)
@@ -287,14 +301,18 @@ void Game::registerPlayerName()
 			containerString = containerString.substr(0, containerString.length() - 1);
 			menu[2].setString(containerString);
 		}
+		else if (event.text.unicode == Keyboard::Up || event.text.unicode == Keyboard::Down || event.text.unicode == Keyboard::Left || event.text.unicode == Keyboard::Right)
+		{
+
+		}
 		else if ((event.text.unicode >= 48 && event.text.unicode <= 57 && event.text.unicode != Keyboard::Space) || (event.text.unicode >= 65 && event.text.unicode <= 122))
 		{
 			containerString += (char)(event.text.unicode);
 			menu[2].setString(containerString);
 		}
-		else if (event.text.unicode == Keyboard::Return)
+		else if (event.text.unicode == Keyboard::Return && Keyboard::isKeyPressed(Keyboard::Return))
 		{
-			viewingRegistrationPage = false;
+			collision->saveMarioStats(containerString);
 		}
 	}
 }

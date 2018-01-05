@@ -189,7 +189,6 @@ Sprite Character::getSprite() const
 
 Vector2f Character::getPosition() const
 {
-	cout << "X: " << position.x << " Y: " << position.y << endl;
 	return this->position;
 }
 
