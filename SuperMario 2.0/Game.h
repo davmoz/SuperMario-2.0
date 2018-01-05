@@ -11,12 +11,14 @@ class Game
 private:
 	Audio audio;
 	Event event;
-	// Collision Handler
+	RenderWindow *window;
 	Collision *collision;
+
 	bool gamePaused;
 	bool gameOver;
 	bool viewingScores;
 	bool viewingRegistrationPage;
+
 	Font menuFont;
 	int selectedMenu;
 	Text menu[nrOfMenuOptions];
@@ -26,12 +28,12 @@ public:
 	Game(RenderWindow *window);
 	Game();
 	virtual ~Game();
-	void runGame(RenderWindow *window, Clock *clock);
+	void runGame(Clock *clock);
 	void update(float &totaltime);
-	void loadMainMenu(RenderWindow *window);
-	void draw(RenderWindow *window);
-	void drawMenu(RenderWindow *window);
-	void handleMenuInput(RenderWindow * window);
+	void loadMainMenu();
+	void draw();
+	void drawMenu();
+	void handleMenuInput();
 	void importHighScores(const string fileLocation, int NrOfScoresToView);
 	void registerPlayerName();
 };

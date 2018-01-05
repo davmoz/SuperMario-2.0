@@ -13,6 +13,5 @@ public:
 	void fly(float elapsedTime);
 
 	virtual ~Enemy();
-	void moveEnemy();
 };
 

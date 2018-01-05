@@ -4,12 +4,12 @@
 
 Audio::Audio()
 {
-	this->jumpSound.openFromFile("Music/jump.wav");
-	this->deadSound.openFromFile("Music/dead.wav");
-	this->coinSound.openFromFile("Music/coin.wav");
-	this->shroomSound.openFromFile("Music/shroom.wav");
-	this->stompSound.openFromFile("Music/stomp.wav");
-	this->mainTheme.openFromFile("Music/maintheme.ogg");
+	jumpSound.openFromFile("Music/jump.wav");
+	deadSound.openFromFile("Music/dead.wav");
+	coinSound.openFromFile("Music/coin.wav");
+	shroomSound.openFromFile("Music/shroom.wav");
+	stompSound.openFromFile("Music/stomp.wav");
+	mainTheme.openFromFile("Music/maintheme.ogg");
 }
 
 
@@ -20,40 +20,40 @@ Audio::~Audio()
 
 void Audio::themeMusicPlay()
 {
-	this->mainTheme.play();
+	mainTheme.play();
 }
 
 void Audio::themeMusicPause()
 {
-	this->mainTheme.pause();
+	mainTheme.pause();
 }
 
 void Audio::themeMusicReset()
 {
-	this->mainTheme.stop();
+	mainTheme.stop();
 }
 
 void Audio::jumpMusicPlay()
 {
-	this->jumpSound.play();
+	jumpSound.play();
 }
 
 void Audio::deadMusicPlay()
 {
-	this->deadSound.play();
+	deadSound.play();
 }
 
 void Audio::shroomMusicPlay()
 {
-	this->shroomSound.play();
+	shroomSound.play();
 }
 
 void Audio::coinMusicPlay()
 {
-	this->coinSound.play();
+	coinSound.play();
 }
 
 void Audio::stompMusicPlay()
 {
-	this->stompSound.play();
+	stompSound.play();
 }

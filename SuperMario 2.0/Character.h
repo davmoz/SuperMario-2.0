@@ -14,7 +14,6 @@ private:
 	Vector2f velocity;
 	bool isMovingRight;
 	bool isJumping;
-	bool healthState;
 public:
 	Character(const string TileLocation, const IntRect tilePositionInFile, Vector2f position, const Vector2f velocity);
 	Character();
@@ -33,6 +32,5 @@ public:
 	string collidesWithChar(const Character & otherChar);
 	Sprite getSprite() const;
 	Vector2f getPosition() const;
-	void kill();
 	void drawCharacter(RenderWindow * window);
 };

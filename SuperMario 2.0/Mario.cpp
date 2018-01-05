@@ -4,11 +4,11 @@
 Mario::Mario(const string TileLocation, const IntRect tilePositionInFile, Vector2f position, const Vector2f velocity)
 	: Character(TileLocation, tilePositionInFile, position, velocity)
 {
-	this->coins = 0;
-	this->marioTime = 0;
-	this->boostTime = 0;
-	this->boosted = false;
-	this->font.loadFromFile("Fonts/Super Mario Bros.ttf");
+	coins = 0;
+	marioTime = 0;
+	boostTime = 0;
+	boosted = false;
+	font.loadFromFile("Fonts/Super Mario Bros.ttf");
 }
 
 Mario::~Mario()
@@ -18,46 +18,46 @@ Mario::~Mario()
 
 void Mario::drawCoinsAndTime(RenderWindow * window, const bool paused)
 {
-	this->timeSpent.setFont(this->font);
-	this->coinsTaken.setFont(this->font);
+	timeSpent.setFont(font);
+	coinsTaken.setFont(font);
 
 	if (!paused)
 	{
 		if (clock.getElapsedTime().asSeconds() > 1.0f)
 		{
-			this->marioTime++;
+			marioTime++;
 			clock.restart();
 		}
 	}
-	if (this->boosted)
+	if (boosted)
 	{
-		if (this->boostTime == this->marioTime)
+		if (boostTime == marioTime)
 		{
-			this->boosted = false;
-			this->doubleVelocityX(boosted);
+			boosted = false;
+			doubleVelocityX(boosted);
 		}
 	}
 	
-	this->timeSpent.setString("TIME: " + to_string(this->marioTime));
-	this->coinsTaken.setString("$: " + to_string(this->coins));
-	this->coinsTaken.setPosition(this->getSprite().getPosition().x, 0);
-	this->timeSpent.setPosition(this->getSprite().getPosition().x - 150, 0);
-	window->draw(this->timeSpent);
-	window->draw(this->coinsTaken);
+	timeSpent.setString("TIME: " + to_string(marioTime));
+	coinsTaken.setString("$: " + to_string(coins));
+	coinsTaken.setPosition(getPosition().x, 0);
+	timeSpent.setPosition(getPosition().x - 150, 0);
+	window->draw(timeSpent);
+	window->draw(coinsTaken);
 }
 
 void Mario::increaseCoins()
 {
-	this->coins++;
+	coins++;
 }
 
 void Mario::changeMarioVelocityX(const bool effected)
 {
-	if (!this->boosted)
+	if (!boosted)
 	{
 		boostTime = marioTime + 10;
-		this->boosted = true;
-		this->doubleVelocityX(boosted);
+		boosted = true;
+		doubleVelocityX(boosted);
 	}
 	else
 	{
@@ -67,7 +67,7 @@ void Mario::changeMarioVelocityX(const bool effected)
 
 bool Mario::isBoosted()
 {
-	return this->boosted;
+	return boosted;
 }
 
 void Mario::exportScoreToFile(const string name)
@@ -76,9 +76,9 @@ void Mario::exportScoreToFile(const string name)
 	string check;
 	bool empty = false;
 
-	string *names = nullptr;
-	int *times = nullptr;
-	int *coins = nullptr;
+	string *playerNames = nullptr;
+	int *playerTimes = nullptr;
+	int *playerCoins = nullptr;
 	int *coinsPerSecond = nullptr;
 	/*
 	READ FROM FILE
@@ -102,16 +102,16 @@ void Mario::exportScoreToFile(const string name)
 			empty = false;
 			nrOfScores = stoi(check);
 
-			names = new string[nrOfScores + 1];
-			times = new int[nrOfScores + 1];
-			coins = new int[nrOfScores + 1];
+			playerNames = new string[nrOfScores + 1];
+			playerTimes = new int[nrOfScores + 1];
+			playerCoins = new int[nrOfScores + 1];
 			coinsPerSecond = new int[nrOfScores + 1];
 
 			for (int i = 0; i < nrOfScores; i++)
 			{
-				fromFile >> names[i];
-				fromFile >> times[i];
-				fromFile >> coins[i];
+				fromFile >> playerNames[i];
+				fromFile >> playerTimes[i];
+				fromFile >> playerCoins[i];
 				fromFile >> coinsPerSecond[i];
 			}
 		}
@@ -133,37 +133,37 @@ void Mario::exportScoreToFile(const string name)
 		{
 			toFile << 1 << endl;
 			toFile << name << endl;
-			toFile << this->marioTime << endl;
-			toFile << this->coins << endl;
-			toFile << this->coins / (double)this->marioTime;
+			toFile << marioTime << endl;
+			toFile << coins << endl;
+			toFile << coins / (double)marioTime;
 		}
 		else
 		{
-			names[nrOfScores] = name;
-			times[nrOfScores] = this->marioTime;
-			coins[nrOfScores] = this->coins;
-			coinsPerSecond[nrOfScores] = this->coins / (double)this->marioTime;
+			playerNames[nrOfScores] = name;
+			playerTimes[nrOfScores] = marioTime;
+			playerCoins[nrOfScores] = coins;
+			coinsPerSecond[nrOfScores] = coins / (double)marioTime;
 			// Sorting the list before writing to file
-			sortScoreList(names, times, coins, coinsPerSecond, nrOfScores + 1);
+			sortScoreList(playerNames, playerTimes, playerCoins, coinsPerSecond, nrOfScores + 1);
 			
 			toFile << nrOfScores + 1 << endl;
 			for (int i = 0; i < nrOfScores + 1; i++)
 			{
-				toFile << names[i] << endl;
-				toFile << times[i] << endl;
-				toFile << coins[i] << endl;
+				toFile << playerNames[i] << endl;
+				toFile << playerTimes[i] << endl;
+				toFile << playerCoins[i] << endl;
 				toFile << coinsPerSecond[i] << endl;
 			}
 		}
 	}
 	toFile.close();
-	delete[] names;
-	delete[] coins;
-	delete[] times;
+	delete[] playerNames;
+	delete[] playerCoins;
+	delete[] playerTimes;
 	delete[] coinsPerSecond;
 }
 
-void Mario::sortScoreList(string names[], int times[], int coins[], int coinsPerSecond[], int nrOfScores)
+void Mario::sortScoreList(string playerNames[], int times[], int coins[], int coinsPerSecond[], int nrOfScores)
 {
 	int greatestCoinPerSecond = 0;
 
@@ -181,17 +181,17 @@ void Mario::sortScoreList(string names[], int times[], int coins[], int coinsPer
 				greatestCoinPerSecond = k;
 			}
 		}
-		tempName = names[i];
+		tempName = playerNames[i];
 		tempTime = times[i];
 		tempCoin = coins[i];
 		tempCoinsPerSecond = coinsPerSecond[i];
 
-		names[i] = names[greatestCoinPerSecond];
+		playerNames[i] = playerNames[greatestCoinPerSecond];
 		times[i] = times[greatestCoinPerSecond];
 		coins[i] = coins[greatestCoinPerSecond];
 		coinsPerSecond[i] = coinsPerSecond[greatestCoinPerSecond];
 
-		names[greatestCoinPerSecond] = tempName;
+		playerNames[greatestCoinPerSecond] = tempName;
 		times[greatestCoinPerSecond] = tempTime;
 		coins[greatestCoinPerSecond] = tempCoin;
 		coinsPerSecond[greatestCoinPerSecond] = tempCoinsPerSecond;

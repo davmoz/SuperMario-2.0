@@ -13,11 +13,11 @@ Enemy::Enemy() : Character()
 
 void Enemy::fly(float elapsedTime)
 {
-	if (this->canFly) 
+	if (canFly) 
 	{
 		if (elapsedTime > 0.9f)
 		{
-			this->jump();
+			jump();
 		}
 	}
 }
@@ -26,9 +26,4 @@ void Enemy::fly(float elapsedTime)
 Enemy::~Enemy()
 {
 
-}
-
-void Enemy::moveEnemy()
-{
-	this->moveRight();
 }

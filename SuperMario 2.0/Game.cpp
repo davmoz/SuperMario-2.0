@@ -3,10 +3,10 @@
 
 Game::Game(RenderWindow *window)
 {
+	this->window = window;
 	collision = new Collision;
-	
 	menuFont.loadFromFile("Fonts/Super Mario Bros.ttf");
-	gamePaused = false;
+	gamePaused = true;
 	gameOver = false;
 	viewingScores = false;
 	viewingRegistrationPage = false;
@@ -29,9 +29,9 @@ Game::~Game()
 	delete collision;
 }
 
-void Game::runGame(RenderWindow *window, Clock *clock)
+void Game::runGame(Clock *clock)
 {
-	audio.themeMusicPlay();
+	//audio.themeMusicPlay();
 	float totaltime = 0.0f;
 
 	while (window->isOpen())
@@ -81,17 +81,16 @@ void Game::runGame(RenderWindow *window, Clock *clock)
 				gameOver = true;
 				gamePaused = true;
 				viewingRegistrationPage = true;
-				selectedMenu = 2;
 			}
 			window->clear();
-			draw(window);
+			draw();
 			window->display();
 		}
 		else
 		{
 			window->setFramerateLimit(10);
 			window->clear();
-			draw(window);
+			draw();
 			window->display();
 		}
 	}
@@ -113,7 +112,7 @@ void Game::update(float &totaltime)
 	}
 }
 
-void Game::loadMainMenu(RenderWindow *window)
+void Game::loadMainMenu()
 {
 	if (gameOver && !viewingScores && !viewingRegistrationPage)
 	{
@@ -142,12 +141,12 @@ void Game::loadMainMenu(RenderWindow *window)
 	}
 }
 
-void Game::draw(RenderWindow * window)
+void Game::draw()
 {
 	if (gamePaused)
 	{
-		drawMenu(window);
-		handleMenuInput(window);
+		drawMenu();
+		handleMenuInput();
 	}
 	else
 	{
@@ -155,11 +154,11 @@ void Game::draw(RenderWindow * window)
 	}
 }
 
-void Game::drawMenu(RenderWindow * window)
+void Game::drawMenu()
 {
 	if (!viewingScores)
 	{
-		loadMainMenu(window);
+		loadMainMenu();
 	}
 	for (int i = 0; i < nrOfMenuOptions; i++)
 	{
@@ -167,7 +166,7 @@ void Game::drawMenu(RenderWindow * window)
 	}
 }
 
-void Game::handleMenuInput(RenderWindow * window)
+void Game::handleMenuInput()
 {
 	if (Keyboard::isKeyPressed(Keyboard::Up) && event.text.unicode == Keyboard::Up)
 	{
@@ -187,7 +186,7 @@ void Game::handleMenuInput(RenderWindow * window)
 			menu[selectedMenu].setFillColor(Color(Color::Red));
 		}
 	}
-	else if (Keyboard::isKeyPressed(Keyboard::Return) || event.text.unicode == Keyboard::Return)
+	else if (Keyboard::isKeyPressed(Keyboard::Return))
 	{
 		switch (selectedMenu)
 		{
@@ -226,12 +225,11 @@ void Game::handleMenuInput(RenderWindow * window)
 			{
 				viewingScores = true;
 				importHighScores("Score/scores.txt", 3);
-				loadMainMenu(window);
+				loadMainMenu();
 			}
 			break;
 		}
 		case 3: {
-			cout << "times entered " << endl;
 			if (viewingScores)
 			{
 				viewingScores = false;
