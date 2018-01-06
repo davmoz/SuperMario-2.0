@@ -14,13 +14,12 @@ private:
 	Vector2f velocity;
 	bool isMovingRight;
 	bool isJumping;
+	float gravity;
+	float jumpHeight;
 public:
-	Character(const string TileLocation, const IntRect tilePositionInFile, Vector2f position, const Vector2f velocity);
+	Character(const string TileLocation, const IntRect tilePositionInFile, Vector2f position, const Vector2f velocity, const float gravity, const float jumpheight);
 	Character();
 	virtual ~Character();
-
-	const float gravity = 0.4f;
-	const float jumpHeight = 16.0f;
 
 	void moveLeft(bool trulyMoving = true);
 	void moveRight(bool trulyMoving = true);

@@ -4,7 +4,7 @@
 Game::Game(RenderWindow *window)
 {
 	this->window = window;
-	collision = new Collision;
+	collision = new Collision(HighScoreFileLocation, tileFileLocation, coordMapLocation);
 	menuFont.loadFromFile("Fonts/Super Mario Bros.ttf");
 	gamePaused = true;
 	gameOver = false;
@@ -31,7 +31,6 @@ Game::~Game()
 
 void Game::runGame(Clock *clock)
 {
-	//audio.themeMusicPlay();
 	float totaltime = 0.0f;
 
 	while (window->isOpen())
@@ -44,10 +43,7 @@ void Game::runGame(Clock *clock)
 		{
 			if (event.type == Event::Closed)
 				window->close();
-			if (viewingRegistrationPage)
-			{
-				registerPlayerName();
-			}
+			
 			if (Keyboard::isKeyPressed(Keyboard::Escape) && event.key.code == Keyboard::Escape && !gameOver)
 			{
 				if (!gamePaused)
@@ -61,10 +57,14 @@ void Game::runGame(Clock *clock)
 					gamePaused = false;
 				}
 			}
-			else if (Keyboard::isKeyPressed(Keyboard::Space) && event.key.code == Keyboard::Space)
+			else if (Keyboard::isKeyPressed(Keyboard::Space) && event.key.code == Keyboard::Space && !gamePaused)
 			{
 				collision->jump();
 				audio.jumpMusicPlay();
+			}
+			if (viewingRegistrationPage)
+			{
+				registerPlayerName();
 			}
 		}
 		if (!gamePaused)	
@@ -74,13 +74,13 @@ void Game::runGame(Clock *clock)
 			collision->moveEnemy();
 			collision->checkMarioCoinCollision();
 			collision->checkMarioShroomCollision();
-			if (collision->checkMarioEnemyCollision())
+			if (collision->checkMarioHostileCollision())
 			{
 				audio.themeMusicPause();
 				audio.deadMusicPlay();
+				viewingRegistrationPage = true;
 				gameOver = true;
 				gamePaused = true;
-				viewingRegistrationPage = true;
 			}
 			window->clear();
 			draw();
@@ -194,7 +194,7 @@ void Game::handleMenuInput()
 			if (gameOver && !viewingScores && !viewingRegistrationPage) // New Game
 			{
 				delete collision;
-				collision = new Collision;
+				collision = new Collision(HighScoreFileLocation, tileFileLocation, coordMapLocation);
 				gameOver = false;
 				gamePaused = false;
 				audio.themeMusicReset();
@@ -212,7 +212,7 @@ void Game::handleMenuInput()
 			if (!viewingScores && !viewingRegistrationPage)
 			{
 				delete collision;
-				collision = new Collision;
+				collision = new Collision(HighScoreFileLocation, tileFileLocation, coordMapLocation);
 				gameOver = false;
 				gamePaused = false;
 				audio.themeMusicReset();
@@ -224,7 +224,7 @@ void Game::handleMenuInput()
 			if (!viewingRegistrationPage)
 			{
 				viewingScores = true;
-				importHighScores("Score/scores.txt", 3);
+				importHighScores(HighScoreFileLocation, 3);
 				loadMainMenu();
 			}
 			break;
@@ -310,7 +310,7 @@ void Game::registerPlayerName()
 		}
 		else if (event.text.unicode == Keyboard::Return && Keyboard::isKeyPressed(Keyboard::Return))
 		{
-			collision->saveMarioStats(containerString);
+			collision->saveMarioStats(HighScoreFileLocation, containerString);
 		}
 	}
 }

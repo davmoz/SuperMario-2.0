@@ -19,6 +19,7 @@ private:
 	int nrOfEnemies = 0;
 	int nrOfCoins = 0;
 	int nrOfShrooms = 0;
+
 	Audio audio;
 	Mario *mario;
 	Map *map;
@@ -26,10 +27,9 @@ private:
 	Loot * *loot;
 	Shroom* *shroom;
 
-
 	int collisionMap[144][19];
 public:
-	Collision();
+	Collision(const string HighScoreFileLocation, const string tileFileLocation, const string coordMapLocation);
 	virtual ~Collision();
 	void MarioMoveLeft();
 	void MarioMoveRight();
@@ -38,7 +38,8 @@ public:
 	void jump() const;
 	void moveEnemy();
 	Map getMap() const;
-	void loadCollisionMap();
+	void loadCollisionMap(const string coordMapLocation);
+	const float groundheight = 550.0f;
 	template<typename T>
 	void expandArray(T **&arr, int nrOfItems, int &capacity);
 	void updateCharacter(float elapsedTime);
@@ -48,10 +49,10 @@ public:
 	bool collidingWithRight(Vector2f currentPosition);
 	bool collidingWithTop(Vector2f currentPosition);
 	bool collidingWithBottom(Vector2f currentPosition);
-	bool checkMarioEnemyCollision();
+	bool checkMarioHostileCollision();
 	void checkMarioCoinCollision();
 	void checkMarioShroomCollision();
 	void draw(RenderWindow *window, const bool paused);
-	void saveMarioStats(const string name) const;
+	void saveMarioStats(const string HighScoreFileLocation, const string name) const;
 };
 

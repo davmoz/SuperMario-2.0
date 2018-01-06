@@ -1,16 +1,17 @@
 #include "Collision.h"
 
 
-Collision::Collision()
+Collision::Collision(const string HighScoreFileLocation, const string tileFileLocation, const string coordMapLocation)
 {
 	srand(time(0));
 	bool canFly;
-	mario = new Mario("Tiles/main.png", IntRect(0, 32, 16, 16), Vector2f(160.0f, 0), Vector2f(2.0f, 0.0f));
+	float gravity;
+	mario = new Mario(tileFileLocation, IntRect(0, 32, 16, 16), Vector2f(160.0f, 0), Vector2f(2.0f, 0.0f), 0.4f, 16.0f);
 	shroom = new Shroom*[shroomArrayCapacity];
 	enemy = new Enemy*[enemyArrayCapacity];
 	loot = new Loot*[coinArrayCapacity];
 	map = new Map(50, 16, 16.0f, 32.0f);
-	loadCollisionMap();
+	loadCollisionMap(coordMapLocation);
 	IntRect enemyRect;
 	for (int y = 0; y < 19; y++)
 	{
@@ -19,28 +20,30 @@ Collision::Collision()
 			if (collisionMap[x][y] == 9)
 			{
 				expandArray(loot, nrOfCoins, coinArrayCapacity);
-				loot[nrOfCoins] = new Loot("Tiles/main.png", IntRect(0, 64, 16, 16), Vector2f(32.0f * x, 32.0f * y));
+				loot[nrOfCoins] = new Loot(tileFileLocation, IntRect(0, 64, 16, 16), Vector2f(32.0f * x, 32.0f * y));
 				nrOfCoins++;
 			}
 			else if (collisionMap[x][y] == 8)
 			{
-				//fixas senare...........................................................
-				if (rand() % 20 > 9) {
+				if (rand() % 4 > 1) {
+					gravity = 0.4f;
 					canFly = false;
 					enemyRect = IntRect(64, 0, 16, 16);
 				}
-				else {
+				else 
+				{
+					gravity = 0.3f;
 					canFly = true;
 					enemyRect = IntRect(0, 96, 16, 16);
 				}
 
 				expandArray(enemy, nrOfEnemies, enemyArrayCapacity);
-				enemy[nrOfEnemies] = new Enemy("Tiles/main.png", enemyRect, Vector2f(32.0f * x, 32.0f * y), Vector2f(1.0f, 0.0f), canFly);
+				enemy[nrOfEnemies] = new Enemy(tileFileLocation, enemyRect, Vector2f(32.0f * x, 32.0f * y), Vector2f(1.0f, 0.0f), canFly, gravity, 10.0f);
 				nrOfEnemies++;
 			} 
 			else if (collisionMap[x][y] == -1) {
 				expandArray(shroom, nrOfShrooms, shroomArrayCapacity);
-				shroom[nrOfShrooms] = new Shroom("Tiles/main.png", IntRect(0, 16, 16, 16), Vector2f(32.0f * x, 32.0f * y));
+				shroom[nrOfShrooms] = new Shroom(tileFileLocation, IntRect(0, 16, 16, 16), Vector2f(32.0f * x, 32.0f * y));
 				nrOfShrooms++;
 			}
 		}
@@ -56,31 +59,25 @@ Collision::~Collision()
 		if (enemy[i] != nullptr)
 		{
 			delete enemy[i];
-			enemy[i] = nullptr; // Onödigt då arrayen tas bort omedelbart efteråt
 		}
 	}
 	delete[] enemy;
-	enemy = nullptr;
 	for (int i = 0; i < nrOfCoins; i++)
 	{
 		if (loot[i] != nullptr)
 		{
 			delete loot[i];
-			loot[i] = nullptr;
 		}
 	}
 	delete[] loot;
-	loot = nullptr;
 	for (int i = 0; i < nrOfShrooms; i++)
 	{
 		if (shroom[i] != nullptr)
 		{
 			delete shroom[i];
-			shroom[i] = nullptr;
 		}
 	}
 	delete[] shroom;
-	shroom = nullptr;
 }
 
 void Collision::MarioMoveLeft()
@@ -134,10 +131,10 @@ Map Collision::getMap() const
 	return *map;
 }
 
-void Collision::loadCollisionMap()
+void Collision::loadCollisionMap(const string coordMapLocation)
 {
 	ifstream fromFile;
-	fromFile.open("Coords.txt");
+	fromFile.open(coordMapLocation);
 	int x = 0, y = 0, tileType;
 	if (fromFile.is_open())
 	{
@@ -178,7 +175,6 @@ void Collision::expandArray(T **&arr, int nrOfItems, int & capacity)
 		capacity *= 2;
 	}
 }
-// Mario dies cause below height
 void Collision::updateCharacter(float elapsedTime)
 {
 	mario->getPosition();
@@ -189,18 +185,14 @@ void Collision::updateCharacter(float elapsedTime)
 		{
 			enemy[i]->fly(elapsedTime);
 			enemy[i]->updateCharacter(collidingWithTop(enemy[i]->getPosition()), collidingWithBottom(enemy[i]->getPosition()));
-			
 		}
 	}
-	/*if (mario->getSprite().getPosition().y > mario->groundHeight)
-	{
-		cout << "Mario got rekt" << endl;
-	}*/
 } 
 
 void Collision::updateCharTexture(float & elapsedTime, const int tileCoordX, const int tileCoordY, const int nrOfTilesToView, const int tileSize)
 {
 	mario->updateTexture(elapsedTime, tileCoordX, tileCoordY, nrOfTilesToView, tileSize);
+	
 }
 
 bool Collision::isCollidable(Vector2f position) const
@@ -291,7 +283,7 @@ bool Collision::collidingWithBottom(Vector2f currentPosition)
 	return collided;
 }
 
-bool Collision::checkMarioEnemyCollision()
+bool Collision::checkMarioHostileCollision()
 {
 	bool marioIsDead = false;
 	string collisionSide = "";
@@ -311,6 +303,10 @@ bool Collision::checkMarioEnemyCollision()
 				marioIsDead = true;
 			}
 		}
+	}
+	if (mario->getPosition().y > groundheight)
+	{
+		marioIsDead = true;
 	}
 	return marioIsDead;
 }
@@ -378,7 +374,7 @@ void Collision::draw(RenderWindow * window, const bool paused)
 	}
 }
 
-void Collision::saveMarioStats(const string name) const
+void Collision::saveMarioStats(const string HighScoreFileLocation, const string name) const
 {
-	mario->exportScoreToFile(name);
+	mario->exportScoreToFile(HighScoreFileLocation, name);
 }

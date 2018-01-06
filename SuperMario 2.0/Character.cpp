@@ -1,9 +1,11 @@
 #include "Character.h"
 
 
-Character::Character(const string TileLocation, const IntRect tilePositionInFile, Vector2f position, const Vector2f velocity)
+Character::Character(const string TileLocation, const IntRect tilePositionInFile, Vector2f position, const Vector2f velocity, const float gravity, const float jumpheight)
 {
 	this->velocity = velocity;
+	this->gravity = gravity;
+	this->jumpHeight = jumpheight;
 	isJumping = false;
 
 	texture.loadFromFile(TileLocation);
@@ -89,7 +91,6 @@ void Character::updateCharacter(const bool topCollision, const bool botCollision
 	}
 	else if (botCollision)
 	{
-		//appearence.move(0.0f, velocity.y - gravity);
 		isJumping = false;
 		velocity.y = 0.0f;
 		appearence.setPosition(appearence.getPosition().x, appearence.getPosition().y - gravity);

@@ -14,6 +14,8 @@ private:
 	RenderWindow *window;
 	Collision *collision;
 
+
+
 	bool gamePaused;
 	bool gameOver;
 	bool viewingScores;
@@ -27,6 +29,10 @@ private:
 public:
 	Game(RenderWindow *window);
 	Game();
+
+	const string HighScoreFileLocation = "Score/scores.txt";
+	const string tileFileLocation = "Tiles/main.png";
+	const string coordMapLocation = "Coords.txt";
 	virtual ~Game();
 	void runGame(Clock *clock);
 	void update(float &totaltime);

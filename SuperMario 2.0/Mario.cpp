@@ -1,8 +1,8 @@
 #include "Mario.h"
 #include <iostream>
 
-Mario::Mario(const string TileLocation, const IntRect tilePositionInFile, Vector2f position, const Vector2f velocity)
-	: Character(TileLocation, tilePositionInFile, position, velocity)
+Mario::Mario(const string TileLocation, const IntRect tilePositionInFile, Vector2f position, const Vector2f velocity, const float gravity, const float jumpheight)
+	: Character(TileLocation, tilePositionInFile, position, velocity, gravity, jumpheight)
 {
 	coins = 0;
 	marioTime = 0;
@@ -70,7 +70,7 @@ bool Mario::isBoosted()
 	return boosted;
 }
 
-void Mario::exportScoreToFile(const string name)
+void Mario::exportScoreToFile(const string HighScoreFileLocation, const string name)
 {
 	int nrOfScores;
 	string check;
@@ -89,7 +89,7 @@ void Mario::exportScoreToFile(const string name)
 	#####################################################################################################
 	*/
 	ifstream fromFile;
-	fromFile.open("Score/scores.txt");
+	fromFile.open(HighScoreFileLocation);
 	if (fromFile.is_open())
 	{
 		getline(fromFile, check);
@@ -126,7 +126,7 @@ void Mario::exportScoreToFile(const string name)
 	#####################################################################################################
 	*/
 	ofstream toFile;
-	toFile.open("Score/scores.txt");
+	toFile.open(HighScoreFileLocation);
 	if (toFile.is_open())
 	{
 		if (empty)
