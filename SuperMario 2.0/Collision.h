@@ -37,7 +37,6 @@ public:
 	void moveViewRight();
 	void jump() const;
 	void moveEnemy();
-	Map getMap() const;
 	void loadCollisionMap(const string coordMapLocation);
 	const float groundheight = 550.0f;
 	template<typename T>

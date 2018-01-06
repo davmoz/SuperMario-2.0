@@ -126,11 +126,6 @@ void Collision::moveEnemy()
 	}
 }
 
-Map Collision::getMap() const
-{
-	return *map;
-}
-
 void Collision::loadCollisionMap(const string coordMapLocation)
 {
 	ifstream fromFile;
@@ -253,9 +248,9 @@ bool Collision::collidingWithTop(Vector2f currentPosition)
 	float x = currentPosition.x;
 	float y = currentPosition.y;
 
-	Vector2f firstTop = Vector2f(x - quarterOrTile * 2, y - quarterOrTile * 2);
+	Vector2f firstTop = Vector2f(x - quarterOrTile * 1, y - quarterOrTile * 2);
 	Vector2f secondTop = Vector2f(x,					y - quarterOrTile * 2);
-	Vector2f thirdTop = Vector2f(x + quarterOrTile * 2, y - quarterOrTile * 2);
+	Vector2f thirdTop = Vector2f(x + quarterOrTile * 1, y - quarterOrTile * 2);
 
 	if (isCollidable(firstTop) || isCollidable(secondTop) || isCollidable(thirdTop))
 	{
@@ -269,7 +264,7 @@ bool Collision::collidingWithBottom(Vector2f currentPosition)
 	int quarterOrTile = 8;
 	bool collided = false;
 	float x = currentPosition.x;
-	float y = currentPosition.y + 0.5;
+	float y = currentPosition.y;
 
 	Vector2f firstBottom = Vector2f(x + quarterOrTile * 1,	y + quarterOrTile * 2);
 	Vector2f secondBottom = Vector2f(x,						y + quarterOrTile * 2);

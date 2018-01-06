@@ -40,7 +40,6 @@ void Map::moveViewRight(const bool isBoosted)
 		view.move(viewVelocity);
 		background.move(viewVelocity);
 	}
-	
 }
 
 void Map::moveViewLeft(const bool isBoosted)

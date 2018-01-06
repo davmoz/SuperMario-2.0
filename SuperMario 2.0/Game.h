@@ -14,8 +14,6 @@ private:
 	RenderWindow *window;
 	Collision *collision;
 
-
-
 	bool gamePaused;
 	bool gameOver;
 	bool viewingScores;

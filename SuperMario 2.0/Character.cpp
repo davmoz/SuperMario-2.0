@@ -1,7 +1,7 @@
 #include "Character.h"
 
 
-Character::Character(const string TileLocation, const IntRect tilePositionInFile, Vector2f position, const Vector2f velocity, const float gravity, const float jumpheight)
+Character::Character(const string TileLocation, const IntRect tilePositionInFile, const Vector2f position, const Vector2f velocity, const float gravity, const float jumpheight)
 {
 	this->velocity = velocity;
 	this->gravity = gravity;
