@@ -8,6 +8,7 @@ class Character
 {
 private:
 	Texture texture;
+	IntRect tilePosition;
 	Sprite appearence;
 	Vector2f position;
 	Vector2f velocity;
@@ -15,6 +16,7 @@ private:
 	bool isJumping;
 	float gravity;
 	float jumpHeight;
+	Clock clock;
 public:
 	Character(const string TileLocation, const IntRect tilePositionInFile, const Vector2f position, const Vector2f velocity, const float gravity, const float jumpheight);
 	Character();
@@ -25,7 +27,7 @@ public:
 	void jump();
 	void doubleVelocityX(const bool isBoosted);
 	void updateCharacter(const bool topCollision, const bool botCollision);
-	void updateTexture(float &elapsedTime, const int tileCoordX, const int tileCoordY, const int nrOfTilesToView, const int tileSize);
+	void updateTexture(int nrOfTilesToView);
 	
 	string collidesWithChar(const Character & otherChar);
 	Sprite getSprite() const;

@@ -14,11 +14,11 @@ Enemy::Enemy() : Character()
 
 }
 
-void Enemy::fly(float elapsedTime)
+void Enemy::fly()
 {
 	if (canFly) 
 	{
-		if (elapsedTime > 0.9f)
+		if (rand() % 101 > 99)
 		{
 			jump();
 		}
@@ -39,11 +39,11 @@ void Enemy::move(const bool collidedWithRight, const bool collidedWithLeft)
 	}
 	if (this->collidedWithRight)
 	{
-		moveLeft();
+		moveLeft(false);
 	}
 	else if (this->collidedWithLeft)
 	{
-		moveRight();
+		moveRight(false);
 	}
 }
 

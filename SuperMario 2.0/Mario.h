@@ -14,7 +14,7 @@ private:
 	int boostTime;
 	Font font;
 	Text coinsTaken, timeSpent, enemiesKilled;
-	Clock clock;
+	Clock marioClock;
 public:
 	Mario(const string TileLocation, const IntRect tilePositionInFile, const string fontFileLocation, const Vector2f position, const Vector2f velocity, const float gravity, const float jumpheight);
 	virtual ~Mario();

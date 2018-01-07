@@ -38,8 +38,8 @@ public:
 	const float groundheight = 550.0f;
 	template<typename T>
 	void expandArray(T **&arr, int nrOfItems, int &capacity);
-	void updateCharacter(float elapsedTime);
-	void updateCharTexture(float & elapsedTime, const int tileCoordX, const int tileCoordY, const int nrOfTilesToView, const int tileSize);
+	void updateCharacter();
+	void updateCharTexture(const int nrOfTilesToView);
 	bool isCollidable(Vector2f position) const;
 	bool collidingWithLeft(Vector2f currentPosition);
 	bool collidingWithRight(Vector2f currentPosition);

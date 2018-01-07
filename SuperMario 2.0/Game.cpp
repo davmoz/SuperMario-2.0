@@ -6,7 +6,7 @@ Game::Game(RenderWindow *window)
 	this->window = window;
 	collision = new Collision(HighScoreFileLocation, tileFileLocation, fontFileLocation, coordMapLocation);
 	menuFont.loadFromFile(fontFileLocation);
-	gamePaused = true;
+	gamePaused = false;
 	gameOver = false;
 	viewingScores = false;
 	viewingRegistrationPage = false;
@@ -29,13 +29,12 @@ Game::~Game()
 	delete collision;
 }
 
-void Game::runGame(Clock *clock)
+void Game::runGame()
 {
-	float totaltime = 0.0f;
-
+	srand(time(0));
+	audio.themeMusicPlay();
 	while (window->isOpen())
 	{
-		totaltime += clock->restart().asSeconds(); 
 		
 		window->setFramerateLimit(90);
 		
@@ -73,8 +72,8 @@ void Game::runGame(Clock *clock)
 		}
 		if (!gamePaused)	
 		{
-			update(totaltime);
-			collision->updateCharacter(totaltime);
+			update();
+			collision->updateCharacter();
 			collision->moveEnemy();
 			collision->checkMarioLootCollision();
 			if (collision->checkMarioHostileCollision())
@@ -100,19 +99,19 @@ void Game::runGame(Clock *clock)
 	}
 }
 
-void Game::update(float &totaltime)
+void Game::update()
 {
 	if (Keyboard::isKeyPressed(Keyboard::Right))
 	{
 		collision->MarioMoveRight();
 		collision->moveViewRight();
-		collision->updateCharTexture(totaltime, 0, 32, 3, 16);
+		collision->updateCharTexture(3);
 	}
 	else if (Keyboard::isKeyPressed(Keyboard::Left))
 	{
 		collision->MarioMoveLeft();
 		collision->moveViewLeft();
-		collision->updateCharTexture(totaltime, 0, 32, 3, 16);
+		collision->updateCharTexture(3);
 	}
 }
 

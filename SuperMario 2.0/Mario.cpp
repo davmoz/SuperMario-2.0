@@ -25,10 +25,10 @@ void Mario::updateAndDrawCoinsAndTime(RenderWindow * window, const bool paused)
 
 	if (!paused)
 	{
-		if (clock.getElapsedTime().asSeconds() > 1.0f)
+		if (marioClock.getElapsedTime().asSeconds() > 1.0f)
 		{
 			marioTime++;
-			clock.restart();
+			marioClock.restart();
 		}
 	}
 	if (boosted)

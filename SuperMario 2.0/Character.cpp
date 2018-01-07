@@ -6,6 +6,7 @@ Character::Character(const string TileLocation, const IntRect tilePositionInFile
 	this->velocity = velocity;
 	this->gravity = gravity;
 	this->jumpHeight = jumpheight;
+	this->tilePosition = tilePositionInFile;
 	isJumping = false;
 
 	texture.loadFromFile(TileLocation);
@@ -100,39 +101,38 @@ void Character::updateCharacter(const bool topCollision, const bool botCollision
 	}
 }
 
-void Character::updateTexture(float & elapsedTime, const int tileCoordX, const int tileCoordY, const int nrOfTilesToView, const int tileSize)
+void Character::updateTexture(int nrOfTilesToView)
 {
 	float leftRectPos = appearence.getTextureRect().left;
-	if (elapsedTime > 0.09f)
+	if (clock.getElapsedTime().asSeconds() > 0.09f)
 	{
 		if (isMovingRight)
 		{
-			if (leftRectPos > nrOfTilesToView * tileSize)
+			if (leftRectPos > nrOfTilesToView * tilePosition.width)
 			{
-				appearence.setTextureRect(IntRect(tileCoordX, tileCoordY, tileSize, tileSize));
+				appearence.setTextureRect(tilePosition);
 				appearence.setScale(2, 2);
 			}
 			else
 			{
-				appearence.setTextureRect(IntRect(leftRectPos + tileSize, tileCoordY, tileSize, tileSize));
+				appearence.setTextureRect(IntRect(leftRectPos + tilePosition.width, tilePosition.top, tilePosition.width, tilePosition.height));
 				appearence.setScale(2, 2);
 			}
 		}
 		else
 		{
-			if (leftRectPos > nrOfTilesToView * tileSize)
+			if (leftRectPos > nrOfTilesToView * tilePosition.width)
 			{
-				appearence.setTextureRect(IntRect(tileCoordX, tileCoordY, tileSize, tileSize));
+				appearence.setTextureRect(tilePosition);
 				appearence.setScale(2 * (-1), 2);
 			}
 			else
 			{
-				appearence.setTextureRect(IntRect(leftRectPos + tileSize, tileCoordY, tileSize, tileSize));
+				appearence.setTextureRect(IntRect(leftRectPos + tilePosition.width, tilePosition.top, tilePosition.width, tilePosition.height));
 				appearence.setScale(2 * (-1), 2);
 			}
 		}
-		
-		elapsedTime = 0;
+		clock.restart().asSeconds();
 	}
 }
 

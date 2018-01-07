@@ -34,8 +34,8 @@ public:
 	const string fontFileLocation = "Fonts/Super Mario Bros.ttf";
 
 	virtual ~Game();
-	void runGame(Clock *clock);
-	void update(float &totaltime);
+	void runGame();
+	void update();
 	void loadMainMenu();
 	void draw();
 	void drawMenu();

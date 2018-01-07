@@ -163,7 +163,7 @@ void Collision::expandArray(T **&arr, int nrOfItems, int & capacity)
 		capacity *= 2;
 	}
 }
-void Collision::updateCharacter(float elapsedTime)
+void Collision::updateCharacter()
 {
 	mario->getPosition();
 	mario->updateCharacter(collidingWithTop(mario->getPosition()), collidingWithBottom(mario->getPosition()));
@@ -171,15 +171,16 @@ void Collision::updateCharacter(float elapsedTime)
 	{
 		if (enemy[i] != nullptr)
 		{
-			enemy[i]->fly(elapsedTime);
+			enemy[i]->fly();
+			enemy[i]->updateTexture(-1);
 			enemy[i]->updateCharacter(collidingWithTop(enemy[i]->getPosition()), collidingWithBottom(enemy[i]->getPosition()));
 		}
 	}
 } 
 
-void Collision::updateCharTexture(float & elapsedTime, const int tileCoordX, const int tileCoordY, const int nrOfTilesToView, const int tileSize)
+void Collision::updateCharTexture(const int nrOfTilesToView)
 {
-	mario->updateTexture(elapsedTime, tileCoordX, tileCoordY, nrOfTilesToView, tileSize);
+	mario->updateTexture(nrOfTilesToView);
 }
 
 bool Collision::isCollidable(Vector2f position) const
