@@ -8,8 +8,10 @@ class Loot
 private:
 	Texture texture;
 	Sprite appearence;
+	bool coin;
 public:
-	Loot(const string TileLocation, const IntRect tilePositionInFile, Vector2f position);
+	Loot(const string TileLocation, const IntRect tilePositionInFile, const Vector2f position, const bool isCoin);
 	~Loot();
-	Sprite getCoinSprite() const;
+	Sprite getLootSprite() const;
+	bool isCoin() const;
 };

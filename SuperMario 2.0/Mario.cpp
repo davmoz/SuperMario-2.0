@@ -1,14 +1,15 @@
 #include "Mario.h"
 #include <iostream>
 
-Mario::Mario(const string TileLocation, const IntRect tilePositionInFile, Vector2f position, const Vector2f velocity, const float gravity, const float jumpheight)
+Mario::Mario(const string TileLocation, const IntRect tilePositionInFile, const string fontFileLocation, const Vector2f position, const Vector2f velocity, const float gravity, const float jumpheight)
 	: Character(TileLocation, tilePositionInFile, position, velocity, gravity, jumpheight)
 {
 	coins = 0;
 	marioTime = 0;
 	boostTime = 0;
+	enemies = 0;
 	boosted = false;
-	font.loadFromFile("Fonts/Super Mario Bros.ttf");
+	font.loadFromFile(fontFileLocation);
 }
 
 Mario::~Mario()
@@ -16,10 +17,11 @@ Mario::~Mario()
 
 }
 
-void Mario::drawCoinsAndTime(RenderWindow * window, const bool paused)
+void Mario::updateAndDrawCoinsAndTime(RenderWindow * window, const bool paused)
 {
 	timeSpent.setFont(font);
 	coinsTaken.setFont(font);
+	enemiesKilled.setFont(font);
 
 	if (!paused)
 	{
@@ -40,15 +42,23 @@ void Mario::drawCoinsAndTime(RenderWindow * window, const bool paused)
 	
 	timeSpent.setString("TIME: " + to_string(marioTime));
 	coinsTaken.setString("$: " + to_string(coins));
-	coinsTaken.setPosition(getPosition().x, 0);
+	enemiesKilled.setString("Enemies: " + to_string(enemies));
 	timeSpent.setPosition(getPosition().x - 150, 0);
+	coinsTaken.setPosition(getPosition().x, 0);
+	enemiesKilled.setPosition(getPosition().x + 100, 0);
 	window->draw(timeSpent);
 	window->draw(coinsTaken);
+	window->draw(enemiesKilled);
 }
 
 void Mario::increaseCoins()
 {
 	coins++;
+}
+
+void Mario::increaseEnemiesKilled()
+{
+	enemies++;
 }
 
 void Mario::changeMarioVelocityX(const bool effected)
@@ -79,7 +89,7 @@ void Mario::exportScoreToFile(const string HighScoreFileLocation, const string n
 	string *playerNames = nullptr;
 	int *playerTimes = nullptr;
 	int *playerCoins = nullptr;
-	int *coinsPerSecond = nullptr;
+	int *enemiesKilled = nullptr;
 	/*
 	READ FROM FILE
 	#####################################################################################################
@@ -105,14 +115,14 @@ void Mario::exportScoreToFile(const string HighScoreFileLocation, const string n
 			playerNames = new string[nrOfScores + 1];
 			playerTimes = new int[nrOfScores + 1];
 			playerCoins = new int[nrOfScores + 1];
-			coinsPerSecond = new int[nrOfScores + 1];
+			enemiesKilled = new int[nrOfScores + 1];
 
 			for (int i = 0; i < nrOfScores; i++)
 			{
 				fromFile >> playerNames[i];
 				fromFile >> playerTimes[i];
 				fromFile >> playerCoins[i];
-				fromFile >> coinsPerSecond[i];
+				fromFile >> enemiesKilled[i];
 			}
 		}
 		fromFile.close();
@@ -135,16 +145,16 @@ void Mario::exportScoreToFile(const string HighScoreFileLocation, const string n
 			toFile << name << endl;
 			toFile << marioTime << endl;
 			toFile << coins << endl;
-			toFile << coins / (double)marioTime;
+			toFile << enemies;
 		}
 		else
 		{
 			playerNames[nrOfScores] = name;
 			playerTimes[nrOfScores] = marioTime;
 			playerCoins[nrOfScores] = coins;
-			coinsPerSecond[nrOfScores] = coins / (double)marioTime;
+			enemiesKilled[nrOfScores] = enemies;
 			// Sorting the list before writing to file
-			sortScoreList(playerNames, playerTimes, playerCoins, coinsPerSecond, nrOfScores + 1);
+			sortScoreList(playerNames, playerTimes, playerCoins, enemiesKilled, nrOfScores + 1);
 			
 			toFile << nrOfScores + 1 << endl;
 			for (int i = 0; i < nrOfScores + 1; i++)
@@ -152,7 +162,7 @@ void Mario::exportScoreToFile(const string HighScoreFileLocation, const string n
 				toFile << playerNames[i] << endl;
 				toFile << playerTimes[i] << endl;
 				toFile << playerCoins[i] << endl;
-				toFile << coinsPerSecond[i] << endl;
+				toFile << enemiesKilled[i] << endl;
 			}
 		}
 	}
@@ -160,40 +170,41 @@ void Mario::exportScoreToFile(const string HighScoreFileLocation, const string n
 	delete[] playerNames;
 	delete[] playerCoins;
 	delete[] playerTimes;
-	delete[] coinsPerSecond;
+	delete[] enemiesKilled;
 }
 
-void Mario::sortScoreList(string playerNames[], int times[], int coins[], int coinsPerSecond[], int nrOfScores)
+void Mario::sortScoreList(string playerNames[], int times[], int coins[], int enemiesKilled[], int nrOfScores)
 {
-	int greatestCoinPerSecond = 0;
-
+	
+	int posOfBest = 0;
 	string tempName;
 	int tempCoin;
 	int tempTime;
-	int tempCoinsPerSecond;
+	int tempenemiesKilled;
 
 	for (int i = 0; i < nrOfScores; i++)
 	{
+		posOfBest = i;
 		for (int k = i + 1; k < nrOfScores; k++)
 		{
-			if (coinsPerSecond[k] > coinsPerSecond[i])
+			if ((enemiesKilled[k] + coins[k]) > (enemiesKilled[i] + coins[i]))
 			{
-				greatestCoinPerSecond = k;
+				posOfBest = k;
 			}
 		}
 		tempName = playerNames[i];
 		tempTime = times[i];
 		tempCoin = coins[i];
-		tempCoinsPerSecond = coinsPerSecond[i];
+		tempenemiesKilled = enemiesKilled[i];
 
-		playerNames[i] = playerNames[greatestCoinPerSecond];
-		times[i] = times[greatestCoinPerSecond];
-		coins[i] = coins[greatestCoinPerSecond];
-		coinsPerSecond[i] = coinsPerSecond[greatestCoinPerSecond];
+		playerNames[i] = playerNames[posOfBest];
+		times[i] = times[posOfBest];
+		coins[i] = coins[posOfBest];
+		enemiesKilled[i] = enemiesKilled[posOfBest];
 
-		playerNames[greatestCoinPerSecond] = tempName;
-		times[greatestCoinPerSecond] = tempTime;
-		coins[greatestCoinPerSecond] = tempCoin;
-		coinsPerSecond[greatestCoinPerSecond] = tempCoinsPerSecond;
+		playerNames[posOfBest] = tempName;
+		times[posOfBest] = tempTime;
+		coins[posOfBest] = tempCoin;
+		enemiesKilled[posOfBest] = tempenemiesKilled;
 	}
 }

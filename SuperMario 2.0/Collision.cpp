@@ -1,27 +1,32 @@
 #include "Collision.h"
 
 
-Collision::Collision(const string HighScoreFileLocation, const string tileFileLocation, const string coordMapLocation)
+Collision::Collision(const string HighScoreFileLocation, const string tileFileLocation, const string fontFileLocation, const string coordMapLocation)
 {
 	srand(time(0));
 	bool canFly;
 	float gravity;
-	mario = new Mario(tileFileLocation, IntRect(0, 32, 16, 16), Vector2f(160.0f, 0), Vector2f(2.0f, 0.0f), 0.4f, 16.0f);
-	shroom = new Shroom*[shroomArrayCapacity];
+	mario = new Mario(tileFileLocation, IntRect(0, 32, 16, 16), fontFileLocation, Vector2f(160.0f, 0), Vector2f(2.0f, 0.0f), 0.4f, 16.0f);
 	enemy = new Enemy*[enemyArrayCapacity];
-	loot = new Loot*[coinArrayCapacity];
-	map = new Map(50, 16, 16.0f, 32.0f);
+	loot = new Loot*[lootArrayCapacity];
+	map = new Map(50, 16, 16.0f, 32.0f, coordMapLocation, tileFileLocation);
 	loadCollisionMap(coordMapLocation);
 	IntRect enemyRect;
+	
 	for (int y = 0; y < 19; y++)
 	{
 		for (int x = 0; x < 144; x++)
 		{
-			if (collisionMap[x][y] == 9)
+			if (collisionMap[x][y] == -1)
 			{
-				expandArray(loot, nrOfCoins, coinArrayCapacity);
-				loot[nrOfCoins] = new Loot(tileFileLocation, IntRect(0, 64, 16, 16), Vector2f(32.0f * x, 32.0f * y));
-				nrOfCoins++;
+				expandArray(loot, nrOfLoot, lootArrayCapacity);
+				loot[nrOfLoot] = new Loot(tileFileLocation, IntRect(0, 64, 16, 16), Vector2f(32.0f * x, 32.0f * y), true);
+				nrOfLoot++;
+			}
+			else if (collisionMap[x][y] == 9) {
+				expandArray(loot, nrOfLoot, lootArrayCapacity);
+				loot[nrOfLoot] = new Loot(tileFileLocation, IntRect(0, 16, 16, 16), Vector2f(32.0f * x, 32.0f * y), false);
+				nrOfLoot++;
 			}
 			else if (collisionMap[x][y] == 8)
 			{
@@ -41,11 +46,7 @@ Collision::Collision(const string HighScoreFileLocation, const string tileFileLo
 				enemy[nrOfEnemies] = new Enemy(tileFileLocation, enemyRect, Vector2f(32.0f * x, 32.0f * y), Vector2f(1.0f, 0.0f), canFly, gravity, 10.0f);
 				nrOfEnemies++;
 			} 
-			else if (collisionMap[x][y] == -1) {
-				expandArray(shroom, nrOfShrooms, shroomArrayCapacity);
-				shroom[nrOfShrooms] = new Shroom(tileFileLocation, IntRect(0, 16, 16, 16), Vector2f(32.0f * x, 32.0f * y));
-				nrOfShrooms++;
-			}
+			
 		}
 	}
 }
@@ -62,7 +63,7 @@ Collision::~Collision()
 		}
 	}
 	delete[] enemy;
-	for (int i = 0; i < nrOfCoins; i++)
+	for (int i = 0; i < nrOfLoot; i++)
 	{
 		if (loot[i] != nullptr)
 		{
@@ -70,14 +71,6 @@ Collision::~Collision()
 		}
 	}
 	delete[] loot;
-	for (int i = 0; i < nrOfShrooms; i++)
-	{
-		if (shroom[i] != nullptr)
-		{
-			delete shroom[i];
-		}
-	}
-	delete[] shroom;
 }
 
 void Collision::MarioMoveLeft()
@@ -121,7 +114,7 @@ void Collision::moveEnemy()
 	{
 		if (enemy[i] != nullptr)
 		{
-			enemy[i]->autoMove(collidingWithRight(enemy[i]->getPosition()), collidingWithLeft(enemy[i]->getPosition()));
+			enemy[i]->move(collidingWithRight(enemy[i]->getPosition()), collidingWithLeft(enemy[i]->getPosition()));
 		}
 	}
 }
@@ -187,7 +180,6 @@ void Collision::updateCharacter(float elapsedTime)
 void Collision::updateCharTexture(float & elapsedTime, const int tileCoordX, const int tileCoordY, const int nrOfTilesToView, const int tileSize)
 {
 	mario->updateTexture(elapsedTime, tileCoordX, tileCoordY, nrOfTilesToView, tileSize);
-	
 }
 
 bool Collision::isCollidable(Vector2f position) const
@@ -290,6 +282,7 @@ bool Collision::checkMarioHostileCollision()
 			if (collisionSide == "BOTTOM")
 			{
 				audio.stompMusicPlay();
+				mario->increaseEnemiesKilled();
 				delete enemy[i];
 				enemy[i] = nullptr;
 			}
@@ -306,38 +299,42 @@ bool Collision::checkMarioHostileCollision()
 	return marioIsDead;
 }
 
-void Collision::checkMarioCoinCollision()
+void Collision::checkMarioLootCollision()
 {
-	for (int i = 0; i < nrOfCoins; i++)
+	for (int i = 0; i < nrOfLoot; i++)
 	{
 		if (loot[i] != nullptr)
 		{
-			if (mario->getSprite().getGlobalBounds().intersects(loot[i]->getCoinSprite().getGlobalBounds()))
+			if (mario->getSprite().getGlobalBounds().intersects(loot[i]->getLootSprite().getGlobalBounds()))
 			{
-				audio.coinMusicPlay();
+				if (loot[i]->isCoin())
+				{
+					audio.coinMusicPlay();
+					mario->increaseCoins();
+				}
+				else
+				{
+					audio.shroomMusicPlay();
+					mario->changeMarioVelocityX(true);
+				}
+				
 				delete loot[i];
 				loot[i] = nullptr;
-				mario->increaseCoins();
 			}
 		}
 	}
 }
 
-void Collision::checkMarioShroomCollision()
+bool Collision::checkMarioFinishCollision()
 {
-	for (int i = 0; i < nrOfShrooms; i++)
+	bool finished = false;
+	int xPos = (mario->getPosition().x / 32.0f) + 1;
+	int yPos = mario->getPosition().y / 32.0f;
+	if (collisionMap[xPos][yPos] == -4)
 	{
-		if (shroom[i] != nullptr)
-		{
-			if (mario->getSprite().getGlobalBounds().intersects(shroom[i]->getShroomSprite().getGlobalBounds()))
-			{
-				delete shroom[i];
-				shroom[i] = nullptr;
-				audio.shroomMusicPlay();
-				mario->changeMarioVelocityX(true);
-			}
-		}
+		finished = true;
 	}
+	return finished;
 }
 
 void Collision::draw(RenderWindow * window, const bool paused)
@@ -345,7 +342,7 @@ void Collision::draw(RenderWindow * window, const bool paused)
 	window->draw(*map);
 	mario->drawCharacter(window);
 
-	mario->drawCoinsAndTime(window, paused);
+	mario->updateAndDrawCoinsAndTime(window, paused);
 	for (int i = 0; i < nrOfEnemies; i++)
 	{
 		if (enemy[i] != nullptr)
@@ -353,18 +350,11 @@ void Collision::draw(RenderWindow * window, const bool paused)
 			enemy[i]->drawCharacter(window);
 		}
 	}
-	for (int i = 0; i < nrOfCoins; i++)
+	for (int i = 0; i < nrOfLoot; i++)
 	{
 		if (loot[i] != nullptr)
 		{
-			window->draw(loot[i]->getCoinSprite());
-		}
-	}
-	for (int i = 0; i < nrOfShrooms; i++)
-	{
-		if (shroom[i] != nullptr)
-		{
-			window->draw(shroom[i]->getShroomSprite());
+			window->draw(loot[i]->getLootSprite());
 		}
 	}
 }

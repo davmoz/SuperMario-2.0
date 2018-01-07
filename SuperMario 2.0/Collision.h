@@ -1,12 +1,12 @@
 #pragma once
 #include <SFML/Graphics.hpp>
+#include <iostream>
 #include <fstream>
 #include <ctime>
 #include "Mario.h"
 #include "Enemy.h"
 #include "Map.h"
 #include "Loot.h"
-#include "Shroom.h"
 #include "Audio.h"
 
 using namespace sf;
@@ -14,22 +14,19 @@ class Collision
 {
 private:
 	int enemyArrayCapacity = 20;
-	int coinArrayCapacity = 20;
-	int shroomArrayCapacity = 20;
+	int lootArrayCapacity = 20;
 	int nrOfEnemies = 0;
-	int nrOfCoins = 0;
-	int nrOfShrooms = 0;
+	int nrOfLoot = 0;
 
 	Audio audio;
 	Mario *mario;
 	Map *map;
 	Enemy* *enemy;
 	Loot * *loot;
-	Shroom* *shroom;
 
 	int collisionMap[144][19];
 public:
-	Collision(const string HighScoreFileLocation, const string tileFileLocation, const string coordMapLocation);
+	Collision(const string HighScoreFileLocation, const string tileFileLocation, const string fontFileLocation, const string coordMapLocation);
 	virtual ~Collision();
 	void MarioMoveLeft();
 	void MarioMoveRight();
@@ -49,8 +46,8 @@ public:
 	bool collidingWithTop(Vector2f currentPosition);
 	bool collidingWithBottom(Vector2f currentPosition);
 	bool checkMarioHostileCollision();
-	void checkMarioCoinCollision();
-	void checkMarioShroomCollision();
+	void checkMarioLootCollision();
+	bool checkMarioFinishCollision();
 	void draw(RenderWindow *window, const bool paused);
 	void saveMarioStats(const string HighScoreFileLocation, const string name) const;
 };

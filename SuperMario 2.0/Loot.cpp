@@ -2,7 +2,7 @@
 
 
 
-Loot::Loot(const string TileLocation, const IntRect tilePositionInFile, Vector2f position)
+Loot::Loot(const string TileLocation, const IntRect tilePositionInFile, const Vector2f position, const bool isCoin)
 {
 	texture.loadFromFile(TileLocation);
 	appearence.setTexture(texture);
@@ -10,6 +10,7 @@ Loot::Loot(const string TileLocation, const IntRect tilePositionInFile, Vector2f
 	appearence.setTextureRect(tilePositionInFile);
 	appearence.setPosition(position);
 	appearence.scale(2, 2);
+	this->coin = isCoin;
 }
 
 Loot::~Loot()
@@ -17,7 +18,12 @@ Loot::~Loot()
 
 }
 
-Sprite Loot::getCoinSprite() const
+Sprite Loot::getLootSprite() const
 {
 	return appearence;
+}
+
+bool Loot::isCoin() const
+{
+	return coin;
 }

@@ -10,6 +10,7 @@ Audio::Audio()
 	shroomSound.openFromFile("Music/shroom.wav");
 	stompSound.openFromFile("Music/stomp.wav");
 	mainTheme.openFromFile("Music/maintheme.ogg");
+	finishSound.openFromFile("Music/finish.wav");
 }
 
 
@@ -56,4 +57,14 @@ void Audio::coinMusicPlay()
 void Audio::stompMusicPlay()
 {
 	stompSound.play();
+}
+
+void Audio::finishMusicPlay()
+{
+	finishSound.play();
+}
+
+void Audio::finishMusicPause()
+{
+	finishSound.pause();
 }

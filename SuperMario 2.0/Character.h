@@ -26,7 +26,7 @@ public:
 	void doubleVelocityX(const bool isBoosted);
 	void updateCharacter(const bool topCollision, const bool botCollision);
 	void updateTexture(float &elapsedTime, const int tileCoordX, const int tileCoordY, const int nrOfTilesToView, const int tileSize);
-	void autoMove(const bool collidedWithRight, const bool collidedWithLeft);
+	
 	string collidesWithChar(const Character & otherChar);
 	Sprite getSprite() const;
 	Vector2f getPosition() const;

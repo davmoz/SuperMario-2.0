@@ -17,12 +17,12 @@ private:
 	Texture backgroundTexture;
 	float tileTextureDimension;
 public:
-	Map(int width, int height, float tileTextureDimension, float tileWorldDimension);
+	Map(const int width, const int height, const float tileTextureDimension, const float tileWorldDimension, const string mapFileLocation, const string tileFileLocation);
 	Map();
 	virtual ~Map();
 	void moveViewRight(const bool isBoosted);
 	void moveViewLeft(const bool isBoosted);
 	void addTilesToVertexArray(const int x, const int y, Vector2f position);
-	void importMapFromFile();
+	void importMapFromFile(const string mapFileLocation);
 	void draw(RenderTarget& target, RenderStates states) const;
 };

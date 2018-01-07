@@ -1,7 +1,7 @@
 #include "Map.h"
 
 
-Map::Map(int width, int height, float tileTextureDimension, float tileWorldDimension)
+Map::Map(const int width, const int height, const float tileTextureDimension, const float tileWorldDimension, const string mapFileLocation, const string tileFileLocation)
 {
 	view.setSize(sf::Vector2f(900, 600));
 	view.setCenter(sf::Vector2f(450, 300));
@@ -10,12 +10,12 @@ Map::Map(int width, int height, float tileTextureDimension, float tileWorldDimen
 	viewVelocity = Vector2f(2.0f, 0.0f);
 	this->tileTextureDimension = tileTextureDimension;
 	this->tileWorldDimension = tileWorldDimension;
-	tileSet.loadFromFile("Tiles/main.png");
+	tileSet.loadFromFile(tileFileLocation);
 	backgroundTexture.loadFromFile("Tiles/Mario_BG.JPG");
 	background.setTexture(backgroundTexture);
 	vertexArray.setPrimitiveType(Quads);
 	vertexArray.resize(width * height * 4);
-	importMapFromFile();
+	importMapFromFile(mapFileLocation);
 }
 
 Map::Map()
@@ -71,10 +71,10 @@ void Map::addTilesToVertexArray(const int x, const int y, Vector2f position)
 		Vector2f(tileTextureDimension * x, tileTextureDimension * y + tileTextureDimension)));
 }
 
-void Map::importMapFromFile()
+void Map::importMapFromFile(const string mapFileLocation)
 {
 	ifstream fromFile;
-	fromFile.open("Coords.txt");
+	fromFile.open(mapFileLocation);
 	int x = 0, y = 0, tileType;
 	if (fromFile.is_open())
 	{
@@ -110,6 +110,22 @@ void Map::importMapFromFile()
 			}
 			case 7: { // Pipe-BottomRight
 				addTilesToVertexArray(3, 1, Vector2f((float)x, (float)y));
+				break;
+			}
+			case -3: {
+				addTilesToVertexArray(1, 6, Vector2f((float)x, (float)y));
+				break;
+			}
+			case -4: {
+				addTilesToVertexArray(2, 6, Vector2f((float)x, (float)y));
+				break;
+			}
+			case -5: {
+				addTilesToVertexArray(3, 6, Vector2f((float)x, (float)y));
+				break;
+			}
+			case -6: {
+				addTilesToVertexArray(4, 6, Vector2f((float)x, (float)y));
 				break;
 			}
 			default:

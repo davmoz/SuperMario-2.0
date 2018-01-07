@@ -5,6 +5,8 @@ Enemy::Enemy(const string TileLocation, const IntRect tilePositionInFile, Vector
 	: Character(TileLocation, tilePositionInFile, position, velocity, gravity, jumpheight)
 {
 	this->canFly = canFly;
+	collidedWithLeft = true;
+	collidedWithRight = false;
 }
 
 Enemy::Enemy() : Character()
@@ -20,6 +22,28 @@ void Enemy::fly(float elapsedTime)
 		{
 			jump();
 		}
+	}
+}
+
+void Enemy::move(const bool collidedWithRight, const bool collidedWithLeft)
+{
+	if (collidedWithRight)
+	{
+		this->collidedWithRight = true;
+		this->collidedWithLeft = false;
+	}
+	else if (collidedWithLeft)
+	{
+		this->collidedWithRight = false;
+		this->collidedWithLeft = true;
+	}
+	if (this->collidedWithRight)
+	{
+		moveLeft();
+	}
+	else if (this->collidedWithLeft)
+	{
+		moveRight();
 	}
 }
 

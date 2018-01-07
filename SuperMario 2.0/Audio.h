@@ -10,6 +10,7 @@ private:
 	Music shroomSound;
 	Music stompSound;
 	Music mainTheme;
+	Music finishSound;
 public:
 	Audio();
 	~Audio();
@@ -21,5 +22,7 @@ public:
 	void shroomMusicPlay();
 	void coinMusicPlay();
 	void stompMusicPlay();
+	void finishMusicPlay();
+	void finishMusicPause();
 };
 

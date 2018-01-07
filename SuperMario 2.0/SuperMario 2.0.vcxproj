@@ -161,7 +161,6 @@
     <ClCompile Include="Loot.cpp" />
     <ClCompile Include="Map.cpp" />
     <ClCompile Include="Mario.cpp" />
-    <ClCompile Include="Shroom.cpp" />
     <ClCompile Include="SuperMario.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">false</ExcludedFromBuild>
@@ -176,7 +175,6 @@
     <ClInclude Include="Loot.h" />
     <ClInclude Include="Map.h" />
     <ClInclude Include="Mario.h" />
-    <ClInclude Include="Shroom.h" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="Coords.txt" />

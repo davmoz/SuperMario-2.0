@@ -28,6 +28,7 @@ Character::~Character()
 
 void Character::moveLeft(bool trulyMoving)
 {
+	
 	appearence.move(-velocity.x, 0.0f);
 	isMovingRight = false;
 	if (trulyMoving)
@@ -42,6 +43,7 @@ void Character::moveLeft(bool trulyMoving)
 
 void Character::moveRight(bool trulyMoving)
 {
+	
 	appearence.move(velocity.x, 0.0f);
 	isMovingRight = true;
 	if (trulyMoving)
@@ -134,18 +136,7 @@ void Character::updateTexture(float & elapsedTime, const int tileCoordX, const i
 	}
 }
 
-void Character::autoMove(const bool collidedWithRight, const bool collidedWithLeft)
-{
-	if (collidedWithRight)
-	{
-		velocity.x *= -1;
-	}
-	else if (collidedWithLeft)
-	{
-		velocity.x *= -1;
-	}
-	appearence.move(velocity);
-}
+
 
 string Character::collidesWithChar(const Character & otherChar)
 {
