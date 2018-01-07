@@ -1,6 +1,5 @@
 #pragma once
 #include <SFML/Graphics.hpp>
-#include <iostream>
 #include <fstream>
 #include <ctime>
 #include "Mario.h"
@@ -13,10 +12,10 @@ using namespace sf;
 class Collision
 {
 private:
-	int enemyArrayCapacity = 20;
-	int lootArrayCapacity = 20;
-	int nrOfEnemies = 0;
-	int nrOfLoot = 0;
+	int enemyArrayCapacity;
+	int lootArrayCapacity;
+	int nrOfEnemies;
+	int nrOfLoot;
 
 	Audio audio;
 	Mario *mario;
@@ -25,9 +24,10 @@ private:
 	Loot * *loot;
 
 	int collisionMap[144][19];
+
 public:
 	Collision(const string HighScoreFileLocation, const string tileFileLocation, const string fontFileLocation, const string coordMapLocation);
-	virtual ~Collision();
+	~Collision();
 	void MarioMoveLeft();
 	void MarioMoveRight();
 	void moveViewLeft();

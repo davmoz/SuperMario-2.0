@@ -17,6 +17,7 @@ private:
 	float gravity;
 	float jumpHeight;
 	Clock clock;
+
 public:
 	Character(const string TileLocation, const IntRect tilePositionInFile, const Vector2f position, const Vector2f velocity, const float gravity, const float jumpheight);
 	Character();

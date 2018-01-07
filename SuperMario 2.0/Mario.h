@@ -15,9 +15,10 @@ private:
 	Font font;
 	Text coinsTaken, timeSpent, enemiesKilled;
 	Clock marioClock;
+
 public:
 	Mario(const string TileLocation, const IntRect tilePositionInFile, const string fontFileLocation, const Vector2f position, const Vector2f velocity, const float gravity, const float jumpheight);
-	virtual ~Mario();
+	~Mario();
 	void updateAndDrawCoinsAndTime(RenderWindow *window, const bool paused);
 	void increaseCoins();
 	void increaseEnemiesKilled();

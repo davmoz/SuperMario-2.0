@@ -159,11 +159,6 @@ void Game::drawMenu()
 	handleMenuInput();
 }
 
-void Game::draw()
-{
-	
-}
-
 void Game::handleMenuInput()
 {
 	if (Keyboard::isKeyPressed(Keyboard::Up) && event.key.code == Keyboard::Up)

@@ -24,20 +24,20 @@ private:
 	Text menu[nrOfMenuOptions];
 	string menuOptions[nrOfMenuOptions] = { "Resume", "Restart", "Highscore", "Quit" };
 	string containerString;
+
 public:
 	Game(RenderWindow *window);
 	Game();
-
+	~Game();
 	const string HighScoreFileLocation = "Score/scores.txt";
 	const string tileFileLocation = "Tiles/main.png";
 	const string coordMapLocation = "Coords.txt";
 	const string fontFileLocation = "Fonts/Super Mario Bros.ttf";
 
-	virtual ~Game();
+	
 	void runGame();
 	void update();
 	void loadMainMenu();
-	void draw();
 	void drawMenu();
 	void handleMenuInput();
 	void importHighScores(const string fileLocation, int NrOfScoresToView);

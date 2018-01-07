@@ -9,6 +9,7 @@ private:
 	Texture texture;
 	Sprite appearence;
 	bool coin;
+
 public:
 	Loot(const string TileLocation, const IntRect tilePositionInFile, const Vector2f position, const bool isCoin);
 	~Loot();

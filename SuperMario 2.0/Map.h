@@ -16,6 +16,7 @@ private:
 	float tileWorldDimension;
 	Texture backgroundTexture;
 	float tileTextureDimension;
+
 public:
 	Map(const int width, const int height, const float tileTextureDimension, const float tileWorldDimension, const string mapFileLocation, const string tileFileLocation);
 	Map();

@@ -3,7 +3,10 @@
 
 Collision::Collision(const string HighScoreFileLocation, const string tileFileLocation, const string fontFileLocation, const string coordMapLocation)
 {
-	srand(time(0));
+	enemyArrayCapacity = 20;
+	lootArrayCapacity = 20;
+	nrOfEnemies = 0;
+	nrOfLoot = 0;
 	bool canFly;
 	float gravity;
 	mario = new Mario(tileFileLocation, IntRect(0, 32, 16, 16), fontFileLocation, Vector2f(160.0f, 0), Vector2f(2.0f, 0.0f), 0.4f, 16.0f);
