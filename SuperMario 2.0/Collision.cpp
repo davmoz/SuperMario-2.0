@@ -1,7 +1,7 @@
 #include "Collision.h"
 
 
-Collision::Collision(const string HighScoreFileLocation, const string tileFileLocation, const string fontFileLocation, const string coordMapLocation)
+Collision::Collision(const string highScoreFileLocation, const string tileFileLocation, const string fontFileLocation, const string coordMapLocation)
 {
 	enemyArrayCapacity = 20;
 	lootArrayCapacity = 20;

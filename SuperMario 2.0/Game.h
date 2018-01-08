@@ -29,10 +29,10 @@ public:
 	Game(RenderWindow *window);
 	Game();
 	~Game();
-	const string HighScoreFileLocation = "Score/scores.txt";
-	const string tileFileLocation = "Tiles/main.png";
-	const string coordMapLocation = "Coords.txt";
-	const string fontFileLocation = "Fonts/Super Mario Bros.ttf";
+	const string HIGHSCOREFILE = "Score/scores.txt";
+	const string TILEFILE = "Tiles/main.png";
+	const string FONTFILE = "Fonts/Super Mario Bros.ttf";
+	const string COORDFILE = "Coords.txt";
 
 	
 	void runGame();

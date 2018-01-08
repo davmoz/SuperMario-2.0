@@ -4,8 +4,8 @@
 Game::Game(RenderWindow *window)
 {
 	this->window = window;
-	collision = new Collision(HighScoreFileLocation, tileFileLocation, fontFileLocation, coordMapLocation);
-	menuFont.loadFromFile(fontFileLocation);
+	collision = new Collision(HIGHSCOREFILE, TILEFILE, FONTFILE, COORDFILE);
+	menuFont.loadFromFile(FONTFILE);
 	gamePaused = false;
 	gameOver = false;
 	viewingScores = false;
@@ -188,7 +188,7 @@ void Game::handleMenuInput()
 			if (gameOver && !viewingScores && !viewingRegistrationPage) 
 			{
 				delete collision;
-				collision = new Collision(HighScoreFileLocation, tileFileLocation, fontFileLocation, coordMapLocation);
+				collision = new Collision(HIGHSCOREFILE, TILEFILE, FONTFILE, COORDFILE);
 				gameOver = false;
 				gamePaused = false;
 				audio.themeMusicReset();
@@ -207,7 +207,7 @@ void Game::handleMenuInput()
 			if (!viewingScores && !viewingRegistrationPage)
 			{
 				delete collision;
-				collision = new Collision(HighScoreFileLocation, tileFileLocation, fontFileLocation, coordMapLocation);
+				collision = new Collision(HIGHSCOREFILE, TILEFILE, FONTFILE, COORDFILE);
 				gameOver = false;
 				gamePaused = false;
 				audio.themeMusicReset();
@@ -220,7 +220,7 @@ void Game::handleMenuInput()
 			if (!viewingRegistrationPage)
 			{
 				viewingScores = true;
-				importHighScores(HighScoreFileLocation, 3);
+				importHighScores(HIGHSCOREFILE, 3);
 				loadMainMenu();
 			}
 			break;
@@ -307,7 +307,7 @@ void Game::registerPlayerName()
 		}
 		else if (event.text.unicode == Keyboard::Return)
 		{
-			collision->saveMarioStats(HighScoreFileLocation, containerString);
+			collision->saveMarioStats(HIGHSCOREFILE, containerString);
 		}
 	}
 }

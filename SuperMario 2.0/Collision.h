@@ -26,7 +26,7 @@ private:
 	int collisionMap[144][19];
 
 public:
-	Collision(const string HighScoreFileLocation, const string tileFileLocation, const string fontFileLocation, const string coordMapLocation);
+	Collision(const string highScoreFileLocation, const string tileFileLocation, const string fontFileLocation, const string coordMapLocation);
 	~Collision();
 	void MarioMoveLeft();
 	void MarioMoveRight();

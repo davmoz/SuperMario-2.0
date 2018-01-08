@@ -11,7 +11,7 @@ private:
 	bool collidedWithRight;
 
 public:
-	Enemy(const string TileLocation, const IntRect tilePositionInFile, Vector2f position, const Vector2f velocity, const bool canFly, const float gravity, const float jumpheight);
+	Enemy(const string TileLocation, const IntRect tilePositionInFile, const Vector2f position, const Vector2f velocity, const bool canFly, const float gravity, const float jumpheight);
 	Enemy();
 	~Enemy();
 	void fly();
