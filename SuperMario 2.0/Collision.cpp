@@ -191,8 +191,10 @@ bool Collision::isCollidable(Vector2f position) const
 	bool collided = false;
 	int xPos = position.x / 32.0f;
 	int yPos = position.y / 32.0f;
-	if (collisionMap[xPos][yPos] != 0 
-		&& collisionMap[xPos][yPos] != 9 
+	if (xPos < 0 || xPos >= 144 || yPos < 0 || yPos >= 19)
+		return false;
+	if (collisionMap[xPos][yPos] != 0
+		&& collisionMap[xPos][yPos] != 9
 		&& collisionMap[xPos][yPos] != 8
 		&& collisionMap[xPos][yPos] != -1)
 	{
@@ -334,6 +336,8 @@ bool Collision::checkMarioFinishCollision()
 	bool finished = false;
 	int xPos = (mario->getPosition().x / 32.0f) + 1;
 	int yPos = mario->getPosition().y / 32.0f;
+	if (xPos < 0 || xPos >= 144 || yPos < 0 || yPos >= 19)
+		return false;
 	if (collisionMap[xPos][yPos] == -4)
 	{
 		finished = true;
