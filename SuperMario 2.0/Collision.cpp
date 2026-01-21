@@ -11,7 +11,9 @@ Collision::Collision(const string highScoreFileLocation, const string tileFileLo
 	float gravity;
 	mario = new Mario(tileFileLocation, IntRect(0, 32, 16, 16), fontFileLocation, Vector2f(160.0f, 0), Vector2f(2.0f, 0.0f), 0.4f, 16.0f);
 	enemy = new Enemy*[enemyArrayCapacity];
+	for (int i = 0; i < enemyArrayCapacity; i++) enemy[i] = nullptr;
 	loot = new Loot*[lootArrayCapacity];
+	for (int i = 0; i < lootArrayCapacity; i++) loot[i] = nullptr;
 	map = new Map(50, 16, 16.0f, 32.0f, coordMapLocation, tileFileLocation);
 	loadCollisionMap(coordMapLocation);
 	IntRect enemyRect;
