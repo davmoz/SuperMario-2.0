@@ -285,7 +285,7 @@ void Game::registerPlayerName()
 	menu[0].setString("");
 	menu[1].setString("Name:");
 	menu[3].setString("Enter");
-	if (Event::TextEntered)
+	if (event.type == Event::TextEntered)
 	{
 		if (event.text.unicode == 32)
 		{
