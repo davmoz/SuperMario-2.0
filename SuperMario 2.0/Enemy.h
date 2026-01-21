@@ -2,7 +2,8 @@
 #include <SFML/Graphics.hpp>
 #include "Character.h"
 #include <ctime>
-using namespace sf;
+#include <string>
+
 class Enemy : public Character
 {
 private:
@@ -11,11 +12,9 @@ private:
 	bool collidedWithRight;
 
 public:
-	Enemy(const string TileLocation, const IntRect tilePositionInFile, const Vector2f position, const Vector2f velocity, const bool canFly, const float gravity, const float jumpheight);
+	Enemy(const std::string TileLocation, const sf::IntRect tilePositionInFile, const sf::Vector2f position, const sf::Vector2f velocity, const bool canFly, const float gravity, const float jumpheight);
 	Enemy();
 	~Enemy();
 	void fly();
 	void move(const bool collidedWithRight, const bool collidedWithLeft);
-	
 };
-

@@ -2,6 +2,9 @@
 #include "Constants.h"
 #include <iostream>
 
+using namespace std;
+using namespace sf;
+
 Mario::Mario(const string TileLocation, const IntRect tilePositionInFile, const string fontFileLocation, const Vector2f position, const Vector2f velocity, const float gravity, const float jumpheight)
 	: Character(TileLocation, tilePositionInFile, position, velocity, gravity, jumpheight)
 {

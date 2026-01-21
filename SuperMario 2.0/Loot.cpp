@@ -1,6 +1,9 @@
 #include "Loot.h"
 #include <iostream>
 
+using namespace std;
+using namespace sf;
+
 
 
 Loot::Loot(const string TileLocation, const IntRect tilePositionInFile, const Vector2f position, const bool isCoin)

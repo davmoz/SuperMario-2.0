@@ -1,9 +1,9 @@
 #pragma once
 #include <SFML/Graphics.hpp>
 #include <fstream>
+#include <string>
 #include "Character.h"
-using namespace sf;
-using namespace std;
+
 class Mario : public Character
 {
 private:
@@ -12,18 +12,18 @@ private:
 	int enemies;
 	bool boosted;
 	int boostTime;
-	Font font;
-	Text coinsTaken, timeSpent, enemiesKilled;
-	Clock marioClock;
+	sf::Font font;
+	sf::Text coinsTaken, timeSpent, enemiesKilled;
+	sf::Clock marioClock;
 
 public:
-	Mario(const string TileLocation, const IntRect tilePositionInFile, const string fontFileLocation, const Vector2f position, const Vector2f velocity, const float gravity, const float jumpheight);
+	Mario(const std::string TileLocation, const sf::IntRect tilePositionInFile, const std::string fontFileLocation, const sf::Vector2f position, const sf::Vector2f velocity, const float gravity, const float jumpheight);
 	~Mario();
-	void updateAndDrawCoinsAndTime(RenderWindow *window, const bool paused);
+	void updateAndDrawCoinsAndTime(sf::RenderWindow *window, const bool paused);
 	void increaseCoins();
 	void increaseEnemiesKilled();
 	void changeMarioVelocityX();
 	bool isBoosted();
-	void exportScoreToFile(const string HighScoreFileLocation, const string name);
-	void sortScoreList(string names[], int times[], int coins[], int coinsPerSecond[], int nrOfScores);
+	void exportScoreToFile(const std::string HighScoreFileLocation, const std::string name);
+	void sortScoreList(std::string names[], int times[], int coins[], int coinsPerSecond[], int nrOfScores);
 };

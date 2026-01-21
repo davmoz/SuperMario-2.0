@@ -1,6 +1,9 @@
 #include "Map.h"
 #include <iostream>
 
+using namespace std;
+using namespace sf;
+
 
 Map::Map(const int width, const int height, const float tileTextureDimension, const float tileWorldDimension, const string mapFileLocation, const string tileFileLocation)
 {

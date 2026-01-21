@@ -2,6 +2,9 @@
 #include "Constants.h"
 #include <iostream>
 
+using namespace std;
+using namespace sf;
+
 
 Character::Character(const string TileLocation, const IntRect tilePositionInFile, const Vector2f position, const Vector2f velocity, const float gravity, const float jumpheight)
 {

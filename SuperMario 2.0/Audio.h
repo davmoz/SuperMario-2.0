@@ -1,16 +1,16 @@
 #pragma once
 #include <SFML/Audio.hpp>
-using namespace sf;
+
 class Audio
 {
 private:
-	Music jumpSound;
-	Music deadSound;
-	Music coinSound;
-	Music shroomSound;
-	Music stompSound;
-	Music mainTheme;
-	Music finishSound;
+	sf::Music jumpSound;
+	sf::Music deadSound;
+	sf::Music coinSound;
+	sf::Music shroomSound;
+	sf::Music stompSound;
+	sf::Music mainTheme;
+	sf::Music finishSound;
 public:
 	Audio();
 	~Audio();
@@ -25,4 +25,3 @@ public:
 	void finishMusicPlay();
 	void finishMusicPause();
 };
-

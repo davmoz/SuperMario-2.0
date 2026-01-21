@@ -1,6 +1,9 @@
 #include "Game.h"
 #include <iostream>
 
+using namespace std;
+using namespace sf;
+
 Game::Game(RenderWindow *window)
 {
 	this->window = window;

@@ -2,24 +2,23 @@
 #include <SFML/Graphics.hpp>
 #include <SFML/System/Clock.hpp>
 #include <string>
-using namespace std;
-using namespace sf;
+
 class Character
 {
 private:
-	Texture texture;
-	IntRect tilePosition;
-	Sprite appearence;
-	Vector2f position;
-	Vector2f velocity;
+	sf::Texture texture;
+	sf::IntRect tilePosition;
+	sf::Sprite appearence;
+	sf::Vector2f position;
+	sf::Vector2f velocity;
 	bool isMovingRight;
 	bool isJumping;
 	float gravity;
 	float jumpHeight;
-	Clock clock;
+	sf::Clock clock;
 
 public:
-	Character(const string TileLocation, const IntRect tilePositionInFile, const Vector2f position, const Vector2f velocity, const float gravity, const float jumpheight);
+	Character(const std::string TileLocation, const sf::IntRect tilePositionInFile, const sf::Vector2f position, const sf::Vector2f velocity, const float gravity, const float jumpheight);
 	Character();
 	virtual ~Character();
 
@@ -29,9 +28,9 @@ public:
 	void doubleVelocityX(const bool isBoosted);
 	void updateCharacter(const bool topCollision, const bool botCollision);
 	void updateTexture(int nrOfTilesToView);
-	
-	string collidesWithChar(const Character & otherChar);
-	Sprite getSprite() const;
-	Vector2f getPosition() const;
-	void drawCharacter(RenderWindow * window);
+
+	std::string collidesWithChar(const Character & otherChar);
+	sf::Sprite getSprite() const;
+	sf::Vector2f getPosition() const;
+	void drawCharacter(sf::RenderWindow * window);
 };

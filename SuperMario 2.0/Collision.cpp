@@ -1,6 +1,8 @@
 #include "Collision.h"
 #include "Constants.h"
 
+using namespace std;
+using namespace sf;
 
 Collision::Collision(const string highScoreFileLocation, const string tileFileLocation, const string fontFileLocation, const string coordMapLocation)
 {
