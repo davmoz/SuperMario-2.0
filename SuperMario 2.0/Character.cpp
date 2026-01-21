@@ -134,7 +134,7 @@ void Character::updateTexture(int nrOfTilesToView)
 				appearence.setScale(2 * (-1), 2);
 			}
 		}
-		clock.restart().asSeconds();
+		clock.restart();
 	}
 }
 
