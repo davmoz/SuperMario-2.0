@@ -52,7 +52,7 @@ void Game::runGame()
 			}
 			if (event.type == Event::Closed)
 				window->close();
-			if (Keyboard::isKeyPressed(Keyboard::Escape) && event.key.code == Keyboard::Escape && !gameOver)
+			if (event.type == Event::KeyPressed && event.key.code == Keyboard::Escape && !gameOver)
 			{
 				if (!gamePaused)
 				{
@@ -65,7 +65,7 @@ void Game::runGame()
 					gamePaused = false;
 				}
 			}
-			else if (Keyboard::isKeyPressed(Keyboard::Space) && event.key.code == Keyboard::Space && !gamePaused)
+			else if (event.type == Event::KeyPressed && event.key.code == Keyboard::Space && !gamePaused)
 			{
 				collision->jump();
 				audio.jumpMusicPlay();
@@ -162,7 +162,7 @@ void Game::drawMenu()
 
 void Game::handleMenuInput()
 {
-	if (Keyboard::isKeyPressed(Keyboard::Up) && event.key.code == Keyboard::Up)
+	if (event.type == Event::KeyPressed && event.key.code == Keyboard::Up)
 	{
 		if (selectedMenu - 1 >= 0)
 		{
@@ -171,7 +171,7 @@ void Game::handleMenuInput()
 			menu[selectedMenu].setFillColor(Color(Color::Red));
 		}
 	}
-	else if (Keyboard::isKeyPressed(Keyboard::Down) && event.key.code == Keyboard::Down)
+	else if (event.type == Event::KeyPressed && event.key.code == Keyboard::Down)
 	{
 		if (selectedMenu + 1 < nrOfMenuOptions)
 		{
@@ -180,7 +180,7 @@ void Game::handleMenuInput()
 			menu[selectedMenu].setFillColor(Color(Color::Red));
 		}
 	}
-	else if (event.key.code == Keyboard::Return && Keyboard::isKeyPressed(Keyboard::Return))
+	else if (event.type == Event::KeyPressed && event.key.code == Keyboard::Return)
 	{
 		switch (selectedMenu)
 		{
