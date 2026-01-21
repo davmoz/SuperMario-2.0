@@ -140,31 +140,28 @@ void Character::updateTexture(int nrOfTilesToView)
 
 string Character::collidesWithChar(const Character & otherChar)
 {
-	if (&otherChar != nullptr)
+	string collided = "";
+	if (appearence.getGlobalBounds().intersects(otherChar.appearence.getGlobalBounds()))
 	{
-		string collided = "";
-		if (appearence.getGlobalBounds().intersects(otherChar.appearence.getGlobalBounds()))
-		{
-			int thisX = appearence.getPosition().x;
-			int thisY = appearence.getPosition().y;
-			int otherX = otherChar.appearence.getPosition().x;
-			int otherY = otherChar.appearence.getPosition().y;
+		int thisX = appearence.getPosition().x;
+		int thisY = appearence.getPosition().y;
+		int otherX = otherChar.appearence.getPosition().x;
+		int otherY = otherChar.appearence.getPosition().y;
 
-			if (thisX >= otherX - 16 && thisX <= otherX + 16 && thisY + 16 >= otherY - 16/* && thisY + 16 <= otherY - 16*/)
-			{
-				collided = "BOTTOM";
-			}
-			else if (thisX - 16 >= otherX && thisX - 16 <= otherX + 16 && thisY >= otherY)
-			{
-				collided = "LEFT";
-			}
-			else if (thisX + 16 >= otherX - 16 && thisX + 16 <= otherX && thisY >= otherY)
-			{
-				collided = "RIGHT";
-			}
+		if (thisX >= otherX - 16 && thisX <= otherX + 16 && thisY + 16 >= otherY - 16)
+		{
+			collided = "BOTTOM";
 		}
-		return collided;
+		else if (thisX - 16 >= otherX && thisX - 16 <= otherX + 16 && thisY >= otherY)
+		{
+			collided = "LEFT";
+		}
+		else if (thisX + 16 >= otherX - 16 && thisX + 16 <= otherX && thisY >= otherY)
+		{
+			collided = "RIGHT";
+		}
 	}
+	return collided;
 }
 
 Sprite Character::getSprite() const
