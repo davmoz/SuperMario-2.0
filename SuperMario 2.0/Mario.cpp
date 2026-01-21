@@ -62,7 +62,7 @@ void Mario::increaseEnemiesKilled()
 	enemies++;
 }
 
-void Mario::changeMarioVelocityX(const bool effected)
+void Mario::changeMarioVelocityX()
 {
 	if (!boosted)
 	{

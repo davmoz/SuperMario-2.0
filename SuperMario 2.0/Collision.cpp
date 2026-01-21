@@ -321,7 +321,7 @@ void Collision::checkMarioLootCollision()
 				else
 				{
 					audio.shroomMusicPlay();
-					mario->changeMarioVelocityX(true);
+					mario->changeMarioVelocityX();
 				}
 				
 				delete loot[i];

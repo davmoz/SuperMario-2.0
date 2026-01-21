@@ -22,7 +22,7 @@ public:
 	void updateAndDrawCoinsAndTime(RenderWindow *window, const bool paused);
 	void increaseCoins();
 	void increaseEnemiesKilled();
-	void changeMarioVelocityX(const bool effected = false);
+	void changeMarioVelocityX();
 	bool isBoosted();
 	void exportScoreToFile(const string HighScoreFileLocation, const string name);
 	void sortScoreList(string names[], int times[], int coins[], int coinsPerSecond[], int nrOfScores);
