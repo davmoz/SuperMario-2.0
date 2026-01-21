@@ -166,10 +166,7 @@ string Character::collidesWithChar(const Character & otherChar)
 
 Sprite Character::getSprite() const
 {
-	if (this != nullptr)
-	{
-		return appearence;
-	}
+	return appearence;
 }
 
 Vector2f Character::getPosition() const
