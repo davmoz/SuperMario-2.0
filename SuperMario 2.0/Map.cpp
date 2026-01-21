@@ -155,5 +155,4 @@ void Map::draw(RenderTarget& target, RenderStates states) const
 	states.texture = &tileSet;
 	target.draw(background, states);
 	target.draw(vertexArray, states);
-	target.setView(view);
 }
