@@ -187,7 +187,7 @@ void Mario::sortScoreList(string playerNames[], int times[], int coins[], int en
 		posOfBest = i;
 		for (int k = i + 1; k < nrOfScores; k++)
 		{
-			if ((enemiesKilled[k] + coins[k]) > (enemiesKilled[i] + coins[i]))
+			if ((enemiesKilled[k] + coins[k]) > (enemiesKilled[posOfBest] + coins[posOfBest]))
 			{
 				posOfBest = k;
 			}
