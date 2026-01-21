@@ -1,4 +1,5 @@
 #include "Collision.h"
+#include "Constants.h"
 
 
 Collision::Collision(const string highScoreFileLocation, const string tileFileLocation, const string fontFileLocation, const string coordMapLocation)
@@ -9,49 +10,49 @@ Collision::Collision(const string highScoreFileLocation, const string tileFileLo
 	nrOfLoot = 0;
 	bool canFly;
 	float gravity;
-	mario = new Mario(tileFileLocation, IntRect(0, 32, 16, 16), fontFileLocation, Vector2f(160.0f, 0), Vector2f(2.0f, 0.0f), 0.4f, 16.0f);
+	mario = new Mario(tileFileLocation, IntRect(0, TILE_SIZE, TILE_TEXTURE_SIZE, TILE_TEXTURE_SIZE), fontFileLocation, Vector2f(160.0f, 0), Vector2f(2.0f, 0.0f), DEFAULT_GRAVITY, DEFAULT_JUMP_HEIGHT);
 	enemy = new Enemy*[enemyArrayCapacity];
 	for (int i = 0; i < enemyArrayCapacity; i++) enemy[i] = nullptr;
 	loot = new Loot*[lootArrayCapacity];
 	for (int i = 0; i < lootArrayCapacity; i++) loot[i] = nullptr;
-	map = new Map(50, 16, 16.0f, 32.0f, coordMapLocation, tileFileLocation);
+	map = new Map(50, TILE_TEXTURE_SIZE, (float)TILE_TEXTURE_SIZE, (float)TILE_SIZE, coordMapLocation, tileFileLocation);
 	loadCollisionMap(coordMapLocation);
 	IntRect enemyRect;
-	
-	for (int y = 0; y < 19; y++)
+
+	for (int y = 0; y < COLLISION_MAP_HEIGHT; y++)
 	{
-		for (int x = 0; x < 144; x++)
+		for (int x = 0; x < COLLISION_MAP_WIDTH; x++)
 		{
 			if (collisionMap[x][y] == -1)
 			{
 				expandArray(loot, nrOfLoot, lootArrayCapacity);
-				loot[nrOfLoot] = new Loot(tileFileLocation, IntRect(0, 64, 16, 16), Vector2f(32.0f * x, 32.0f * y), true);
+				loot[nrOfLoot] = new Loot(tileFileLocation, IntRect(0, 64, TILE_TEXTURE_SIZE, TILE_TEXTURE_SIZE), Vector2f((float)TILE_SIZE * x, (float)TILE_SIZE * y), true);
 				nrOfLoot++;
 			}
 			else if (collisionMap[x][y] == 9) {
 				expandArray(loot, nrOfLoot, lootArrayCapacity);
-				loot[nrOfLoot] = new Loot(tileFileLocation, IntRect(0, 16, 16, 16), Vector2f(32.0f * x, 32.0f * y), false);
+				loot[nrOfLoot] = new Loot(tileFileLocation, IntRect(0, TILE_TEXTURE_SIZE, TILE_TEXTURE_SIZE, TILE_TEXTURE_SIZE), Vector2f((float)TILE_SIZE * x, (float)TILE_SIZE * y), false);
 				nrOfLoot++;
 			}
 			else if (collisionMap[x][y] == 8)
 			{
 				if (rand() % 4 > 1) {
-					gravity = 0.4f;
+					gravity = DEFAULT_GRAVITY;
 					canFly = false;
-					enemyRect = IntRect(64, 0, 16, 16);
+					enemyRect = IntRect(64, 0, TILE_TEXTURE_SIZE, TILE_TEXTURE_SIZE);
 				}
-				else 
+				else
 				{
-					gravity = 0.3f;
+					gravity = FLYING_ENEMY_GRAVITY;
 					canFly = true;
-					enemyRect = IntRect(0, 96, 16, 16);
+					enemyRect = IntRect(0, 96, TILE_TEXTURE_SIZE, TILE_TEXTURE_SIZE);
 				}
 
 				expandArray(enemy, nrOfEnemies, enemyArrayCapacity);
-				enemy[nrOfEnemies] = new Enemy(tileFileLocation, enemyRect, Vector2f(32.0f * x, 32.0f * y), Vector2f(1.0f, 0.0f), canFly, gravity, 10.0f);
+				enemy[nrOfEnemies] = new Enemy(tileFileLocation, enemyRect, Vector2f((float)TILE_SIZE * x, (float)TILE_SIZE * y), Vector2f(1.0f, 0.0f), canFly, gravity, ENEMY_JUMP_HEIGHT);
 				nrOfEnemies++;
-			} 
-			
+			}
+
 		}
 	}
 }
@@ -191,9 +192,9 @@ void Collision::updateCharTexture(const int nrOfTilesToView)
 bool Collision::isCollidable(Vector2f position) const
 {
 	bool collided = false;
-	int xPos = position.x / 32.0f;
-	int yPos = position.y / 32.0f;
-	if (xPos < 0 || xPos >= 144 || yPos < 0 || yPos >= 19)
+	int xPos = position.x / TILE_SIZE;
+	int yPos = position.y / TILE_SIZE;
+	if (xPos < 0 || xPos >= COLLISION_MAP_WIDTH || yPos < 0 || yPos >= COLLISION_MAP_HEIGHT)
 		return false;
 	if (collisionMap[xPos][yPos] != 0
 		&& collisionMap[xPos][yPos] != 9
@@ -207,7 +208,7 @@ bool Collision::isCollidable(Vector2f position) const
 
 bool Collision::collidingWithLeft(Vector2f currentPosition)
 {
-	int quarterOrTile = 8;
+	int quarterOrTile = QUARTER_TILE;
 	bool collided = false;
 	float x = currentPosition.x;
 	float y = currentPosition.y;
@@ -225,7 +226,7 @@ bool Collision::collidingWithLeft(Vector2f currentPosition)
 
 bool Collision::collidingWithRight(Vector2f currentPosition)
 {
-	int quarterOrTile = 8;
+	int quarterOrTile = QUARTER_TILE;
 	bool collided = false;
 	float x = currentPosition.x;
 	float y = currentPosition.y;
@@ -243,7 +244,7 @@ bool Collision::collidingWithRight(Vector2f currentPosition)
 
 bool Collision::collidingWithTop(Vector2f currentPosition)
 {
-	int quarterOrTile = 8;
+	int quarterOrTile = QUARTER_TILE;
 	bool collided = false;
 	float x = currentPosition.x;
 	float y = currentPosition.y;
@@ -261,7 +262,7 @@ bool Collision::collidingWithTop(Vector2f currentPosition)
 
 bool Collision::collidingWithBottom(Vector2f currentPosition)
 {
-	int quarterOrTile = 8;
+	int quarterOrTile = QUARTER_TILE;
 	bool collided = false;
 	float x = currentPosition.x;
 	float y = currentPosition.y;
@@ -336,9 +337,9 @@ void Collision::checkMarioLootCollision()
 bool Collision::checkMarioFinishCollision()
 {
 	bool finished = false;
-	int xPos = (mario->getPosition().x / 32.0f) + 1;
-	int yPos = mario->getPosition().y / 32.0f;
-	if (xPos < 0 || xPos >= 144 || yPos < 0 || yPos >= 19)
+	int xPos = (mario->getPosition().x / TILE_SIZE) + 1;
+	int yPos = mario->getPosition().y / TILE_SIZE;
+	if (xPos < 0 || xPos >= COLLISION_MAP_WIDTH || yPos < 0 || yPos >= COLLISION_MAP_HEIGHT)
 		return false;
 	if (collisionMap[xPos][yPos] == -4)
 	{

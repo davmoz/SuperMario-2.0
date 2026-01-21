@@ -1,4 +1,5 @@
 #include "Character.h"
+#include "Constants.h"
 #include <iostream>
 
 
@@ -56,11 +57,11 @@ void Character::doubleVelocityX(const bool isBoosted)
 {
 	if (isBoosted)
 	{
-		velocity.x += 2.0f;
+		velocity.x += BOOST_VELOCITY_INCREASE;
 	}
 	else if(!isBoosted)
 	{
-		velocity.x -= 2.0f;
+		velocity.x -= BOOST_VELOCITY_INCREASE;
 	}
 }
 
@@ -90,7 +91,7 @@ void Character::updateCharacter(const bool topCollision, const bool botCollision
 void Character::updateTexture(int nrOfTilesToView)
 {
 	float leftRectPos = appearence.getTextureRect().left;
-	if (clock.getElapsedTime().asSeconds() > 0.09f)
+	if (clock.getElapsedTime().asSeconds() > ANIMATION_INTERVAL)
 	{
 		if (isMovingRight)
 		{

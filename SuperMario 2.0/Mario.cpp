@@ -1,4 +1,5 @@
 #include "Mario.h"
+#include "Constants.h"
 #include <iostream>
 
 Mario::Mario(const string TileLocation, const IntRect tilePositionInFile, const string fontFileLocation, const Vector2f position, const Vector2f velocity, const float gravity, const float jumpheight)
@@ -66,13 +67,13 @@ void Mario::changeMarioVelocityX()
 {
 	if (!boosted)
 	{
-		boostTime = marioTime + 10;
+		boostTime = marioTime + BOOST_DURATION;
 		boosted = true;
 		doubleVelocityX(boosted);
 	}
 	else
 	{
-		boostTime += 10;
+		boostTime += BOOST_DURATION;
 	}
 }
 

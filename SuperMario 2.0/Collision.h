@@ -7,6 +7,7 @@
 #include "Map.h"
 #include "Loot.h"
 #include "Audio.h"
+#include "Constants.h"
 
 using namespace sf;
 class Collision
@@ -23,7 +24,7 @@ private:
 	Enemy* *enemy;
 	Loot * *loot;
 
-	int collisionMap[144][19];
+	int collisionMap[COLLISION_MAP_WIDTH][COLLISION_MAP_HEIGHT];
 
 public:
 	Collision(const string highScoreFileLocation, const string tileFileLocation, const string fontFileLocation, const string coordMapLocation);
@@ -35,7 +36,7 @@ public:
 	void jump() const;
 	void moveEnemy();
 	void loadCollisionMap(const string coordMapLocation);
-	const float groundheight = 550.0f;
+	const float groundheight = GROUND_HEIGHT;
 	template<typename T>
 	void expandArray(T **&arr, int nrOfItems, int &capacity);
 	void updateCharacter();
