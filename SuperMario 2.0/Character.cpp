@@ -29,34 +29,18 @@ Character::~Character()
 
 }
 
-void Character::moveLeft(bool trulyMoving)
+void Character::moveLeft(bool updateFacingDirection)
 {
-	
 	appearence.move(-velocity.x, 0.0f);
-	isMovingRight = false;
-	if (trulyMoving)
-	{
+	if (updateFacingDirection)
 		isMovingRight = false;
-	}
-	else
-	{
-		isMovingRight = true;
-	}
 }
 
-void Character::moveRight(bool trulyMoving)
+void Character::moveRight(bool updateFacingDirection)
 {
-	
 	appearence.move(velocity.x, 0.0f);
-	isMovingRight = true;
-	if (trulyMoving)
-	{
+	if (updateFacingDirection)
 		isMovingRight = true;
-	}
-	else
-	{
-		isMovingRight = false;
-	}
 }
 
 void Character::jump()

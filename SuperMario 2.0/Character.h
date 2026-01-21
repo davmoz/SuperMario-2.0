@@ -23,8 +23,8 @@ public:
 	Character();
 	virtual ~Character();
 
-	void moveLeft(bool trulyMoving = true);
-	void moveRight(bool trulyMoving = true);
+	void moveLeft(bool updateFacingDirection = true);
+	void moveRight(bool updateFacingDirection = true);
 	void jump();
 	void doubleVelocityX(const bool isBoosted);
 	void updateCharacter(const bool topCollision, const bool botCollision);
