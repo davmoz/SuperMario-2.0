@@ -1,4 +1,5 @@
 #include "Map.h"
+#include <iostream>
 
 
 Map::Map(const int width, const int height, const float tileTextureDimension, const float tileWorldDimension, const string mapFileLocation, const string tileFileLocation)
@@ -10,8 +11,10 @@ Map::Map(const int width, const int height, const float tileTextureDimension, co
 	viewVelocity = Vector2f(2.0f, 0.0f);
 	this->tileTextureDimension = tileTextureDimension;
 	this->tileWorldDimension = tileWorldDimension;
-	tileSet.loadFromFile(tileFileLocation);
-	backgroundTexture.loadFromFile("Tiles/Mario_BG.JPG");
+	if (!tileSet.loadFromFile(tileFileLocation))
+		std::cerr << "Error: Failed to load tileset from " << tileFileLocation << std::endl;
+	if (!backgroundTexture.loadFromFile("Tiles/Mario_BG.JPG"))
+		std::cerr << "Error: Failed to load background texture from Tiles/Mario_BG.JPG" << std::endl;
 	background.setTexture(backgroundTexture);
 	vertexArray.setPrimitiveType(Quads);
 	vertexArray.resize(width * height * 4);

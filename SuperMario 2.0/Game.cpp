@@ -5,7 +5,8 @@ Game::Game(RenderWindow *window)
 {
 	this->window = window;
 	collision = new Collision(HIGHSCOREFILE, TILEFILE, FONTFILE, COORDFILE);
-	menuFont.loadFromFile(FONTFILE);
+	if (!menuFont.loadFromFile(FONTFILE))
+		std::cerr << "Error: Failed to load font from " << FONTFILE << std::endl;
 	gamePaused = false;
 	gameOver = false;
 	viewingScores = false;

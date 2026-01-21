@@ -1,16 +1,24 @@
 #include "Audio.h"
+#include <iostream>
 
 
 
 Audio::Audio()
 {
-	jumpSound.openFromFile("Music/jump.wav");
-	deadSound.openFromFile("Music/dead.wav");
-	coinSound.openFromFile("Music/coin.wav");
-	shroomSound.openFromFile("Music/shroom.wav");
-	stompSound.openFromFile("Music/stomp.wav");
-	mainTheme.openFromFile("Music/maintheme.ogg");
-	finishSound.openFromFile("Music/finish.wav");
+	if (!jumpSound.openFromFile("Music/jump.wav"))
+		std::cerr << "Error: Failed to load audio from Music/jump.wav" << std::endl;
+	if (!deadSound.openFromFile("Music/dead.wav"))
+		std::cerr << "Error: Failed to load audio from Music/dead.wav" << std::endl;
+	if (!coinSound.openFromFile("Music/coin.wav"))
+		std::cerr << "Error: Failed to load audio from Music/coin.wav" << std::endl;
+	if (!shroomSound.openFromFile("Music/shroom.wav"))
+		std::cerr << "Error: Failed to load audio from Music/shroom.wav" << std::endl;
+	if (!stompSound.openFromFile("Music/stomp.wav"))
+		std::cerr << "Error: Failed to load audio from Music/stomp.wav" << std::endl;
+	if (!mainTheme.openFromFile("Music/maintheme.ogg"))
+		std::cerr << "Error: Failed to load audio from Music/maintheme.ogg" << std::endl;
+	if (!finishSound.openFromFile("Music/finish.wav"))
+		std::cerr << "Error: Failed to load audio from Music/finish.wav" << std::endl;
 }
 
 

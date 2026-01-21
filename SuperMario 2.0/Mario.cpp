@@ -9,7 +9,8 @@ Mario::Mario(const string TileLocation, const IntRect tilePositionInFile, const 
 	boostTime = 0;
 	enemies = 0;
 	boosted = false;
-	font.loadFromFile(fontFileLocation);
+	if (!font.loadFromFile(fontFileLocation))
+		std::cerr << "Error: Failed to load font from " << fontFileLocation << std::endl;
 }
 
 Mario::~Mario()

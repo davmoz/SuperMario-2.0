@@ -1,11 +1,12 @@
 #include "Loot.h"
+#include <iostream>
 
 
 
 Loot::Loot(const string TileLocation, const IntRect tilePositionInFile, const Vector2f position, const bool isCoin)
 {
-	texture.loadFromFile(TileLocation);
-	appearence.setTexture(texture);
+	if (!texture.loadFromFile(TileLocation))
+		std::cerr << "Error: Failed to load texture from " << TileLocation << std::endl;
 	appearence.setTexture(texture);
 	appearence.setTextureRect(tilePositionInFile);
 	appearence.setPosition(position);

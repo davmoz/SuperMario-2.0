@@ -1,4 +1,5 @@
 #include "Character.h"
+#include <iostream>
 
 
 Character::Character(const string TileLocation, const IntRect tilePositionInFile, const Vector2f position, const Vector2f velocity, const float gravity, const float jumpheight)
@@ -9,7 +10,8 @@ Character::Character(const string TileLocation, const IntRect tilePositionInFile
 	this->tilePosition = tilePositionInFile;
 	isJumping = false;
 
-	texture.loadFromFile(TileLocation);
+	if (!texture.loadFromFile(TileLocation))
+		std::cerr << "Error: Failed to load texture from " << TileLocation << std::endl;
 	appearence.setTexture(texture);
 	appearence.setPosition(position);
 	appearence.setTextureRect(tilePositionInFile);
