@@ -118,22 +118,10 @@ void Game::update()
 
 void Game::loadMainMenu()
 {
-	if (gameOver && !viewingScores && !viewingRegistrationPage)
+	if (!viewingScores && !viewingRegistrationPage)
 	{
-		menuOptions[0] = "New Game";
-		menu[0].setString(menuOptions[0]);
-
-		for (int i = 1; i < nrOfMenuOptions; i++)
-		{
-			menu[i].setString(menuOptions[i]);
-		}
-	}
-	else if(!gameOver && !viewingScores && !viewingRegistrationPage)
-	{
-		menuOptions[0] = "Resume";
-		menu[0].setString(menuOptions[0]);
-
-		for (int i = 1; i < nrOfMenuOptions; i++)
+		menuOptions[0] = gameOver ? "New Game" : "Resume";
+		for (int i = 0; i < nrOfMenuOptions; i++)
 		{
 			menu[i].setString(menuOptions[i]);
 		}
