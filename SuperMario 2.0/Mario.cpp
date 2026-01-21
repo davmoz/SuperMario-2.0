@@ -33,7 +33,7 @@ void Mario::updateAndDrawCoinsAndTime(RenderWindow * window, const bool paused)
 	}
 	if (boosted)
 	{
-		if (boostTime == marioTime)
+		if (marioTime >= boostTime)
 		{
 			boosted = false;
 			doubleVelocityX(boosted);
