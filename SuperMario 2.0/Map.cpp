@@ -78,10 +78,8 @@ void Map::importMapFromFile(const string mapFileLocation)
 	int x = 0, y = 0, tileType;
 	if (fromFile.is_open())
 	{
-		while (!fromFile.eof())
+		while (fromFile >> tileType)
 		{
-			fromFile >> tileType;
-			fromFile.ignore();
 			switch (tileType)
 			{
 			case 1: { // Floor
@@ -129,16 +127,17 @@ void Map::importMapFromFile(const string mapFileLocation)
 				break;
 			}
 			default:
-
 				break;
 			}
 			if (fromFile.peek() == '\n')
 			{
+				fromFile.ignore();
 				x = 0;
 				y++;
 			}
 			else
 			{
+				fromFile.ignore();
 				x++;
 			}
 		}

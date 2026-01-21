@@ -129,18 +129,18 @@ void Collision::loadCollisionMap(const string coordMapLocation)
 	int x = 0, y = 0, tileType;
 	if (fromFile.is_open())
 	{
-		while (!fromFile.eof())
+		while (fromFile >> tileType)
 		{
-			fromFile >> tileType;
-			fromFile.ignore();
 			collisionMap[x][y] = tileType;
 			if (fromFile.peek() == '\n')
 			{
+				fromFile.ignore();
 				x = 0;
 				y++;
 			}
 			else
 			{
+				fromFile.ignore();
 				x++;
 			}
 		}
