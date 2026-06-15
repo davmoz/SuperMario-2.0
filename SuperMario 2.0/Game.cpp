@@ -4,6 +4,21 @@
 using namespace std;
 using namespace sf;
 
+namespace
+{
+	// Draw one line of text horizontally centred at (cx, y) in the current view.
+	void drawCenteredLine(RenderWindow *window, const Font &font, const string &str,
+		unsigned int size, Color color, float cx, float y)
+	{
+		Text text(str, font, size);
+		text.setFillColor(color);
+		FloatRect b = text.getLocalBounds();
+		text.setOrigin(b.left + b.width / 2.0f, b.top + b.height / 2.0f);
+		text.setPosition(cx, y);
+		window->draw(text);
+	}
+}
+
 Game::Game(RenderWindow *window)
 {
 	this->window = window;
@@ -11,6 +26,8 @@ Game::Game(RenderWindow *window)
 	window->setTitle("Super Mario 2.0 - " + levelManager.currentName());
 	if (!menuFont.loadFromFile(FONTFILE))
 		std::cerr << "Error: Failed to load font from " << FONTFILE << std::endl;
+	if (!titleFont.loadFromFile(TITLEFONTFILE))
+		titleFont = menuFont; // fall back to the menu font if the title face is missing
 	for (int i = 0; i < nrOfMenuOptions; i++)
 	{
 		menu[i].setFont(menuFont);
@@ -43,6 +60,8 @@ void Game::runGame()
 				window->close();
 			switch (state)
 			{
+			case GameState::Title:
+			case GameState::Story:        handleIntroEvent();   break;
 			case GameState::Playing:      handlePlayingEvent(); break;
 			case GameState::Registration: registerPlayerName();  break;
 			default:                      handleMenuInput();      break; // any menu
@@ -50,7 +69,15 @@ void Game::runGame()
 		}
 
 		// Render exactly once per frame, driven by the current state.
-		if (state == GameState::Playing)
+		if (state == GameState::Title)
+		{
+			drawTitle();
+		}
+		else if (state == GameState::Story)
+		{
+			drawStory();
+		}
+		else if (state == GameState::Playing)
 		{
 			update();
 			collision->updateCharacter();
@@ -334,5 +361,55 @@ void Game::drawRegistration()
 	window->clear();
 	for (int i = 0; i < nrOfMenuOptions; i++)
 		window->draw(menu[i]);
+	window->display();
+}
+
+// Enter/Space advances through the title and intro screens into the game.
+void Game::handleIntroEvent()
+{
+	if (event.type != Event::KeyPressed)
+		return;
+	if (event.key.code == Keyboard::Return || event.key.code == Keyboard::Space)
+	{
+		if (state == GameState::Title)
+			state = GameState::Story;
+		else // Story
+			state = GameState::Playing;
+	}
+}
+
+void Game::drawTitle()
+{
+	window->setView(window->getDefaultView());
+	const float cx = window->getDefaultView().getCenter().x;
+	window->clear(Color(40, 70, 160)); // sky blue
+	drawCenteredLine(window, titleFont, "SUPER MARIO", 64, Color::White, cx, 170);
+	drawCenteredLine(window, titleFont, "2.0", 64, Color(255, 210, 60), cx, 250);
+	drawCenteredLine(window, menuFont, "Press ENTER to start", 28, Color::White, cx, 380);
+	drawCenteredLine(window, menuFont, "Arrows: Move    Space: Jump    Esc: Pause", 18,
+		Color(200, 200, 200), cx, 430);
+	window->display();
+}
+
+void Game::drawStory()
+{
+	window->setView(window->getDefaultView());
+	const float cx = window->getDefaultView().getCenter().x;
+	window->clear(Color(10, 10, 30)); // night
+	const char *lines[] = {
+		"The Star of the Mushroom Kingdom",
+		"has been stolen by Bowser's army,",
+		"its light scattered across three worlds.",
+		"",
+		"Run, jump and stomp every foe",
+		"in your path to win it back!"
+	};
+	float y = 130;
+	for (const char *line : lines)
+	{
+		drawCenteredLine(window, menuFont, line, 26, Color::White, cx, y);
+		y += 48;
+	}
+	drawCenteredLine(window, menuFont, "Press ENTER to begin", 24, Color(255, 210, 60), cx, 470);
 	window->display();
 }
