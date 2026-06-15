@@ -5,6 +5,7 @@
 #include <string>
 #include "Collision.h"
 #include "Audio.h"
+#include "LevelManager.h"
 
 const int nrOfMenuOptions = 4;
 const std::size_t MAX_NAME_LENGTH = 12;
@@ -28,6 +29,7 @@ private:
 	sf::RenderWindow *window = nullptr;
 	Collision *collision = nullptr;
 
+	LevelManager levelManager;
 	GameState state = GameState::Playing;
 	GameState highscoreReturnState = GameState::PauseMenu; // where "Back" returns
 
@@ -45,11 +47,12 @@ public:
 	const std::string HIGHSCOREFILE = "Score/scores.txt";
 	const std::string TILEFILE = "Tiles/main.png";
 	const std::string FONTFILE = "Fonts/gomarice_no_continue.ttf";
-	const std::string COORDFILE = "Coords.txt";
 
 	void runGame();
 	void update();
+	void loadLevel(bool carryStats);
 	void resetLevel();
+	void advanceLevel();
 	void enterMenu(GameState menuState);
 	void positionMenu();
 	void drawMenu();

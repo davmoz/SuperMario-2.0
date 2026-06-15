@@ -51,4 +51,6 @@ public:
 	bool checkMarioFinishCollision();
 	void draw(sf::RenderWindow *window, const bool paused);
 	void saveMarioStats(const std::string HighScoreFileLocation, const std::string name) const;
+	PlayerStats getMarioStats() const;
+	void applyMarioStats(const PlayerStats &stats);
 };

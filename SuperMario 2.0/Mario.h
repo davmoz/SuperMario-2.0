@@ -4,6 +4,14 @@
 #include <string>
 #include "Character.h"
 
+// Run totals that persist across levels (carried from one level to the next).
+struct PlayerStats
+{
+	int coins = 0;
+	int time = 0;
+	int enemies = 0;
+};
+
 class Mario : public Character
 {
 private:
@@ -24,6 +32,8 @@ public:
 	void increaseEnemiesKilled();
 	void changeMarioVelocityX();
 	bool isBoosted();
+	PlayerStats getStats() const;
+	void applyStats(const PlayerStats &stats);
 	void exportScoreToFile(const std::string HighScoreFileLocation, const std::string name);
 	void sortScoreList(std::string names[], int times[], int coins[], int coinsPerSecond[], int nrOfScores);
 };

@@ -85,6 +85,18 @@ bool Mario::isBoosted()
 	return boosted;
 }
 
+PlayerStats Mario::getStats() const
+{
+	return { coins, marioTime, enemies };
+}
+
+void Mario::applyStats(const PlayerStats &stats)
+{
+	coins = stats.coins;
+	marioTime = stats.time;
+	enemies = stats.enemies;
+}
+
 void Mario::exportScoreToFile(const string HighScoreFileLocation, const string name)
 {
 	int nrOfScores;

@@ -18,7 +18,7 @@ Collision::Collision(const string highScoreFileLocation, const string tileFileLo
 	for (int i = 0; i < enemyArrayCapacity; i++) enemy[i] = nullptr;
 	loot = new Loot*[lootArrayCapacity];
 	for (int i = 0; i < lootArrayCapacity; i++) loot[i] = nullptr;
-	map = new Map(50, TILE_TEXTURE_SIZE, (float)TILE_TEXTURE_SIZE, (float)TILE_SIZE, coordMapLocation, tileFileLocation);
+	map = new Map(COLLISION_MAP_WIDTH, COLLISION_MAP_HEIGHT, (float)TILE_TEXTURE_SIZE, (float)TILE_SIZE, coordMapLocation, tileFileLocation);
 	loadCollisionMap(coordMapLocation);
 	IntRect enemyRect;
 
@@ -130,6 +130,10 @@ void Collision::moveEnemy()
 
 void Collision::loadCollisionMap(const string coordMapLocation)
 {
+	for (int i = 0; i < COLLISION_MAP_WIDTH; i++)
+		for (int j = 0; j < COLLISION_MAP_HEIGHT; j++)
+			collisionMap[i][j] = tiles::Empty;
+
 	ifstream fromFile;
 	fromFile.open(coordMapLocation);
 	int x = 0, y = 0, tileType;
@@ -137,7 +141,8 @@ void Collision::loadCollisionMap(const string coordMapLocation)
 	{
 		while (fromFile >> tileType)
 		{
-			collisionMap[x][y] = tileType;
+			if (x < COLLISION_MAP_WIDTH && y < COLLISION_MAP_HEIGHT)
+				collisionMap[x][y] = tileType;   // ignore anything past the grid
 			if (fromFile.peek() == '\n')
 			{
 				fromFile.ignore();
@@ -366,4 +371,14 @@ void Collision::draw(RenderWindow * window, const bool paused)
 void Collision::saveMarioStats(const string HighScoreFileLocation, const string name) const
 {
 	mario->exportScoreToFile(HighScoreFileLocation, name);
+}
+
+PlayerStats Collision::getMarioStats() const
+{
+	return mario->getStats();
+}
+
+void Collision::applyMarioStats(const PlayerStats &stats)
+{
+	mario->applyStats(stats);
 }
