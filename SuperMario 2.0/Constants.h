@@ -19,6 +19,9 @@ const float ENEMY_JUMP_HEIGHT = 10.0f;
 const int BOOST_DURATION = 10;
 const float BOOST_VELOCITY_INCREASE = 2.0f;
 
+// Lives
+const int STARTING_LIVES = 3;
+
 // Ground
 const float GROUND_HEIGHT = 550.0f;
 

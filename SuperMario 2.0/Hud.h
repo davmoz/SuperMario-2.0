@@ -10,6 +10,7 @@ class Hud
 private:
 	sf::Font font;
 	sf::Text levelText;
+	sf::Text livesText;
 	sf::Text coinsText;
 	sf::Text timeText;
 	sf::Text enemiesText;
@@ -17,5 +18,5 @@ private:
 public:
 	Hud() = default;
 	void load(const std::string &fontFileLocation); // call once before draw()
-	void draw(sf::RenderWindow *window, const PlayerStats &stats, const std::string &levelName);
+	void draw(sf::RenderWindow *window, const PlayerStats &stats, const std::string &levelName, int lives);
 };

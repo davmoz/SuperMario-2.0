@@ -35,6 +35,7 @@ private:
 
 	LevelManager levelManager;
 	Hud hud;
+	int lives = STARTING_LIVES;
 	PlayerStats finalStats; // snapshot of the run when the game is beaten
 	GameState state = GameState::Title;
 	GameState highscoreReturnState = GameState::PauseMenu; // where "Back" returns
