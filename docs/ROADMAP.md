@@ -19,7 +19,7 @@ Status: ☐ todo · ◐ in progress · ☑ done
 - ☑ **`LevelManager`** — load multiple level data files; explicit per-level dimensions; level progression.
 
 ## Phase 3 — Core systems
-- ☐ **Lives + checkpoints + respawn.**
+- ◐ **Lives + respawn** (checkpoints pending)
 - ☐ **Score + persistent screen-space HUD + level-complete results screen.**
 - ☐ **Mario power-state machine** (small / big / star invincibility).
 - ☐ **Power-up system** (coin, speed, grow, fire, star, 1-up) via polymorphic `onCollect`.

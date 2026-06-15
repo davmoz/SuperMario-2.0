@@ -91,10 +91,21 @@ void Game::runGame()
 			collision->checkMarioLootCollision();
 			if (collision->checkMarioHostileCollision())
 			{
-				audio.themeMusicPause();
 				audio.deadMusicPlay();
-				playerName.clear();
-				state = GameState::Registration;
+				lives--;
+				if (lives > 0)
+				{
+					// Respawn: replay the current level, keeping the run totals.
+					loadLevel(true);
+					audio.themeMusicReset();
+					audio.themeMusicPlay();
+				}
+				else
+				{
+					audio.themeMusicPause();
+					playerName.clear();
+					state = GameState::Registration;
+				}
 			}
 			else if (collision->checkMarioFinishCollision())
 			{
@@ -114,7 +125,7 @@ void Game::runGame()
 			}
 			window->clear();
 			collision->draw(window);
-			hud.draw(window, collision->getMarioStats(), levelManager.currentName());
+			hud.draw(window, collision->getMarioStats(), levelManager.currentName(), lives);
 			window->display();
 		}
 		else if (state == GameState::Victory)
@@ -181,6 +192,7 @@ void Game::loadLevel(bool carryStats)
 // New Game / Restart: start over from the first level.
 void Game::resetLevel()
 {
+	lives = STARTING_LIVES;
 	levelManager.reset();
 	loadLevel(false);
 	audio.themeMusicReset();
