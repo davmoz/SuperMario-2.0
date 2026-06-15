@@ -7,6 +7,7 @@
 #include "Audio.h"
 
 const int nrOfMenuOptions = 4;
+const std::size_t MAX_NAME_LENGTH = 12;
 
 class Game
 {
@@ -25,7 +26,8 @@ private:
 	int selectedMenu;
 	sf::Text menu[nrOfMenuOptions];
 	std::string menuOptions[nrOfMenuOptions] = { "Resume", "Restart", "Highscore", "Quit" };
-	std::string containerString;
+	std::string containerString; // scratch buffer for high-score formatting
+	std::string playerName;      // name being typed on the registration screen
 
 public:
 	Game(sf::RenderWindow *window);

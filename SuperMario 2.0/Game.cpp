@@ -47,7 +47,7 @@ void Game::runGame()
 			{
 				registerPlayerName();
 			}
-			if (gamePaused)
+			else if (gamePaused)
 			{
 				drawMenu();
 			}
@@ -245,59 +245,82 @@ void Game::importHighScores(const string fileLocation, int NrOfScoresToView)
 	fromFile.open(fileLocation);
 	if (fromFile.is_open())
 	{
-		int nrOfScores;
+		int nrOfScores = 0;
 		string name;
 		int time = 0;
 		int coins = 0;
 		int enemiesKilled = 0;
-		fromFile >> nrOfScores;
-		
-		for (int i = 0; i < NrOfScoresToView; i++)
+		if (!(fromFile >> nrOfScores) || nrOfScores < 0)
+			nrOfScores = 0;
+
+		// Show at most the available scores AND at most what fits on screen.
+		int toShow = nrOfScores < NrOfScoresToView ? nrOfScores : NrOfScoresToView;
+		int i = 0;
+		for (; i < toShow; i++)
 		{
-			fromFile >> name;
-			fromFile >> time;
-			fromFile.ignore();
-			fromFile >> coins;
-			fromFile.ignore();
-			fromFile >> enemiesKilled;
-			fromFile.ignore();
-			containerString = to_string(i + 1) + ". Name: " + name + " Coins: " + to_string(coins) + " time: " + to_string(time) + " Enemies: " + to_string(enemiesKilled);
+			if (!(fromFile >> name >> time >> coins >> enemiesKilled))
+				break; // file shorter than its header claimed
+			containerString = to_string(i + 1) + ". " + name + "  $:" + to_string(coins) + "  Time:" + to_string(time) + "  Enemies:" + to_string(enemiesKilled);
 			menu[i].setString(containerString);
 		}
-		containerString = "Back";
-		menu[NrOfScoresToView].setString(containerString);
+		// Clear any leftover slots so stale/garbage text is never shown.
+		for (; i < NrOfScoresToView; i++)
+			menu[i].setString(i == 0 ? "No scores yet" : "");
+		menu[NrOfScoresToView].setString("Back");
 	}
 	fromFile.close();
 }
 
 void Game::registerPlayerName()
 {
-	menu[0].setString("");
-	menu[1].setString("Name:");
-	menu[3].setString("Enter");
+	// Text entry. event.text.unicode is a Unicode code point, NOT an
+	// sf::Keyboard::Key scancode, so it must be compared against character
+	// values (8 = backspace) and printable ASCII ranges.
 	if (event.type == Event::TextEntered)
 	{
-		if (event.text.unicode == 32)
+		const sf::Uint32 c = event.text.unicode;
+		if (c == 8) // backspace
 		{
-
+			if (!playerName.empty())
+				playerName.pop_back();
 		}
-		else if (event.text.unicode == Keyboard::BackSpace)
+		else if ((c >= 'A' && c <= 'Z') || (c >= 'a' && c <= 'z') || (c >= '0' && c <= '9'))
 		{
-			containerString = containerString.substr(0, containerString.length() - 1);
-			menu[2].setString(containerString);
-		}
-		else if (event.text.unicode == Keyboard::Up || event.text.unicode == Keyboard::Down || event.text.unicode == Keyboard::Left || event.text.unicode == Keyboard::Right)
-		{
-
-		}
-		else if ((event.text.unicode >= 48 && event.text.unicode <= 57 && event.text.unicode != Keyboard::Space) || (event.text.unicode >= 65 && event.text.unicode <= 122))
-		{
-			containerString += (char)(event.text.unicode);
-			menu[2].setString(containerString);
-		}
-		else if (event.text.unicode == Keyboard::Return)
-		{
-			collision->saveMarioStats(HIGHSCOREFILE, containerString);
+			if (playerName.size() < MAX_NAME_LENGTH)
+				playerName += static_cast<char>(c);
 		}
 	}
+	// Enter confirms. Detected via KeyPressed (reliable) rather than the
+	// carriage-return character, which some platforms don't emit as text.
+	else if (event.type == Event::KeyPressed && event.key.code == Keyboard::Return)
+	{
+		if (!playerName.empty())
+		{
+			collision->saveMarioStats(HIGHSCOREFILE, playerName);
+			playerName.clear();
+			viewingRegistrationPage = false;
+			selectedMenu = 0; // hand control back to the game-over menu
+			for (int i = 0; i < nrOfMenuOptions; i++)
+				menu[i].setFillColor(Color::White);
+			menu[0].setFillColor(Color::Red);
+			return; // menu renders next frame
+		}
+	}
+
+	// Render the registration screen.
+	menu[0].setString("ENTER YOUR NAME");
+	menu[1].setString(playerName.empty() ? "_" : playerName);
+	menu[2].setString("");
+	menu[3].setString("Press ENTER to save");
+	for (int i = 0; i < nrOfMenuOptions; i++)
+	{
+		menu[i].setFillColor(i == 1 ? Color::Yellow : Color::White);
+		menu[i].setPosition(window->getView().getCenter().x, window->getView().getCenter().y / 2.5f * (i + 1));
+		menu[i].setOrigin(menu[i].getLocalBounds().left + menu[i].getLocalBounds().width / 2.0f,
+			menu[i].getLocalBounds().top + menu[i].getLocalBounds().height / 2.0f);
+	}
+	window->clear();
+	for (int i = 0; i < nrOfMenuOptions; i++)
+		window->draw(menu[i]);
+	window->display();
 }
