@@ -27,7 +27,7 @@ private:
 	int collisionMap[COLLISION_MAP_WIDTH][COLLISION_MAP_HEIGHT];
 
 public:
-	Collision(const std::string highScoreFileLocation, const std::string tileFileLocation, const std::string fontFileLocation, const std::string coordMapLocation);
+	Collision(const std::string tileFileLocation, const std::string coordMapLocation);
 	~Collision();
 	void MarioMoveLeft();
 	void MarioMoveRight();
@@ -49,7 +49,7 @@ public:
 	bool checkMarioHostileCollision();
 	void checkMarioLootCollision();
 	bool checkMarioFinishCollision();
-	void draw(sf::RenderWindow *window, const bool paused);
+	void draw(sf::RenderWindow *window);
 	void saveMarioStats(const std::string HighScoreFileLocation, const std::string name) const;
 	PlayerStats getMarioStats() const;
 	void applyMarioStats(const PlayerStats &stats);

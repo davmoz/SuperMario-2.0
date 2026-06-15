@@ -22,8 +22,9 @@ namespace
 Game::Game(RenderWindow *window)
 {
 	this->window = window;
-	collision = new Collision(HIGHSCOREFILE, TILEFILE, FONTFILE, levelManager.currentFile());
+	collision = new Collision(TILEFILE, levelManager.currentFile());
 	window->setTitle("Super Mario 2.0 - " + levelManager.currentName());
+	hud.load(FONTFILE);
 	if (!menuFont.loadFromFile(FONTFILE))
 		std::cerr << "Error: Failed to load font from " << FONTFILE << std::endl;
 	if (!titleFont.loadFromFile(TITLEFONTFILE))
@@ -63,6 +64,11 @@ void Game::runGame()
 			case GameState::Title:
 			case GameState::Story:        handleIntroEvent();   break;
 			case GameState::Playing:      handlePlayingEvent(); break;
+			case GameState::Victory:
+				if (event.type == Event::KeyPressed &&
+					(event.key.code == Keyboard::Return || event.key.code == Keyboard::Space))
+					state = GameState::Registration; // go record the winning run
+				break;
 			case GameState::Registration: registerPlayerName();  break;
 			default:                      handleMenuInput();      break; // any menu
 			}
@@ -98,16 +104,22 @@ void Game::runGame()
 				}
 				else
 				{
-					// Finished the final level: record the run.
+					// Beat the final level: celebrate, then record the run.
 					audio.themeMusicPause();
 					audio.finishMusicPlay();
+					finalStats = collision->getMarioStats();
 					playerName.clear();
-					state = GameState::Registration;
+					state = GameState::Victory;
 				}
 			}
 			window->clear();
-			collision->draw(window, false);
+			collision->draw(window);
+			hud.draw(window, collision->getMarioStats(), levelManager.currentName());
 			window->display();
+		}
+		else if (state == GameState::Victory)
+		{
+			drawVictory();
 		}
 		else if (state == GameState::Registration)
 		{
@@ -160,7 +172,7 @@ void Game::loadLevel(bool carryStats)
 	if (carryStats)
 		carried = collision->getMarioStats();
 	delete collision;
-	collision = new Collision(HIGHSCOREFILE, TILEFILE, FONTFILE, levelManager.currentFile());
+	collision = new Collision(TILEFILE, levelManager.currentFile());
 	if (carryStats)
 		collision->applyMarioStats(carried);
 	window->setTitle("Super Mario 2.0 - " + levelManager.currentName());
@@ -411,5 +423,19 @@ void Game::drawStory()
 		y += 48;
 	}
 	drawCenteredLine(window, menuFont, "Press ENTER to begin", 24, Color(255, 210, 60), cx, 470);
+	window->display();
+}
+
+void Game::drawVictory()
+{
+	window->setView(window->getDefaultView());
+	const float cx = window->getDefaultView().getCenter().x;
+	window->clear(Color(20, 20, 60));
+	drawCenteredLine(window, titleFont, "YOU WIN!", 56, Color(255, 210, 60), cx, 150);
+	drawCenteredLine(window, menuFont, "The Star of the Mushroom Kingdom is safe.", 24, Color::White, cx, 240);
+	drawCenteredLine(window, menuFont, "Coins  " + to_string(finalStats.coins), 26, Color::White, cx, 310);
+	drawCenteredLine(window, menuFont, "Enemies defeated  " + to_string(finalStats.enemies), 26, Color::White, cx, 350);
+	drawCenteredLine(window, menuFont, "Time  " + to_string(finalStats.time), 26, Color::White, cx, 390);
+	drawCenteredLine(window, menuFont, "Press ENTER to record your score", 22, Color(255, 210, 60), cx, 470);
 	window->display();
 }
