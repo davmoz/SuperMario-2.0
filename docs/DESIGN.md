@@ -8,7 +8,7 @@ code as the game evolves.
 
 | Class       | Responsibility |
 |-------------|----------------|
-| `Game`      | Top-level loop, window, event handling, menu/UI state machine, high-score I/O. Owns a `Collision`. |
+| `Game`      | Top-level loop, window, event handling, the `GameState` machine, menus, and high-score I/O. Owns a `Collision`. |
 | `Collision` | Level container "god object": owns Mario, the map, and the enemy/loot arrays; runs all collision math, entity spawning from the map, and finish detection. |
 | `Map`       | Renders the tiled world (a `sf::VertexArray`) plus a scrolling background; owns the camera `sf::View`. |
 | `Character` | Base entity: texture/sprite, position/velocity, gravity, jumping, animation, and character-vs-character overlap classification. |
@@ -17,6 +17,20 @@ code as the game evolves.
 | `Loot`      | A collectible: coin or power-up. |
 | `Audio`     | Loads and plays music + sound effects. |
 | `Constants` | Shared tunables (tile sizes, physics, boost, animation). |
+
+## Game states
+
+`Game` is driven by a single `GameState` enum (no overlapping booleans). Each
+frame, events are dispatched by the current state and the screen is rendered
+exactly once:
+
+```
+Playing ──Esc──► PauseMenu ──Resume/Esc──► Playing
+   │                 │
+   │ death/finish    ├─Restart──► Playing (fresh level)
+   ▼                 ├─Highscore► Highscores ──Back──► (previous menu)
+Registration ──Enter(name)──► GameOverMenu ──New Game/Restart──► Playing
+```
 
 ## Data flow
 
