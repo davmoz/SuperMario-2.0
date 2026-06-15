@@ -1,16 +1,29 @@
 #pragma once
 #include <SFML/Audio.hpp>
 
+// The looping background track is streamed with sf::Music (the right tool for
+// a multi-megabyte track); the short, frequently-overlapping effects are
+// preloaded sf::SoundBuffer/sf::Sound pairs. The original code streamed every
+// effect through sf::Music, which truncated overlapping sounds.
 class Audio
 {
 private:
-	sf::Music jumpSound;
-	sf::Music deadSound;
-	sf::Music coinSound;
-	sf::Music shroomSound;
-	sf::Music stompSound;
 	sf::Music mainTheme;
-	sf::Music finishSound;
+
+	sf::SoundBuffer jumpBuffer;
+	sf::SoundBuffer deadBuffer;
+	sf::SoundBuffer coinBuffer;
+	sf::SoundBuffer shroomBuffer;
+	sf::SoundBuffer stompBuffer;
+	sf::SoundBuffer finishBuffer;
+
+	sf::Sound jumpSound;
+	sf::Sound deadSound;
+	sf::Sound coinSound;
+	sf::Sound shroomSound;
+	sf::Sound stompSound;
+	sf::Sound finishSound;
+
 public:
 	Audio();
 	~Audio();
