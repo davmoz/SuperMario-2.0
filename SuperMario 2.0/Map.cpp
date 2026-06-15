@@ -1,4 +1,5 @@
 #include "Map.h"
+#include "TileType.h"
 #include <iostream>
 
 using namespace std;
@@ -86,55 +87,9 @@ void Map::importMapFromFile(const string mapFileLocation)
 	{
 		while (fromFile >> tileType)
 		{
-			switch (tileType)
-			{
-			case 1: { // Floor
-				addTilesToVertexArray(0, 0, Vector2f((float)x, (float)y));
-				break;
-			}
-			case 2: { // Blocks
-				addTilesToVertexArray(1, 0, Vector2f((float)x, (float)y));
-				break;
-			}
-			case 3: { // LootBox
-				addTilesToVertexArray(0, 3, Vector2f((float)x, (float)y));
-				break;
-			}
-			case 4: { // Pipe-topLeft
-				addTilesToVertexArray(2, 0, Vector2f((float)x, (float)y));
-				break;
-			}
-			case 5: { // Pipe-topRight
-				addTilesToVertexArray(3, 0, Vector2f((float)x, (float)y));
-				break;
-			}
-			case 6: { // Pipe-BottomLeft
-				addTilesToVertexArray(2, 1, Vector2f((float)x, (float)y));
-				break;
-			}
-			case 7: { // Pipe-BottomRight
-				addTilesToVertexArray(3, 1, Vector2f((float)x, (float)y));
-				break;
-			}
-			case -3: {
-				addTilesToVertexArray(1, 6, Vector2f((float)x, (float)y));
-				break;
-			}
-			case -4: {
-				addTilesToVertexArray(2, 6, Vector2f((float)x, (float)y));
-				break;
-			}
-			case -5: {
-				addTilesToVertexArray(3, 6, Vector2f((float)x, (float)y));
-				break;
-			}
-			case -6: {
-				addTilesToVertexArray(4, 6, Vector2f((float)x, (float)y));
-				break;
-			}
-			default:
-				break;
-			}
+			tiles::AtlasCell cell = tiles::atlasCell(tileType);
+			if (cell.x >= 0)
+				addTilesToVertexArray(cell.x, cell.y, Vector2f((float)x, (float)y));
 			if (fromFile.peek() == '\n')
 			{
 				fromFile.ignore();
