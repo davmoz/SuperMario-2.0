@@ -28,6 +28,7 @@ cd build && ./SuperMario2
 - [Architecture](docs/DESIGN.md)
 - [Roadmap](docs/ROADMAP.md)
 - [Build guide](docs/BUILD.md)
+- [Known issues](docs/KNOWN_ISSUES.md)
 
 ## Credits
 
