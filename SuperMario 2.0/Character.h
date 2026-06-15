@@ -9,12 +9,11 @@ private:
 	sf::Texture texture;
 	sf::IntRect tilePosition;
 	sf::Sprite appearence;
-	sf::Vector2f position;
 	sf::Vector2f velocity;
-	bool isMovingRight;
-	bool isJumping;
-	float gravity;
-	float jumpHeight;
+	bool isMovingRight = false;
+	bool isJumping = false;
+	float gravity = 0.0f;
+	float jumpHeight = 0.0f;
 	sf::Clock clock;
 
 public:

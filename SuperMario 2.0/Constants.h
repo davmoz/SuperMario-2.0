@@ -22,5 +22,8 @@ const float BOOST_VELOCITY_INCREASE = 2.0f;
 // Ground
 const float GROUND_HEIGHT = 550.0f;
 
+// Enemies that fall past the bottom of the world are despawned.
+const float ENEMY_DESPAWN_Y = (float)(COLLISION_MAP_HEIGHT * TILE_SIZE);
+
 // Animation
 const float ANIMATION_INTERVAL = 0.09f;

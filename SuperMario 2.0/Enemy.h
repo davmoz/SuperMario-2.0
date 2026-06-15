@@ -7,9 +7,9 @@
 class Enemy : public Character
 {
 private:
-	bool canFly;
-	bool collidedWithLeft;
-	bool collidedWithRight;
+	bool canFly = false;
+	bool collidedWithLeft = true;
+	bool collidedWithRight = false;
 
 public:
 	Enemy(const std::string TileLocation, const sf::IntRect tilePositionInFile, const sf::Vector2f position, const sf::Vector2f velocity, const bool canFly, const float gravity, const float jumpheight);
