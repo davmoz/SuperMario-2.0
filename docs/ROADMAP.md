@@ -14,7 +14,7 @@ Status: ☐ todo · ◐ in progress · ☑ done
 - ☐ **Input & high-score fixes** — fix text entry (unicode vs scancode), make registration commit + transition, read the real high-score count, guard malformed files.
 
 ## Phase 2 — Foundation refactors
-- ☐ **`GameState` enum** — replace the four-boolean state soup with one state machine.
+- ☑ **`GameState` enum** — replace the four-boolean state soup with one state machine.
 - ☐ **`TileType` registry** — one source of truth for tile semantics (sprite, solidity, finish, spawn), shared by `Map` and `Collision`.
 - ☐ **`LevelManager`** — load multiple level data files; explicit per-level dimensions; level progression.
 

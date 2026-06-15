@@ -10,17 +10,12 @@ Game::Game(RenderWindow *window)
 	collision = new Collision(HIGHSCOREFILE, TILEFILE, FONTFILE, COORDFILE);
 	if (!menuFont.loadFromFile(FONTFILE))
 		std::cerr << "Error: Failed to load font from " << FONTFILE << std::endl;
-	gamePaused = false;
-	gameOver = false;
-	viewingScores = false;
-	viewingRegistrationPage = false;
-	selectedMenu = 0;
 	for (int i = 0; i < nrOfMenuOptions; i++)
 	{
 		menu[i].setFont(menuFont);
 		menu[i].setString(menuOptions[i]);
 	}
-	menu[0].setFillColor(Color(Color::Red));
+	menu[0].setFillColor(Color::Red);
 }
 
 Game::Game()
@@ -40,39 +35,21 @@ void Game::runGame()
 	audio.themeMusicPlay();
 	while (window->isOpen())
 	{
+		// Consume events; each state interprets them its own way.
 		while (window->pollEvent(event))
 		{
-			
-			if (viewingRegistrationPage)
-			{
-				registerPlayerName();
-			}
-			else if (gamePaused)
-			{
-				drawMenu();
-			}
 			if (event.type == Event::Closed)
 				window->close();
-			if (event.type == Event::KeyPressed && event.key.code == Keyboard::Escape && !gameOver)
+			switch (state)
 			{
-				if (!gamePaused)
-				{
-					audio.themeMusicPause();
-					gamePaused = true;
-				}
-				else
-				{
-					audio.themeMusicPlay();
-					gamePaused = false;
-				}
-			}
-			else if (event.type == Event::KeyPressed && event.key.code == Keyboard::Space && !gamePaused)
-			{
-				collision->jump();
-				audio.jumpMusicPlay();
+			case GameState::Playing:      handlePlayingEvent(); break;
+			case GameState::Registration: registerPlayerName();  break;
+			default:                      handleMenuInput();      break; // any menu
 			}
 		}
-		if (!gamePaused)	
+
+		// Render exactly once per frame, driven by the current state.
+		if (state == GameState::Playing)
 		{
 			update();
 			collision->updateCharacter();
@@ -82,21 +59,27 @@ void Game::runGame()
 			{
 				audio.themeMusicPause();
 				audio.deadMusicPlay();
-				viewingRegistrationPage = true;
-				gameOver = true;
-				gamePaused = true;
+				playerName.clear();
+				state = GameState::Registration;
 			}
 			else if (collision->checkMarioFinishCollision())
 			{
 				audio.themeMusicPause();
 				audio.finishMusicPlay();
-				viewingRegistrationPage = true;
-				gameOver = true;
-				gamePaused = true;
+				playerName.clear();
+				state = GameState::Registration;
 			}
 			window->clear();
-			collision->draw(window, gamePaused);
+			collision->draw(window, false);
 			window->display();
+		}
+		else if (state == GameState::Registration)
+		{
+			drawRegistration();
+		}
+		else
+		{
+			drawMenu();
 		}
 	}
 }
@@ -117,123 +100,126 @@ void Game::update()
 	}
 }
 
-void Game::loadMainMenu()
+void Game::handlePlayingEvent()
 {
-	if (!viewingScores && !viewingRegistrationPage)
+	if (event.type != Event::KeyPressed)
+		return;
+	if (event.key.code == Keyboard::Escape)
 	{
-		menuOptions[0] = gameOver ? "New Game" : "Resume";
-		for (int i = 0; i < nrOfMenuOptions; i++)
-		{
-			menu[i].setString(menuOptions[i]);
-		}
+		audio.themeMusicPause();
+		enterMenu(GameState::PauseMenu);
 	}
+	else if (event.key.code == Keyboard::Space)
+	{
+		collision->jump();
+		audio.jumpMusicPlay();
+	}
+}
+
+void Game::resetLevel()
+{
+	delete collision;
+	collision = new Collision(HIGHSCOREFILE, TILEFILE, FONTFILE, COORDFILE);
+	audio.themeMusicReset();
+	audio.themeMusicPlay();
+	state = GameState::Playing;
+}
+
+// Switch to a menu state and (re)build its labels and selection highlight.
+void Game::enterMenu(GameState menuState)
+{
+	state = menuState;
+	selectedMenu = 0;
+	menuOptions[0] = (menuState == GameState::GameOverMenu) ? "New Game" : "Resume";
 	for (int i = 0; i < nrOfMenuOptions; i++)
 	{
-		menu[i].setPosition(Vector2f(window->getView().getCenter().x, window->getView().getCenter().y / 2.5f * (i + 1)));
-		menu[i].setOrigin(menu[i].getLocalBounds().left + menu[i].getLocalBounds().width / 2.0f, menu[i].getLocalBounds().top + menu[i].getLocalBounds().height / 2.0f);
+		menu[i].setString(menuOptions[i]);
+		menu[i].setFillColor(Color::White);
+	}
+	menu[0].setFillColor(Color::Red);
+}
+
+void Game::positionMenu()
+{
+	for (int i = 0; i < nrOfMenuOptions; i++)
+	{
+		menu[i].setPosition(window->getView().getCenter().x,
+			window->getView().getCenter().y / 2.5f * (i + 1));
+		menu[i].setOrigin(menu[i].getLocalBounds().left + menu[i].getLocalBounds().width / 2.0f,
+			menu[i].getLocalBounds().top + menu[i].getLocalBounds().height / 2.0f);
 	}
 }
 
 void Game::drawMenu()
 {
+	positionMenu();
 	window->clear();
-	if (!viewingScores)
-	{
-		loadMainMenu();
-	}
 	for (int i = 0; i < nrOfMenuOptions; i++)
-	{
 		window->draw(menu[i]);
-	}
 	window->display();
-	handleMenuInput();
 }
 
 void Game::handleMenuInput()
 {
-	if (event.type == Event::KeyPressed && event.key.code == Keyboard::Up)
+	if (event.type != Event::KeyPressed)
+		return;
+	const Keyboard::Key key = event.key.code;
+
+	// The high-score list only offers "Back".
+	if (state == GameState::Highscores)
 	{
-		if (selectedMenu - 1 >= 0)
-		{
-			menu[selectedMenu].setFillColor(Color(Color::White));
-			selectedMenu--;
-			menu[selectedMenu].setFillColor(Color(Color::Red));
-		}
+		if (key == Keyboard::Return || key == Keyboard::Escape)
+			enterMenu(highscoreReturnState);
+		return;
 	}
-	else if (event.type == Event::KeyPressed && event.key.code == Keyboard::Down)
+
+	// Escape resumes a paused game.
+	if (key == Keyboard::Escape && state == GameState::PauseMenu)
 	{
-		if (selectedMenu + 1 < nrOfMenuOptions)
-		{
-			menu[selectedMenu].setFillColor(Color(Color::White));
-			selectedMenu++;
-			menu[selectedMenu].setFillColor(Color(Color::Red));
-		}
+		audio.themeMusicPlay();
+		state = GameState::Playing;
+		return;
 	}
-	else if (event.type == Event::KeyPressed && event.key.code == Keyboard::Return)
+
+	if (key == Keyboard::Up && selectedMenu > 0)
+	{
+		menu[selectedMenu].setFillColor(Color::White);
+		selectedMenu--;
+		menu[selectedMenu].setFillColor(Color::Red);
+	}
+	else if (key == Keyboard::Down && selectedMenu < nrOfMenuOptions - 1)
+	{
+		menu[selectedMenu].setFillColor(Color::White);
+		selectedMenu++;
+		menu[selectedMenu].setFillColor(Color::Red);
+	}
+	else if (key == Keyboard::Return)
 	{
 		switch (selectedMenu)
 		{
-		case 0: {
-			// New Game
-			if (gameOver && !viewingScores && !viewingRegistrationPage) 
-			{
-				delete collision;
-				collision = new Collision(HIGHSCOREFILE, TILEFILE, FONTFILE, COORDFILE);
-				gameOver = false;
-				gamePaused = false;
-				audio.themeMusicReset();
-				audio.themeMusicPlay();
-			}
-			// Resume Game
-			else if (!gameOver && !viewingScores && !viewingRegistrationPage)
+		case 0: // Resume (pause) or New Game (game over)
+			if (state == GameState::PauseMenu)
 			{
 				audio.themeMusicPlay();
-				gamePaused = false;
-			}
-			break;
-		}
-		case 1: {
-			// Restart Game
-			if (!viewingScores && !viewingRegistrationPage)
-			{
-				delete collision;
-				collision = new Collision(HIGHSCOREFILE, TILEFILE, FONTFILE, COORDFILE);
-				gameOver = false;
-				gamePaused = false;
-				audio.themeMusicReset();
-				audio.themeMusicPlay();
-			}
-			break;
-		}
-		case 2: {
-			// View Highscore
-			if (!viewingRegistrationPage)
-			{
-				viewingScores = true;
-				importHighScores(HIGHSCOREFILE, 3);
-				loadMainMenu();
-			}
-			break;
-		}
-		case 3: {
-			// Back / Quit game
-			if (viewingScores)
-			{
-				viewingScores = false;
-			}
-			else if (viewingRegistrationPage)
-			{
-				viewingRegistrationPage = false;
+				state = GameState::Playing;
 			}
 			else
-			{
-				// Quit Game
-				window->close();
-			}
-
+				resetLevel();
 			break;
-		}
-		default:
+		case 1: // Restart
+			resetLevel();
+			break;
+		case 2: // View high scores
+			highscoreReturnState = state;
+			importHighScores(HIGHSCOREFILE, nrOfMenuOptions - 1);
+			state = GameState::Highscores;
+			selectedMenu = nrOfMenuOptions - 1; // highlight "Back"
+			for (int i = 0; i < nrOfMenuOptions; i++)
+				menu[i].setFillColor(Color::White);
+			menu[selectedMenu].setFillColor(Color::Red);
+			break;
+		case 3: // Quit
+			window->close();
 			break;
 		}
 	}
@@ -298,27 +284,20 @@ void Game::registerPlayerName()
 		{
 			collision->saveMarioStats(HIGHSCOREFILE, playerName);
 			playerName.clear();
-			viewingRegistrationPage = false;
-			selectedMenu = 0; // hand control back to the game-over menu
-			for (int i = 0; i < nrOfMenuOptions; i++)
-				menu[i].setFillColor(Color::White);
-			menu[0].setFillColor(Color::Red);
-			return; // menu renders next frame
+			enterMenu(GameState::GameOverMenu);
 		}
 	}
+}
 
-	// Render the registration screen.
+void Game::drawRegistration()
+{
 	menu[0].setString("ENTER YOUR NAME");
 	menu[1].setString(playerName.empty() ? "_" : playerName);
 	menu[2].setString("");
 	menu[3].setString("Press ENTER to save");
 	for (int i = 0; i < nrOfMenuOptions; i++)
-	{
 		menu[i].setFillColor(i == 1 ? Color::Yellow : Color::White);
-		menu[i].setPosition(window->getView().getCenter().x, window->getView().getCenter().y / 2.5f * (i + 1));
-		menu[i].setOrigin(menu[i].getLocalBounds().left + menu[i].getLocalBounds().width / 2.0f,
-			menu[i].getLocalBounds().top + menu[i].getLocalBounds().height / 2.0f);
-	}
+	positionMenu();
 	window->clear();
 	for (int i = 0; i < nrOfMenuOptions; i++)
 		window->draw(menu[i]);
