@@ -14,6 +14,8 @@ const std::size_t MAX_NAME_LENGTH = 12;
 // old quartet of overlapping booleans, so each screen is one explicit state.
 enum class GameState
 {
+	Title,         // start screen
+	Story,         // intro narrative, shown once before the first level
 	Playing,       // active gameplay
 	PauseMenu,     // paused mid-level
 	GameOverMenu,  // after a death or finish, name already recorded
@@ -30,10 +32,11 @@ private:
 	Collision *collision = nullptr;
 
 	LevelManager levelManager;
-	GameState state = GameState::Playing;
+	GameState state = GameState::Title;
 	GameState highscoreReturnState = GameState::PauseMenu; // where "Back" returns
 
 	sf::Font menuFont;
+	sf::Font titleFont;
 	int selectedMenu = 0;
 	sf::Text menu[nrOfMenuOptions];
 	std::string menuOptions[nrOfMenuOptions] = { "Resume", "Restart", "Highscore", "Quit" };
@@ -47,9 +50,13 @@ public:
 	const std::string HIGHSCOREFILE = "Score/scores.txt";
 	const std::string TILEFILE = "Tiles/main.png";
 	const std::string FONTFILE = "Fonts/gomarice_no_continue.ttf";
+	const std::string TITLEFONTFILE = "Fonts/Super Mario Bros.ttf";
 
 	void runGame();
 	void update();
+	void handleIntroEvent();
+	void drawTitle();
+	void drawStory();
 	void loadLevel(bool carryStats);
 	void resetLevel();
 	void advanceLevel();

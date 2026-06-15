@@ -26,11 +26,16 @@ frame, events are dispatched by the current state and the screen is rendered
 exactly once:
 
 ```
+Title ──Enter──► Story ──Enter──► Playing
+                                     │
 Playing ──Esc──► PauseMenu ──Resume/Esc──► Playing
    │                 │
-   │ death/finish    ├─Restart──► Playing (fresh level)
-   ▼                 ├─Highscore► Highscores ──Back──► (previous menu)
+   │ death / final   ├─Restart──► Playing (fresh level)
+   │ finish          ├─Highscore► Highscores ──Back──► (previous menu)
+   ▼
 Registration ──Enter(name)──► GameOverMenu ──New Game/Restart──► Playing
+
+(finishing a non-final level advances straight to the next level)
 ```
 
 ## Data flow
