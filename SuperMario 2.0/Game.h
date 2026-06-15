@@ -33,7 +33,7 @@ public:
 	~Game();
 	const std::string HIGHSCOREFILE = "Score/scores.txt";
 	const std::string TILEFILE = "Tiles/main.png";
-	const std::string FONTFILE = "Fonts/Super Mario Bros.ttf";
+	const std::string FONTFILE = "Fonts/gomarice_no_continue.ttf";
 	const std::string COORDFILE = "Coords.txt";
 
 	void runGame();
