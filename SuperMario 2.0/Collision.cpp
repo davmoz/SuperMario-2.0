@@ -1,5 +1,6 @@
 #include "Collision.h"
 #include "Constants.h"
+#include "TileType.h"
 
 using namespace std;
 using namespace sf;
@@ -25,18 +26,18 @@ Collision::Collision(const string highScoreFileLocation, const string tileFileLo
 	{
 		for (int x = 0; x < COLLISION_MAP_WIDTH; x++)
 		{
-			if (collisionMap[x][y] == -1)
+			if (collisionMap[x][y] == tiles::Coin)
 			{
 				expandArray(loot, nrOfLoot, lootArrayCapacity);
 				loot[nrOfLoot] = new Loot(tileFileLocation, IntRect(0, 64, TILE_TEXTURE_SIZE, TILE_TEXTURE_SIZE), Vector2f((float)TILE_SIZE * x, (float)TILE_SIZE * y), true);
 				nrOfLoot++;
 			}
-			else if (collisionMap[x][y] == 9) {
+			else if (collisionMap[x][y] == tiles::BlockLoot) {
 				expandArray(loot, nrOfLoot, lootArrayCapacity);
 				loot[nrOfLoot] = new Loot(tileFileLocation, IntRect(0, TILE_TEXTURE_SIZE, TILE_TEXTURE_SIZE, TILE_TEXTURE_SIZE), Vector2f((float)TILE_SIZE * x, (float)TILE_SIZE * y), false);
 				nrOfLoot++;
 			}
-			else if (collisionMap[x][y] == 8)
+			else if (collisionMap[x][y] == tiles::EnemySpawn)
 			{
 				if (rand() % 4 > 1) {
 					gravity = DEFAULT_GRAVITY;
@@ -196,19 +197,11 @@ void Collision::updateCharTexture(const int nrOfTilesToView)
 
 bool Collision::isCollidable(Vector2f position) const
 {
-	bool collided = false;
 	int xPos = position.x / TILE_SIZE;
 	int yPos = position.y / TILE_SIZE;
 	if (xPos < 0 || xPos >= COLLISION_MAP_WIDTH || yPos < 0 || yPos >= COLLISION_MAP_HEIGHT)
 		return false;
-	if (collisionMap[xPos][yPos] != 0
-		&& collisionMap[xPos][yPos] != 9
-		&& collisionMap[xPos][yPos] != 8
-		&& collisionMap[xPos][yPos] != -1)
-	{
-		collided = true;
-	}
-	return collided;
+	return tiles::isSolid(collisionMap[xPos][yPos]);
 }
 
 bool Collision::collidingWithLeft(Vector2f currentPosition)
@@ -341,16 +334,11 @@ void Collision::checkMarioLootCollision()
 
 bool Collision::checkMarioFinishCollision()
 {
-	bool finished = false;
 	int xPos = (mario->getPosition().x / TILE_SIZE) + 1;
 	int yPos = mario->getPosition().y / TILE_SIZE;
 	if (xPos < 0 || xPos >= COLLISION_MAP_WIDTH || yPos < 0 || yPos >= COLLISION_MAP_HEIGHT)
 		return false;
-	if (collisionMap[xPos][yPos] == -4)
-	{
-		finished = true;
-	}
-	return finished;
+	return tiles::isFinish(collisionMap[xPos][yPos]);
 }
 
 void Collision::draw(RenderWindow * window, const bool paused)
