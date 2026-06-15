@@ -8,7 +8,8 @@ code as the game evolves.
 
 | Class       | Responsibility |
 |-------------|----------------|
-| `Game`      | Top-level loop, window, event handling, the `GameState` machine, menus, and high-score I/O. Owns a `Collision`. |
+| `Game`      | Top-level loop, window, event handling, the `GameState` machine, menus, and high-score I/O. Owns a `Collision` and a `LevelManager`. |
+| `LevelManager` | The ordered list of levels and a cursor; hands out the current level file and advances between levels. |
 | `Collision` | Level container "god object": owns Mario, the map, and the enemy/loot arrays; runs all collision math, entity spawning from the map, and finish detection. |
 | `Map`       | Renders the tiled world (a `sf::VertexArray`) plus a scrolling background; owns the camera `sf::View`. |
 | `Character` | Base entity: texture/sprite, position/velocity, gravity, jumping, animation, and character-vs-character overlap classification. |
@@ -49,10 +50,17 @@ Game::runGame() each frame:
               -> Collision::draw(window)
 ```
 
-## Level / tile format
+## Levels
 
-`Coords.txt` is a space-separated integer grid, **144 columns × 18 rows**. It is
-loaded twice: by `Map` (to build the visible tiles) and by `Collision` (for
+Levels live in `Levels/` (`level1.txt`, `level2.txt`, …) and are registered, in
+order, by `LevelManager`. `Game` asks the manager for the current level file
+when it builds a `Collision`; reaching a finish flag advances to the next level
+(carrying the run's coins/time/enemies forward via `PlayerStats`), and finishing
+the last level records the score. `tools/gen_levels.py` generates the later
+levels deterministically.
+
+Each level file is a space-separated integer grid, **144 columns × 19 rows**. It
+is loaded twice: by `Map` (to build the visible tiles) and by `Collision` (for
 solidity and entity spawns). Both interpret the same encoding:
 
 | Token        | Meaning |

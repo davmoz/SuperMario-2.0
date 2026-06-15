@@ -7,7 +7,8 @@ using namespace sf;
 Game::Game(RenderWindow *window)
 {
 	this->window = window;
-	collision = new Collision(HIGHSCOREFILE, TILEFILE, FONTFILE, COORDFILE);
+	collision = new Collision(HIGHSCOREFILE, TILEFILE, FONTFILE, levelManager.currentFile());
+	window->setTitle("Super Mario 2.0 - " + levelManager.currentName());
 	if (!menuFont.loadFromFile(FONTFILE))
 		std::cerr << "Error: Failed to load font from " << FONTFILE << std::endl;
 	for (int i = 0; i < nrOfMenuOptions; i++)
@@ -64,10 +65,18 @@ void Game::runGame()
 			}
 			else if (collision->checkMarioFinishCollision())
 			{
-				audio.themeMusicPause();
-				audio.finishMusicPlay();
-				playerName.clear();
-				state = GameState::Registration;
+				if (levelManager.hasNext())
+				{
+					advanceLevel();
+				}
+				else
+				{
+					// Finished the final level: record the run.
+					audio.themeMusicPause();
+					audio.finishMusicPlay();
+					playerName.clear();
+					state = GameState::Registration;
+				}
 			}
 			window->clear();
 			collision->draw(window, false);
@@ -116,12 +125,36 @@ void Game::handlePlayingEvent()
 	}
 }
 
+// Build the Collision for the level the LevelManager currently points at,
+// optionally carrying the run totals forward from the level just finished.
+void Game::loadLevel(bool carryStats)
+{
+	PlayerStats carried;
+	if (carryStats)
+		carried = collision->getMarioStats();
+	delete collision;
+	collision = new Collision(HIGHSCOREFILE, TILEFILE, FONTFILE, levelManager.currentFile());
+	if (carryStats)
+		collision->applyMarioStats(carried);
+	window->setTitle("Super Mario 2.0 - " + levelManager.currentName());
+}
+
+// New Game / Restart: start over from the first level.
 void Game::resetLevel()
 {
-	delete collision;
-	collision = new Collision(HIGHSCOREFILE, TILEFILE, FONTFILE, COORDFILE);
+	levelManager.reset();
+	loadLevel(false);
 	audio.themeMusicReset();
 	audio.themeMusicPlay();
+	state = GameState::Playing;
+}
+
+// Reached the finish flag of a non-final level: advance and keep playing.
+void Game::advanceLevel()
+{
+	levelManager.advance();
+	loadLevel(true);
+	audio.finishMusicPlay();
 	state = GameState::Playing;
 }
 

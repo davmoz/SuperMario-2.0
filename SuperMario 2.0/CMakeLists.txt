@@ -27,6 +27,7 @@ set(SOURCES
     Map.cpp
     Loot.cpp
     Audio.cpp
+    LevelManager.cpp
 )
 
 # Create executable
@@ -54,7 +55,7 @@ add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD
     COMMAND ${CMAKE_COMMAND} -E copy_directory
         "${CMAKE_SOURCE_DIR}/Score"
         "$<TARGET_FILE_DIR:${PROJECT_NAME}>/Score"
-    COMMAND ${CMAKE_COMMAND} -E copy
-        "${CMAKE_SOURCE_DIR}/Coords.txt"
-        "$<TARGET_FILE_DIR:${PROJECT_NAME}>/Coords.txt"
+    COMMAND ${CMAKE_COMMAND} -E copy_directory
+        "${CMAKE_SOURCE_DIR}/Levels"
+        "$<TARGET_FILE_DIR:${PROJECT_NAME}>/Levels"
 )

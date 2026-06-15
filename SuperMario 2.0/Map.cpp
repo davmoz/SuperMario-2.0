@@ -88,7 +88,7 @@ void Map::importMapFromFile(const string mapFileLocation)
 		while (fromFile >> tileType)
 		{
 			tiles::AtlasCell cell = tiles::atlasCell(tileType);
-			if (cell.x >= 0)
+			if (cell.x >= 0 && x < width && y < height)
 				addTilesToVertexArray(cell.x, cell.y, Vector2f((float)x, (float)y));
 			if (fromFile.peek() == '\n')
 			{
