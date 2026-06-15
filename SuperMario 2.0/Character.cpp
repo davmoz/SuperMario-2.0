@@ -13,6 +13,7 @@ Character::Character(const string TileLocation, const IntRect tilePositionInFile
 	this->jumpHeight = jumpheight;
 	this->tilePosition = tilePositionInFile;
 	isJumping = false;
+	isMovingRight = true;
 
 	if (!texture.loadFromFile(TileLocation))
 		std::cerr << "Error: Failed to load texture from " << TileLocation << std::endl;
@@ -20,7 +21,7 @@ Character::Character(const string TileLocation, const IntRect tilePositionInFile
 	appearence.setPosition(position);
 	appearence.setTextureRect(tilePositionInFile);
 	appearence.scale(Vector2f(2, 2));
-	appearence.setOrigin(8, 8);
+	appearence.setOrigin(TILE_TEXTURE_SIZE / 2.0f, TILE_TEXTURE_SIZE / 2.0f);
 }
 
 Character::Character()
@@ -78,16 +79,13 @@ void Character::updateCharacter(const bool topCollision, const bool botCollision
 	if (!botCollision || velocity.y < 0.0f)
 	{
 		velocity.y += gravity;
-		
 		appearence.move(0.0f, velocity.y);
-		position = appearence.getPosition();
 	}
 	else if (botCollision)
 	{
 		isJumping = false;
 		velocity.y = 0.0f;
 		appearence.setPosition(appearence.getPosition().x, appearence.getPosition().y - gravity);
-		position = appearence.getPosition();
 	}
 }
 
@@ -131,24 +129,28 @@ void Character::updateTexture(int nrOfTilesToView)
 string Character::collidesWithChar(const Character & otherChar)
 {
 	string collided = "";
-	if (appearence.getGlobalBounds().intersects(otherChar.appearence.getGlobalBounds()))
+	FloatRect thisBounds = appearence.getGlobalBounds();
+	FloatRect otherBounds = otherChar.appearence.getGlobalBounds();
+	if (thisBounds.intersects(otherBounds))
 	{
-		int thisX = appearence.getPosition().x;
-		int thisY = appearence.getPosition().y;
-		int otherX = otherChar.appearence.getPosition().x;
-		int otherY = otherChar.appearence.getPosition().y;
+		float thisCenterX = thisBounds.left + thisBounds.width / 2.0f;
+		float thisCenterY = thisBounds.top + thisBounds.height / 2.0f;
+		float otherCenterX = otherBounds.left + otherBounds.width / 2.0f;
+		float otherCenterY = otherBounds.top + otherBounds.height / 2.0f;
 
-		if (thisX >= otherX - 16 && thisX <= otherX + 16 && thisY + 16 >= otherY - 16)
+		// A stomp is landing on the other character from above: this
+		// character must be moving downward and sit higher than the other.
+		if (velocity.y > 0.0f && thisCenterY < otherCenterY)
 		{
 			collided = "BOTTOM";
 		}
-		else if (thisX - 16 >= otherX && thisX - 16 <= otherX + 16 && thisY >= otherY)
+		else if (thisCenterX < otherCenterX)
+		{
+			collided = "RIGHT"; // contact on this character's right side
+		}
+		else
 		{
 			collided = "LEFT";
-		}
-		else if (thisX + 16 >= otherX - 16 && thisX + 16 <= otherX && thisY >= otherY)
-		{
-			collided = "RIGHT";
 		}
 	}
 	return collided;
@@ -161,7 +163,7 @@ Sprite Character::getSprite() const
 
 Vector2f Character::getPosition() const
 {
-	return position;
+	return appearence.getPosition();
 }
 
 void Character::drawCharacter(RenderWindow * window)

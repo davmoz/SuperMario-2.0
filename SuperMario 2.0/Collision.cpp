@@ -158,13 +158,10 @@ void Collision::expandArray(T **&arr, int nrOfItems, int & capacity)
 {
 	if (nrOfItems == capacity)
 	{
-		T* *temp = new T*[capacity * 2];
+		T* *temp = new T*[capacity * 2]();   // value-initialise new slots to nullptr
 		for (int i = 0; i < nrOfItems; i++)
 		{
-			if (arr[i] != nullptr)
-			{
-				temp[i] = arr[i];
-			}
+			temp[i] = arr[i];
 		}
 		delete[] arr;
 		arr = temp;
@@ -173,18 +170,24 @@ void Collision::expandArray(T **&arr, int nrOfItems, int & capacity)
 }
 void Collision::updateCharacter()
 {
-	mario->getPosition();
 	mario->updateCharacter(collidingWithTop(mario->getPosition()), collidingWithBottom(mario->getPosition()));
 	for (int i = 0; i < nrOfEnemies; i++)
 	{
 		if (enemy[i] != nullptr)
 		{
+			// Reclaim enemies that have fallen off the bottom of the world.
+			if (enemy[i]->getPosition().y > ENEMY_DESPAWN_Y)
+			{
+				delete enemy[i];
+				enemy[i] = nullptr;
+				continue;
+			}
 			enemy[i]->fly();
 			enemy[i]->updateTexture(-1);
 			enemy[i]->updateCharacter(collidingWithTop(enemy[i]->getPosition()), collidingWithBottom(enemy[i]->getPosition()));
 		}
 	}
-} 
+}
 
 void Collision::updateCharTexture(const int nrOfTilesToView)
 {

@@ -36,12 +36,10 @@ Game::~Game()
 void Game::runGame()
 {
 	srand(time(0));
+	window->setFramerateLimit(90);
 	audio.themeMusicPlay();
 	while (window->isOpen())
 	{
-		
-		window->setFramerateLimit(90);
-		
 		while (window->pollEvent(event))
 		{
 			
