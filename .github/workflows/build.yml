@@ -1,0 +1,52 @@
+name: Build
+
+on:
+  push:
+    branches: [master]
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  build-linux:
+    name: Build (Ubuntu, SFML 2.6)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install SFML 2.6 and build tools
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y cmake g++ libsfml-dev
+
+      - name: Configure
+        working-directory: "SuperMario 2.0"
+        run: cmake -S . -B build -DCMAKE_BUILD_TYPE=Release
+
+      - name: Build
+        working-directory: "SuperMario 2.0"
+        run: cmake --build build --parallel
+
+      - name: Verify executable exists
+        working-directory: "SuperMario 2.0"
+        run: test -f build/SuperMario2 && echo "Build artifact OK"
+
+  build-macos:
+    name: Build (macOS, SFML 2.6)
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install SFML 2.x via Homebrew
+        run: brew install sfml@2 cmake
+
+      - name: Configure
+        working-directory: "SuperMario 2.0"
+        run: cmake -S . -B build -DCMAKE_BUILD_TYPE=Release
+
+      - name: Build
+        working-directory: "SuperMario 2.0"
+        run: cmake --build build --parallel
+
+      - name: Verify executable exists
+        working-directory: "SuperMario 2.0"
+        run: test -f build/SuperMario2 && echo "Build artifact OK"
