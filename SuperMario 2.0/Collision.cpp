@@ -5,7 +5,7 @@
 using namespace std;
 using namespace sf;
 
-Collision::Collision(const string highScoreFileLocation, const string tileFileLocation, const string fontFileLocation, const string coordMapLocation)
+Collision::Collision(const string tileFileLocation, const string coordMapLocation)
 {
 	enemyArrayCapacity = 20;
 	lootArrayCapacity = 20;
@@ -13,7 +13,7 @@ Collision::Collision(const string highScoreFileLocation, const string tileFileLo
 	nrOfLoot = 0;
 	bool canFly;
 	float gravity;
-	mario = new Mario(tileFileLocation, IntRect(0, TILE_SIZE, TILE_TEXTURE_SIZE, TILE_TEXTURE_SIZE), fontFileLocation, Vector2f(160.0f, 0), Vector2f(2.0f, 0.0f), DEFAULT_GRAVITY, DEFAULT_JUMP_HEIGHT);
+	mario = new Mario(tileFileLocation, IntRect(0, TILE_SIZE, TILE_TEXTURE_SIZE, TILE_TEXTURE_SIZE), Vector2f(160.0f, 0), Vector2f(2.0f, 0.0f), DEFAULT_GRAVITY, DEFAULT_JUMP_HEIGHT);
 	enemy = new Enemy*[enemyArrayCapacity];
 	for (int i = 0; i < enemyArrayCapacity; i++) enemy[i] = nullptr;
 	loot = new Loot*[lootArrayCapacity];
@@ -176,6 +176,7 @@ void Collision::expandArray(T **&arr, int nrOfItems, int & capacity)
 }
 void Collision::updateCharacter()
 {
+	mario->updateTimers();
 	mario->updateCharacter(collidingWithTop(mario->getPosition()), collidingWithBottom(mario->getPosition()));
 	for (int i = 0; i < nrOfEnemies; i++)
 	{
@@ -346,12 +347,10 @@ bool Collision::checkMarioFinishCollision()
 	return tiles::isFinish(collisionMap[xPos][yPos]);
 }
 
-void Collision::draw(RenderWindow * window, const bool paused)
+void Collision::draw(RenderWindow * window)
 {
 	window->draw(*map);
 	mario->drawCharacter(window);
-
-	mario->updateAndDrawCoinsAndTime(window, paused);
 	for (int i = 0; i < nrOfEnemies; i++)
 	{
 		if (enemy[i] != nullptr)

@@ -20,14 +20,12 @@ private:
 	int enemies;
 	bool boosted;
 	int boostTime;
-	sf::Font font;
-	sf::Text coinsTaken, timeSpent, enemiesKilled;
 	sf::Clock marioClock;
 
 public:
-	Mario(const std::string TileLocation, const sf::IntRect tilePositionInFile, const std::string fontFileLocation, const sf::Vector2f position, const sf::Vector2f velocity, const float gravity, const float jumpheight);
+	Mario(const std::string TileLocation, const sf::IntRect tilePositionInFile, const sf::Vector2f position, const sf::Vector2f velocity, const float gravity, const float jumpheight);
 	~Mario();
-	void updateAndDrawCoinsAndTime(sf::RenderWindow *window, const bool paused);
+	void updateTimers();
 	void increaseCoins();
 	void increaseEnemiesKilled();
 	void changeMarioVelocityX();

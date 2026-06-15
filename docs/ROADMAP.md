@@ -34,7 +34,7 @@ Status: ☐ todo · ◐ in progress · ☑ done
 - ☐ **Title screen + story/cutscene + win/credits flow.**
 
 ## Phase 6 — Polish & robustness
-- ☐ **UI/HUD module** decoupled from shared menu slots.
+- ◐ **UI/HUD module** decoupled from shared menu slots.
 - ☐ **Resource manager + smart pointers** (shared textures, `vector<unique_ptr>`).
 - ☐ **Save/progression persistence + externalised config.**
 

@@ -28,6 +28,7 @@ set(SOURCES
     Loot.cpp
     Audio.cpp
     LevelManager.cpp
+    Hud.cpp
 )
 
 # Create executable

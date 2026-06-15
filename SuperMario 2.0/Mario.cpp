@@ -5,7 +5,7 @@
 using namespace std;
 using namespace sf;
 
-Mario::Mario(const string TileLocation, const IntRect tilePositionInFile, const string fontFileLocation, const Vector2f position, const Vector2f velocity, const float gravity, const float jumpheight)
+Mario::Mario(const string TileLocation, const IntRect tilePositionInFile, const Vector2f position, const Vector2f velocity, const float gravity, const float jumpheight)
 	: Character(TileLocation, tilePositionInFile, position, velocity, gravity, jumpheight)
 {
 	coins = 0;
@@ -13,8 +13,6 @@ Mario::Mario(const string TileLocation, const IntRect tilePositionInFile, const 
 	boostTime = 0;
 	enemies = 0;
 	boosted = false;
-	if (!font.loadFromFile(fontFileLocation))
-		std::cerr << "Error: Failed to load font from " << fontFileLocation << std::endl;
 }
 
 Mario::~Mario()
@@ -22,38 +20,20 @@ Mario::~Mario()
 
 }
 
-void Mario::updateAndDrawCoinsAndTime(RenderWindow * window, const bool paused)
+// Advance the in-level timers once per gameplay frame: the survival clock and
+// the expiry of the temporary speed boost. The HUD itself is drawn by Hud.
+void Mario::updateTimers()
 {
-	timeSpent.setFont(font);
-	coinsTaken.setFont(font);
-	enemiesKilled.setFont(font);
-
-	if (!paused)
+	if (marioClock.getElapsedTime().asSeconds() > 1.0f)
 	{
-		if (marioClock.getElapsedTime().asSeconds() > 1.0f)
-		{
-			marioTime++;
-			marioClock.restart();
-		}
+		marioTime++;
+		marioClock.restart();
 	}
-	if (boosted)
+	if (boosted && marioTime >= boostTime)
 	{
-		if (marioTime >= boostTime)
-		{
-			boosted = false;
-			doubleVelocityX(boosted);
-		}
+		boosted = false;
+		doubleVelocityX(boosted);
 	}
-	
-	timeSpent.setString("TIME: " + to_string(marioTime));
-	coinsTaken.setString("$: " + to_string(coins));
-	enemiesKilled.setString("Enemies: " + to_string(enemies));
-	timeSpent.setPosition(getPosition().x - 150, 0);
-	coinsTaken.setPosition(getPosition().x, 0);
-	enemiesKilled.setPosition(getPosition().x + 100, 0);
-	window->draw(timeSpent);
-	window->draw(coinsTaken);
-	window->draw(enemiesKilled);
 }
 
 void Mario::increaseCoins()

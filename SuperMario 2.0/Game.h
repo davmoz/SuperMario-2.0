@@ -6,6 +6,7 @@
 #include "Collision.h"
 #include "Audio.h"
 #include "LevelManager.h"
+#include "Hud.h"
 
 const int nrOfMenuOptions = 4;
 const std::size_t MAX_NAME_LENGTH = 12;
@@ -18,6 +19,7 @@ enum class GameState
 	Story,         // intro narrative, shown once before the first level
 	Playing,       // active gameplay
 	PauseMenu,     // paused mid-level
+	Victory,       // beat the final level
 	GameOverMenu,  // after a death or finish, name already recorded
 	Highscores,    // viewing the high-score list
 	Registration   // typing a name for the high-score table
@@ -32,6 +34,8 @@ private:
 	Collision *collision = nullptr;
 
 	LevelManager levelManager;
+	Hud hud;
+	PlayerStats finalStats; // snapshot of the run when the game is beaten
 	GameState state = GameState::Title;
 	GameState highscoreReturnState = GameState::PauseMenu; // where "Back" returns
 
@@ -57,6 +61,7 @@ public:
 	void handleIntroEvent();
 	void drawTitle();
 	void drawStory();
+	void drawVictory();
 	void loadLevel(bool carryStats);
 	void resetLevel();
 	void advanceLevel();

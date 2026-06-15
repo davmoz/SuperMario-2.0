@@ -10,6 +10,7 @@ code as the game evolves.
 |-------------|----------------|
 | `Game`      | Top-level loop, window, event handling, the `GameState` machine, menus, and high-score I/O. Owns a `Collision` and a `LevelManager`. |
 | `LevelManager` | The ordered list of levels and a cursor; hands out the current level file and advances between levels. |
+| `Hud`       | The in-game heads-up display (level / coins / time / enemies), drawn in screen space so it stays fixed while the level scrolls. |
 | `Collision` | Level container "god object": owns Mario, the map, and the enemy/loot arrays; runs all collision math, entity spawning from the map, and finish detection. |
 | `Map`       | Renders the tiled world (a `sf::VertexArray`) plus a scrolling background; owns the camera `sf::View`. |
 | `Character` | Base entity: texture/sprite, position/velocity, gravity, jumping, animation, and character-vs-character overlap classification. |
@@ -30,10 +31,13 @@ Title ──Enter──► Story ──Enter──► Playing
                                      │
 Playing ──Esc──► PauseMenu ──Resume/Esc──► Playing
    │                 │
-   │ death / final   ├─Restart──► Playing (fresh level)
-   │ finish          ├─Highscore► Highscores ──Back──► (previous menu)
-   ▼
-Registration ──Enter(name)──► GameOverMenu ──New Game/Restart──► Playing
+   │                 ├─Restart──► Playing (fresh level)
+   │ death           ├─Highscore► Highscores ──Back──► (previous menu)
+   │   │
+   │   ▼
+   │ Registration ──Enter(name)──► GameOverMenu ──New Game/Restart──► Playing
+   │
+   └ final-level finish ──► Victory ──Enter──► Registration
 
 (finishing a non-final level advances straight to the next level)
 ```
