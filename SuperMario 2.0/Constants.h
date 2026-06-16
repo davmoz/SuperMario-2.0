@@ -37,3 +37,6 @@ const float ENEMY_DESPAWN_Y = (float)(COLLISION_MAP_HEIGHT * TILE_SIZE);
 
 // Animation
 const float ANIMATION_INTERVAL = 0.09f;
+
+// Flying enemies hop on a fixed time interval (frame-rate independent).
+const float FLY_JUMP_INTERVAL = 1.1f;

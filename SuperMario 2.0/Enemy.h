@@ -10,6 +10,7 @@ private:
 	bool canFly = false;
 	bool collidedWithLeft = true;
 	bool collidedWithRight = false;
+	sf::Clock flyClock; // paces the hops of a flying enemy
 
 public:
 	Enemy(const sf::Texture &texture, const sf::IntRect tilePositionInFile, const sf::Vector2f position, const sf::Vector2f velocity, const bool canFly, const float gravity, const float jumpheight);
