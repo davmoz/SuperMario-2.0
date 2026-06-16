@@ -14,14 +14,23 @@ cmake --build build --parallel
 cd build && ./SuperMario2
 ```
 
+## Gameplay
+
+Race through five worlds and Bowser's Fortress to reclaim the stolen Star.
+Stomp enemies, grab coins, and collect power-ups: a **green mushroom** makes
+you big (you survive one hit), a **red mushroom** boosts your speed, and a
+**star** makes you briefly invincible. Reach the flag to finish a level — or
+defeat the boss to win. You have three lives.
+
 ## Controls
 
-| Key            | Action            |
-|----------------|-------------------|
-| ← / →          | Move              |
-| Space          | Jump              |
-| Escape         | Pause / resume    |
-| ↑ / ↓ + Enter  | Navigate menus    |
+| Key            | Action                      |
+|----------------|-----------------------------|
+| ← / →          | Move                        |
+| Space          | Jump                        |
+| Escape         | Pause / resume              |
+| ↑ / ↓ + Enter  | Navigate menus              |
+| Enter / Space  | Advance the title & story   |
 
 ## Documentation
 
