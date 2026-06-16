@@ -11,11 +11,13 @@ The game is written in C++17 against **SFML 2.6** and built with CMake.
 ### macOS
 
 ```sh
-brew install sfml@2 cmake
+brew install sfml@2 openal-soft cmake
 ```
 
 `sfml@2` is keg-only; the `CMakeLists.txt` already adds the Homebrew prefix to
-the search path, so no extra flags are needed.
+the search path, so no extra flags are needed. `openal-soft` is used to work
+around a crash in Apple's deprecated OpenAL framework — see
+[KNOWN_ISSUES.md](KNOWN_ISSUES.md).
 
 ### Ubuntu / Debian
 
