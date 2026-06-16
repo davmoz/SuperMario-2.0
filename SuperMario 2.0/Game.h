@@ -7,6 +7,7 @@
 #include "Audio.h"
 #include "LevelManager.h"
 #include "Hud.h"
+#include "TextureManager.h"
 
 const int nrOfMenuOptions = 4;
 const std::size_t MAX_NAME_LENGTH = 12;
@@ -33,6 +34,7 @@ private:
 	sf::RenderWindow *window = nullptr;
 	Collision *collision = nullptr;
 
+	TextureManager textures;
 	LevelManager levelManager;
 	Hud hud;
 	int lives = STARTING_LIVES;

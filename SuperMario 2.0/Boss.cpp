@@ -3,8 +3,8 @@
 using namespace sf;
 using namespace std;
 
-Boss::Boss(const string TileLocation, const IntRect tilePositionInFile, const Vector2f position, const Vector2f velocity, const float gravity, const int startingHealth)
-	: Enemy(TileLocation, tilePositionInFile, position, velocity, false /*canFly*/, gravity, 0.0f),
+Boss::Boss(const Texture &texture, const IntRect tilePositionInFile, const Vector2f position, const Vector2f velocity, const float gravity, const int startingHealth)
+	: Enemy(texture, tilePositionInFile, position, velocity, false /*canFly*/, gravity, 0.0f),
 	  health(startingHealth)
 {
 	setBaseScale(3.5f);                   // visibly larger than a normal foe

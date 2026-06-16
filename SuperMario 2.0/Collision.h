@@ -11,6 +11,7 @@
 #include "Loot.h"
 #include "Audio.h"
 #include "Constants.h"
+#include "TextureManager.h"
 
 class Collision
 {
@@ -25,7 +26,7 @@ private:
 	bool bossDefeated = false; // set when this level's boss is beaten
 
 public:
-	Collision(const std::string tileFileLocation, const std::string coordMapLocation);
+	Collision(TextureManager &textures, const std::string tileFileLocation, const std::string coordMapLocation);
 	void MarioMoveLeft();
 	void MarioMoveRight();
 	void moveViewLeft();

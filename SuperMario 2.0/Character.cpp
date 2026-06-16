@@ -6,7 +6,7 @@ using namespace std;
 using namespace sf;
 
 
-Character::Character(const string TileLocation, const IntRect tilePositionInFile, const Vector2f position, const Vector2f velocity, const float gravity, const float jumpheight)
+Character::Character(const Texture &texture, const IntRect tilePositionInFile, const Vector2f position, const Vector2f velocity, const float gravity, const float jumpheight)
 {
 	this->velocity = velocity;
 	this->gravity = gravity;
@@ -15,8 +15,6 @@ Character::Character(const string TileLocation, const IntRect tilePositionInFile
 	isJumping = false;
 	isMovingRight = true;
 
-	if (!texture.loadFromFile(TileLocation))
-		std::cerr << "Error: Failed to load texture from " << TileLocation << std::endl;
 	appearence.setTexture(texture);
 	appearence.setPosition(position);
 	appearence.setTextureRect(tilePositionInFile);

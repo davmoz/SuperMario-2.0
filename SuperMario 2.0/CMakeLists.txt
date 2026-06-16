@@ -30,6 +30,7 @@ set(SOURCES
     LevelManager.cpp
     Hud.cpp
     Boss.cpp
+    TextureManager.cpp
 )
 
 # Create executable

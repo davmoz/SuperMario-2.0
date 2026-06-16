@@ -10,16 +10,14 @@ private:
 	int height;
 	sf::View view;
 	sf::Vector2f viewVelocity;
-	sf::Texture tileSet;
+	const sf::Texture *tileSet = nullptr;        // shared, owned by TextureManager
 	sf::Sprite background;
 	sf::VertexArray vertexArray;
 	float tileWorldDimension;
-	sf::Texture backgroundTexture;
 	float tileTextureDimension;
 
 public:
-	Map(const int width, const int height, const float tileTextureDimension, const float tileWorldDimension, const std::string mapFileLocation, const std::string tileFileLocation);
-	Map();
+	Map(const int width, const int height, const float tileTextureDimension, const float tileWorldDimension, const std::string mapFileLocation, const sf::Texture &tileset, const sf::Texture &backgroundTexture);
 	virtual ~Map();
 	void moveViewRight(const bool isBoosted);
 	void moveViewLeft(const bool isBoosted);

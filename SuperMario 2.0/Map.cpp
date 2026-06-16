@@ -6,7 +6,7 @@ using namespace std;
 using namespace sf;
 
 
-Map::Map(const int width, const int height, const float tileTextureDimension, const float tileWorldDimension, const string mapFileLocation, const string tileFileLocation)
+Map::Map(const int width, const int height, const float tileTextureDimension, const float tileWorldDimension, const string mapFileLocation, const Texture &tileset, const Texture &backgroundTexture)
 {
 	view.setSize(sf::Vector2f(900, 600));
 	view.setCenter(sf::Vector2f(450, 300));
@@ -15,19 +15,11 @@ Map::Map(const int width, const int height, const float tileTextureDimension, co
 	viewVelocity = Vector2f(2.0f, 0.0f);
 	this->tileTextureDimension = tileTextureDimension;
 	this->tileWorldDimension = tileWorldDimension;
-	if (!tileSet.loadFromFile(tileFileLocation))
-		std::cerr << "Error: Failed to load tileset from " << tileFileLocation << std::endl;
-	if (!backgroundTexture.loadFromFile("Tiles/Mario_BG.JPG"))
-		std::cerr << "Error: Failed to load background texture from Tiles/Mario_BG.JPG" << std::endl;
+	tileSet = &tileset;
 	background.setTexture(backgroundTexture);
 	vertexArray.setPrimitiveType(Quads);
 	vertexArray.resize(width * height * 4);
 	importMapFromFile(mapFileLocation);
-}
-
-Map::Map()
-{
-
 }
 
 Map::~Map()
@@ -110,7 +102,7 @@ void Map::importMapFromFile(const string mapFileLocation)
 void Map::draw(RenderTarget& target, RenderStates states) const
 {
 	target.setView(view);
-	states.texture = &tileSet;
+	states.texture = tileSet;
 	target.draw(background, states);
 	target.draw(vertexArray, states);
 }

@@ -1,6 +1,5 @@
 #include "Loot.h"
 #include "Constants.h"
-#include <iostream>
 
 using namespace std;
 using namespace sf;
@@ -12,11 +11,9 @@ namespace
 	const IntRect SHROOM_RECT(0, 16, TILE_TEXTURE_SIZE, TILE_TEXTURE_SIZE); // (0,1)
 }
 
-Loot::Loot(const string &tileLocation, Vector2f position, LootType type)
+Loot::Loot(const Texture &texture, Vector2f position, LootType type)
 {
 	this->type = type;
-	if (!texture.loadFromFile(tileLocation))
-		std::cerr << "Error: Failed to load texture from " << tileLocation << std::endl;
 	appearence.setTexture(texture);
 
 	// Sprite + tint per type. The tints distinguish the two mushrooms and the

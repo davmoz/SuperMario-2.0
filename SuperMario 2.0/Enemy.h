@@ -12,7 +12,7 @@ private:
 	bool collidedWithRight = false;
 
 public:
-	Enemy(const std::string TileLocation, const sf::IntRect tilePositionInFile, const sf::Vector2f position, const sf::Vector2f velocity, const bool canFly, const float gravity, const float jumpheight);
+	Enemy(const sf::Texture &texture, const sf::IntRect tilePositionInFile, const sf::Vector2f position, const sf::Vector2f velocity, const bool canFly, const float gravity, const float jumpheight);
 	Enemy();
 	virtual ~Enemy();
 	void fly();

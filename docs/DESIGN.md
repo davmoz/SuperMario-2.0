@@ -19,6 +19,7 @@ code as the game evolves.
 | `Boss`      | `Enemy` subclass for the endgame: larger, tinted, and survives several stomps (HP); defeating it completes the boss level. |
 | `Loot`      | A typed collectible (`LootType`: coin, speed mushroom, grow mushroom, star). |
 | `Audio`     | Loads and plays music + sound effects. |
+| `TextureManager` | Loads each texture once and hands out shared references, so entities don't each reload the tileset. |
 | `Constants` | Shared tunables (tile sizes, physics, boost, animation). |
 
 ## Game states
