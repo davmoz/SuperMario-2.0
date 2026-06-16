@@ -1,4 +1,5 @@
 #include "Enemy.h"
+#include "Constants.h"
 
 using namespace std;
 using namespace sf;
@@ -18,12 +19,12 @@ Enemy::Enemy() : Character()
 
 void Enemy::fly()
 {
-	if (canFly) 
+	// Hop on a fixed time interval so the behaviour doesn't change with the
+	// frame rate (the old per-frame rand() made it FPS-dependent).
+	if (canFly && flyClock.getElapsedTime().asSeconds() >= FLY_JUMP_INTERVAL)
 	{
-		if (rand() % 101 > 99)
-		{
-			jump();
-		}
+		jump();
+		flyClock.restart();
 	}
 }
 
