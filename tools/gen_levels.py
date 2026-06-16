@@ -169,6 +169,67 @@ def level3():
 
 
 def level4():
+    """World 1-4 — Mushroom Heights: pipe-and-platform heavy with longer pits."""
+    g = blank_grid()
+    pipe(g, 12, 2)
+    enemy(g, 18)
+    block_run(g, 22, [BLOCK, LOOTBOX, BLOCK, LOOTBOX, BLOCK], 11)
+    coin_row(g, 22, 5, 9)
+    carve_pit(g, 34, 4)
+    pipe(g, 42, 3)
+    pipe(g, 48, 4)
+    enemy(g, 54)
+    enemy(g, 56)
+    powerup(g, 40, GROW)
+    carve_pit(g, 62, 5)
+    coin_row(g, 63, 4, 12)
+    block_run(g, 74, [LOOTBOX, BLOCK, LOOTBOX], 10)
+    pipe(g, 84, 2)
+    enemy(g, 90)
+    carve_pit(g, 96, 4)
+    powerup(g, 104, STAR)
+    enemy(g, 112)
+    enemy(g, 116)
+    coin_row(g, 122, 6, 11)
+    place_finish(g, 138)
+    return g
+
+
+def level5():
+    """World 1-5 — The Gauntlet: enemy-dense with tight platforming before the
+    fortress."""
+    g = blank_grid()
+    enemy(g, 10)
+    enemy(g, 12)
+    enemy(g, 16)
+    powerup(g, 8, GROW)
+    block_run(g, 20, [BLOCK, BLOCK, BLOCK], 11)
+    carve_pit(g, 28, 4)
+    enemy(g, 36)
+    enemy(g, 38)
+    enemy(g, 40)
+    pipe(g, 46, 3)
+    carve_pit(g, 52, 5)
+    coin_row(g, 53, 4, 12)
+    enemy(g, 62)
+    enemy(g, 64)
+    block_run(g, 68, [LOOTBOX, BLOCK, LOOTBOX], 10)
+    powerup(g, 76, STAR)
+    enemy(g, 82)
+    enemy(g, 84)
+    enemy(g, 86)
+    carve_pit(g, 92, 5)
+    pipe(g, 100, 4)
+    enemy(g, 108)
+    enemy(g, 110)
+    enemy(g, 114)
+    enemy(g, 118)
+    coin_row(g, 124, 6, 10)
+    place_finish(g, 138)
+    return g
+
+
+def level6():
     """Bowser's Fortress — the boss arena. Solid ground (no pits), a couple of
     minions, and the boss. There is no finish flag: defeating the boss ends the
     game."""
@@ -195,7 +256,8 @@ def main():
     out_dir = os.path.join(here, "..", "SuperMario 2.0", "Levels")
     os.makedirs(out_dir, exist_ok=True)
     for name, g in (("level2.txt", level2()), ("level3.txt", level3()),
-                    ("level4.txt", level4())):
+                    ("level4.txt", level4()), ("level5.txt", level5()),
+                    ("level6.txt", level6())):
         path = os.path.join(out_dir, name)
         with open(path, "w") as f:
             f.write(render(g))

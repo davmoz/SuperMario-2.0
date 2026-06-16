@@ -439,7 +439,7 @@ void Game::drawStory()
 	const char *lines[] = {
 		"The Star of the Mushroom Kingdom",
 		"has been stolen by Bowser's army,",
-		"its light scattered across three worlds.",
+		"its light scattered across five worlds.",
 		"",
 		"Run, jump and stomp every foe",
 		"in your path to win it back!"

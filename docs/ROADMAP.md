@@ -29,7 +29,7 @@ Status: ☐ todo · ◐ in progress · ☑ done
 - ☐ **Projectiles / fireballs.**
 
 ## Phase 5 — Content, endgame & narrative
-- ☐ **Multiple authored levels + difficulty curve.**
+- ☑ **Multiple authored levels + difficulty curve** (6 levels incl. boss).
 - ☑ **Boss enemy + endgame arena.**
 - ☐ **Title screen + story/cutscene + win/credits flow.**
 
