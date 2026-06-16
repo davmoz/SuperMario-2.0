@@ -30,7 +30,7 @@ Status: ☐ todo · ◐ in progress · ☑ done
 
 ## Phase 5 — Content, endgame & narrative
 - ☐ **Multiple authored levels + difficulty curve.**
-- ☐ **Boss enemy + endgame arena.**
+- ☑ **Boss enemy + endgame arena.**
 - ☐ **Title screen + story/cutscene + win/credits flow.**
 
 ## Phase 6 — Polish & robustness

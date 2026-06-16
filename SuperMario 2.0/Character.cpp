@@ -20,7 +20,7 @@ Character::Character(const string TileLocation, const IntRect tilePositionInFile
 	appearence.setTexture(texture);
 	appearence.setPosition(position);
 	appearence.setTextureRect(tilePositionInFile);
-	appearence.scale(Vector2f(2, 2));
+	appearence.setScale(scaleFactor, scaleFactor);
 	appearence.setOrigin(TILE_TEXTURE_SIZE / 2.0f, TILE_TEXTURE_SIZE / 2.0f);
 }
 
@@ -55,6 +55,23 @@ void Character::jump()
 		velocity.y = -jumpHeight;
 		isJumping = true;
 	}
+}
+
+void Character::bounce()
+{
+	velocity.y = -jumpHeight * 0.6f;
+	isJumping = true;
+}
+
+void Character::setBaseScale(float factor)
+{
+	scaleFactor = factor;
+	appearence.setScale(scaleFactor, scaleFactor);
+}
+
+void Character::setAppearanceColor(Color color)
+{
+	appearence.setColor(color);
 }
 
 void Character::doubleVelocityX(const bool isBoosted)
@@ -99,12 +116,12 @@ void Character::updateTexture(int nrOfTilesToView)
 			if (leftRectPos > nrOfTilesToView * tilePosition.width)
 			{
 				appearence.setTextureRect(tilePosition);
-				appearence.setScale(2, 2);
+				appearence.setScale(scaleFactor, scaleFactor);
 			}
 			else
 			{
 				appearence.setTextureRect(IntRect(leftRectPos + tilePosition.width, tilePosition.top, tilePosition.width, tilePosition.height));
-				appearence.setScale(2, 2);
+				appearence.setScale(scaleFactor, scaleFactor);
 			}
 		}
 		else
@@ -112,12 +129,12 @@ void Character::updateTexture(int nrOfTilesToView)
 			if (leftRectPos > nrOfTilesToView * tilePosition.width)
 			{
 				appearence.setTextureRect(tilePosition);
-				appearence.setScale(2 * (-1), 2);
+				appearence.setScale(-scaleFactor, scaleFactor);
 			}
 			else
 			{
 				appearence.setTextureRect(IntRect(leftRectPos + tilePosition.width, tilePosition.top, tilePosition.width, tilePosition.height));
-				appearence.setScale(2 * (-1), 2);
+				appearence.setScale(-scaleFactor, scaleFactor);
 			}
 		}
 		clock.restart();
@@ -138,15 +155,16 @@ string Character::collidesWithChar(const Character & otherChar)
 		float otherCenterX = otherBounds.left + otherBounds.width / 2.0f;
 		float otherCenterY = otherBounds.top + otherBounds.height / 2.0f;
 
-		// A stomp is landing on the other character from above: this
-		// character must be moving downward and sit higher than the other.
-		if (velocity.y > 0.0f && thisCenterY < otherCenterY)
+		if (thisCenterY < otherCenterY)
 		{
-			collided = "BOTTOM";
+			// Above the other's mid-line: descending onto it is a stomp,
+			// rising through it (e.g. bouncing off a boss) is harmless.
+			if (velocity.y > 0.0f)
+				collided = "BOTTOM";
 		}
 		else if (thisCenterX < otherCenterX)
 		{
-			collided = "RIGHT"; // contact on this character's right side
+			collided = "RIGHT"; // deadly side contact on this character's right
 		}
 		else
 		{

@@ -15,7 +15,8 @@ code as the game evolves.
 | `Map`       | Renders the tiled world (a `sf::VertexArray`) plus a scrolling background; owns the camera `sf::View`. |
 | `Character` | Base entity: texture/sprite, position/velocity, gravity, jumping, animation, and character-vs-character overlap classification. |
 | `Mario`     | Player character: coins, time, enemies-killed, speed boost, HUD text, high-score persistence. |
-| `Enemy`     | AI character: ground or flying, walks and reverses on wall collisions. |
+| `Enemy`     | AI character: ground or flying, walks and reverses on wall collisions. Exposes `onStomped()`/`isBoss()` so subclasses can override stomp behaviour. |
+| `Boss`      | `Enemy` subclass for the endgame: larger, tinted, and survives several stomps (HP); defeating it completes the boss level. |
 | `Loot`      | A collectible: coin or power-up. |
 | `Audio`     | Loads and plays music + sound effects. |
 | `Constants` | Shared tunables (tile sizes, physics, boost, animation). |
@@ -81,6 +82,7 @@ solidity and entity spawns). Both interpret the same encoding:
 | `4 5 6 7`    | pipe top-left / top-right / bottom-left / bottom-right (solid) |
 | `8`          | enemy spawn |
 | `9`          | block containing a power-up |
+| `10`         | boss spawn |
 | `-1`         | coin |
 | `-3 -4 -5 -6`| flag / finish tiles (`-4` triggers level completion) |
 

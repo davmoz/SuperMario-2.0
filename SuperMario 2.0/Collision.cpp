@@ -1,6 +1,7 @@
 #include "Collision.h"
 #include "Constants.h"
 #include "TileType.h"
+#include "Boss.h"
 
 using namespace std;
 using namespace sf;
@@ -53,6 +54,12 @@ Collision::Collision(const string tileFileLocation, const string coordMapLocatio
 
 				expandArray(enemy, nrOfEnemies, enemyArrayCapacity);
 				enemy[nrOfEnemies] = new Enemy(tileFileLocation, enemyRect, Vector2f((float)TILE_SIZE * x, (float)TILE_SIZE * y), Vector2f(1.0f, 0.0f), canFly, gravity, ENEMY_JUMP_HEIGHT);
+				nrOfEnemies++;
+			}
+			else if (collisionMap[x][y] == tiles::BossSpawn)
+			{
+				expandArray(enemy, nrOfEnemies, enemyArrayCapacity);
+				enemy[nrOfEnemies] = new Boss(tileFileLocation, IntRect(64, 0, TILE_TEXTURE_SIZE, TILE_TEXTURE_SIZE), Vector2f((float)TILE_SIZE * x, (float)TILE_SIZE * y), Vector2f(1.0f, 0.0f), DEFAULT_GRAVITY, BOSS_HEALTH);
 				nrOfEnemies++;
 			}
 
@@ -295,9 +302,17 @@ bool Collision::checkMarioHostileCollision()
 			if (collisionSide == "BOTTOM")
 			{
 				audio.stompMusicPlay();
-				mario->increaseEnemiesKilled();
-				delete enemy[i];
-				enemy[i] = nullptr;
+				mario->bounce();
+				const bool wasBoss = enemy[i]->isBoss();
+				if (enemy[i]->onStomped()) // defeated?
+				{
+					if (wasBoss)
+						bossDefeated = true;
+					mario->increaseEnemiesKilled();
+					delete enemy[i];
+					enemy[i] = nullptr;
+				}
+				// A boss that survives keeps fighting; Mario already bounced off.
 			}
 			else if(collisionSide == "LEFT" || collisionSide == "RIGHT")
 			{
@@ -340,6 +355,8 @@ void Collision::checkMarioLootCollision()
 
 bool Collision::checkMarioFinishCollision()
 {
+	if (bossDefeated) // beating the boss completes a boss level
+		return true;
 	int xPos = (mario->getPosition().x / TILE_SIZE) + 1;
 	int yPos = mario->getPosition().y / TILE_SIZE;
 	if (xPos < 0 || xPos >= COLLISION_MAP_WIDTH || yPos < 0 || yPos >= COLLISION_MAP_HEIGHT)

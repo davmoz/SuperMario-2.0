@@ -22,6 +22,7 @@ LOOTBOX = 3
 PIPE_TL, PIPE_TR, PIPE_BL, PIPE_BR = 4, 5, 6, 7
 ENEMY = 8
 BLOCKLOOT = 9           # power-up
+BOSS = 10               # boss spawn
 COIN = -1
 FLAG_POLE = -3
 FINISH = -4
@@ -154,11 +155,31 @@ def level3():
     return g
 
 
+def level4():
+    """Bowser's Fortress — the boss arena. Solid ground (no pits), a couple of
+    minions, and the boss. There is no finish flag: defeating the boss ends the
+    game."""
+    g = blank_grid()
+    # a few blocks for cover during the fight
+    block_run(g, 30, [BLOCK, BLOCK, BLOCK], 12)
+    block_run(g, 70, [BLOCK, BLOCK, BLOCK], 12)
+    coin_row(g, 30, 3, 10)
+    coin_row(g, 70, 3, 10)
+    # minions guarding the boss
+    enemy(g, 24)
+    enemy(g, 60)
+    enemy(g, 84)
+    # the boss, standing on the ground in the right half of the arena
+    g[GROUND_ROW][104] = BOSS
+    return g
+
+
 def main():
     here = os.path.dirname(os.path.abspath(__file__))
     out_dir = os.path.join(here, "..", "SuperMario 2.0", "Levels")
     os.makedirs(out_dir, exist_ok=True)
-    for name, g in (("level2.txt", level2()), ("level3.txt", level3())):
+    for name, g in (("level2.txt", level2()), ("level3.txt", level3()),
+                    ("level4.txt", level4())):
         path = os.path.join(out_dir, name)
         with open(path, "w") as f:
             f.write(render(g))
