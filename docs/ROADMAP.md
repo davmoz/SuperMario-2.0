@@ -21,8 +21,8 @@ Status: ☐ todo · ◐ in progress · ☑ done
 ## Phase 3 — Core systems
 - ◐ **Lives + respawn** (checkpoints pending)
 - ☐ **Score + persistent screen-space HUD + level-complete results screen.**
-- ☐ **Mario power-state machine** (small / big / star invincibility).
-- ☐ **Power-up system** (coin, speed, grow, fire, star, 1-up) via polymorphic `onCollect`.
+- ☑ **Mario power state** (small / big / star invincibility).
+- ◐ **Power-up system** (coin, speed, grow, star; typed via LootType).
 
 ## Phase 4 — Enemies & combat
 - ☐ **Enemy hierarchy + deterministic AI** (Goomba, Koopa, flyer, spiky).

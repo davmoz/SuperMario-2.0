@@ -1,20 +1,46 @@
 #include "Loot.h"
+#include "Constants.h"
 #include <iostream>
 
 using namespace std;
 using namespace sf;
 
-
-
-Loot::Loot(const string TileLocation, const IntRect tilePositionInFile, const Vector2f position, const bool isCoin)
+namespace
 {
-	if (!texture.loadFromFile(TileLocation))
-		std::cerr << "Error: Failed to load texture from " << TileLocation << std::endl;
+	// Atlas cells (in 16-px tiles) used for collectibles.
+	const IntRect COIN_RECT(0, 64, TILE_TEXTURE_SIZE, TILE_TEXTURE_SIZE);   // (0,4)
+	const IntRect SHROOM_RECT(0, 16, TILE_TEXTURE_SIZE, TILE_TEXTURE_SIZE); // (0,1)
+}
+
+Loot::Loot(const string &tileLocation, Vector2f position, LootType type)
+{
+	this->type = type;
+	if (!texture.loadFromFile(tileLocation))
+		std::cerr << "Error: Failed to load texture from " << tileLocation << std::endl;
 	appearence.setTexture(texture);
-	appearence.setTextureRect(tilePositionInFile);
+
+	// Sprite + tint per type. The tints distinguish the two mushrooms and the
+	// star, which reuse the same base sprites.
+	switch (type)
+	{
+	case LootType::Coin:
+		appearence.setTextureRect(COIN_RECT);
+		break;
+	case LootType::SpeedShroom:
+		appearence.setTextureRect(SHROOM_RECT);
+		appearence.setColor(Color(255, 130, 130)); // red mushroom
+		break;
+	case LootType::GrowMushroom:
+		appearence.setTextureRect(SHROOM_RECT);
+		appearence.setColor(Color(130, 255, 130)); // green mushroom
+		break;
+	case LootType::Star:
+		appearence.setTextureRect(COIN_RECT);
+		appearence.setColor(Color(255, 240, 80)); // bright star
+		break;
+	}
 	appearence.setPosition(position);
 	appearence.scale(2, 2);
-	this->coin = isCoin;
 }
 
 Loot::~Loot()
@@ -27,7 +53,7 @@ Sprite Loot::getLootSprite() const
 	return appearence;
 }
 
-bool Loot::isCoin() const
+LootType Loot::getType() const
 {
-	return coin;
+	return type;
 }

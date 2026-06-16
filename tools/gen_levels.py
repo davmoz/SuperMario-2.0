@@ -78,6 +78,15 @@ def enemy(g, x, row=GROUND_ROW):
         g[row][x] = ENEMY
 
 
+GROW = 11
+STAR = 12
+
+
+def powerup(g, x, kind, row=GROUND_ROW):
+    if 2 <= x < W - 2:
+        g[row][x] = kind
+
+
 def place_finish(g, x):
     """Flag pole at column x, reachable, with solid ground beneath."""
     g[3][x - 1] = FLAG_POLE
@@ -107,9 +116,11 @@ def level2():
     block_run(g, 62, [BLOCK, BLOCKLOOT, BLOCK], 11)
     carve_pit(g, 72, 4)
     coin_row(g, 73, 3, 12)
+    powerup(g, 44, GROW)
     pipe(g, 84, 2)
     enemy(g, 90)
     coin_row(g, 96, 5, 11)
+    powerup(g, 102, STAR)
     block_run(g, 100, [LOOTBOX, LOOTBOX], 12)
     carve_pit(g, 108, 3)
     enemy(g, 116)
@@ -136,8 +147,10 @@ def level3():
     carve_pit(g, 46, 4)
     block_run(g, 52, [BLOCK, BLOCKLOOT, BLOCK], 10)
     coin_row(g, 52, 3, 8)
+    powerup(g, 22, GROW)
     pipe(g, 60, 4)
     enemy(g, 66)
+    powerup(g, 78, STAR)
     carve_pit(g, 70, 5)
     coin_row(g, 71, 4, 12)
     block_run(g, 80, [LOOTBOX, BLOCK, LOOTBOX], 11)
@@ -165,6 +178,9 @@ def level4():
     block_run(g, 70, [BLOCK, BLOCK, BLOCK], 12)
     coin_row(g, 30, 3, 10)
     coin_row(g, 70, 3, 10)
+    # a grow mushroom and a star to give the player a fighting chance
+    powerup(g, 16, GROW)
+    powerup(g, 50, STAR)
     # minions guarding the boss
     enemy(g, 24)
     enemy(g, 60)
