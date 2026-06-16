@@ -17,6 +17,7 @@ namespace tiles
 		PipeBottomRight = 7,
 		EnemySpawn     = 8,  // spawns an enemy; tile itself is empty
 		BlockLoot      = 9,  // spawns a power-up; tile itself is empty
+		BossSpawn      = 10, // spawns the boss; tile itself is empty
 		Coin           = -1, // spawns a coin; tile itself is empty
 		FlagPole       = -3,
 		Finish         = -4, // reaching this completes the level
@@ -51,7 +52,7 @@ namespace tiles
 	// (enemy, power-up, coin), whose tiles are walkable.
 	inline bool isSolid(int t)
 	{
-		return t != Empty && t != EnemySpawn && t != BlockLoot && t != Coin;
+		return t != Empty && t != EnemySpawn && t != BlockLoot && t != BossSpawn && t != Coin;
 	}
 
 	inline bool isFinish(int t) { return t == Finish; }

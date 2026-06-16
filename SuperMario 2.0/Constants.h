@@ -22,6 +22,9 @@ const float BOOST_VELOCITY_INCREASE = 2.0f;
 // Lives
 const int STARTING_LIVES = 3;
 
+// Boss
+const int BOSS_HEALTH = 5;
+
 // Ground
 const float GROUND_HEIGHT = 550.0f;
 

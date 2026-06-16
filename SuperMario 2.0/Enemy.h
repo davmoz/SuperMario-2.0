@@ -14,7 +14,12 @@ private:
 public:
 	Enemy(const std::string TileLocation, const sf::IntRect tilePositionInFile, const sf::Vector2f position, const sf::Vector2f velocity, const bool canFly, const float gravity, const float jumpheight);
 	Enemy();
-	~Enemy();
+	virtual ~Enemy();
 	void fly();
 	void move(const bool collidedWithRight, const bool collidedWithLeft);
+
+	// Called when Mario stomps this enemy. Returns true if the enemy is
+	// defeated and should be removed; an ordinary enemy always dies in one hit.
+	virtual bool onStomped();
+	virtual bool isBoss() const { return false; }
 };

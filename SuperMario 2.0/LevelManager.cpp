@@ -6,6 +6,7 @@ LevelManager::LevelManager()
 		{ "Levels/level1.txt", "World 1-1" },
 		{ "Levels/level2.txt", "World 1-2" },
 		{ "Levels/level3.txt", "World 1-3" },
+		{ "Levels/level4.txt", "Bowser's Fortress" },
 	};
 }
 

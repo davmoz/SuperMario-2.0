@@ -25,6 +25,7 @@ private:
 	Loot * *loot;
 
 	int collisionMap[COLLISION_MAP_WIDTH][COLLISION_MAP_HEIGHT];
+	bool bossDefeated = false; // set when this level's boss is beaten
 
 public:
 	Collision(const std::string tileFileLocation, const std::string coordMapLocation);

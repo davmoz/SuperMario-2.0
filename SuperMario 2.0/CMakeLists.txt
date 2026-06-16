@@ -29,6 +29,7 @@ set(SOURCES
     Audio.cpp
     LevelManager.cpp
     Hud.cpp
+    Boss.cpp
 )
 
 # Create executable

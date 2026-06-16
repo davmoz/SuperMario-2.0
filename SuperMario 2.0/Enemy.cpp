@@ -50,6 +50,11 @@ void Enemy::move(const bool collidedWithRight, const bool collidedWithLeft)
 }
 
 
+bool Enemy::onStomped()
+{
+	return true; // an ordinary enemy dies in a single stomp
+}
+
 Enemy::~Enemy()
 {
 
