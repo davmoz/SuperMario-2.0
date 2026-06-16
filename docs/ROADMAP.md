@@ -35,7 +35,7 @@ Status: ☐ todo · ◐ in progress · ☑ done
 
 ## Phase 6 — Polish & robustness
 - ◐ **UI/HUD module** decoupled from shared menu slots.
-- ◐ **Resource manager + smart pointers** (vector<unique_ptr> done; texture cache pending) (shared textures, `vector<unique_ptr>`).
+- ☑ **Resource manager + smart pointers** (shared TextureManager + vector<unique_ptr>) (shared textures, `vector<unique_ptr>`).
 - ☐ **Save/progression persistence + externalised config.**
 
 ## Design principle

@@ -6,7 +6,6 @@
 class Character
 {
 private:
-	sf::Texture texture;
 	sf::IntRect tilePosition;
 	sf::Sprite appearence;
 	sf::Vector2f velocity;
@@ -23,7 +22,7 @@ protected:
 	void setAppearanceColor(sf::Color color);
 
 public:
-	Character(const std::string TileLocation, const sf::IntRect tilePositionInFile, const sf::Vector2f position, const sf::Vector2f velocity, const float gravity, const float jumpheight);
+	Character(const sf::Texture &texture, const sf::IntRect tilePositionInFile, const sf::Vector2f position, const sf::Vector2f velocity, const float gravity, const float jumpheight);
 	Character();
 	virtual ~Character();
 

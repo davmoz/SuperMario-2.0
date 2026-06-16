@@ -5,8 +5,8 @@
 using namespace std;
 using namespace sf;
 
-Mario::Mario(const string TileLocation, const IntRect tilePositionInFile, const Vector2f position, const Vector2f velocity, const float gravity, const float jumpheight)
-	: Character(TileLocation, tilePositionInFile, position, velocity, gravity, jumpheight)
+Mario::Mario(const Texture &texture, const IntRect tilePositionInFile, const Vector2f position, const Vector2f velocity, const float gravity, const float jumpheight)
+	: Character(texture, tilePositionInFile, position, velocity, gravity, jumpheight)
 {
 	coins = 0;
 	marioTime = 0;

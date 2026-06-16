@@ -22,7 +22,7 @@ namespace
 Game::Game(RenderWindow *window)
 {
 	this->window = window;
-	collision = new Collision(TILEFILE, levelManager.currentFile());
+	collision = new Collision(textures, TILEFILE, levelManager.currentFile());
 	window->setTitle("Super Mario 2.0 - " + levelManager.currentName());
 	hud.load(FONTFILE);
 	if (!menuFont.loadFromFile(FONTFILE))
@@ -183,7 +183,7 @@ void Game::loadLevel(bool carryStats)
 	if (carryStats)
 		carried = collision->getMarioStats();
 	delete collision;
-	collision = new Collision(TILEFILE, levelManager.currentFile());
+	collision = new Collision(textures, TILEFILE, levelManager.currentFile());
 	if (carryStats)
 		collision->applyMarioStats(carried);
 	window->setTitle("Super Mario 2.0 - " + levelManager.currentName());

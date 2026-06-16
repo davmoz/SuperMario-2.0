@@ -28,7 +28,7 @@ private:
 	sf::Clock hitClock;          // measures the post-hit grace period
 
 public:
-	Mario(const std::string TileLocation, const sf::IntRect tilePositionInFile, const sf::Vector2f position, const sf::Vector2f velocity, const float gravity, const float jumpheight);
+	Mario(const sf::Texture &texture, const sf::IntRect tilePositionInFile, const sf::Vector2f position, const sf::Vector2f velocity, const float gravity, const float jumpheight);
 	~Mario();
 	void updateTimers();
 	void increaseCoins();

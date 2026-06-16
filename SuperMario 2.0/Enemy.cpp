@@ -3,8 +3,8 @@
 using namespace std;
 using namespace sf;
 
-Enemy::Enemy(const string TileLocation, const IntRect tilePositionInFile, const Vector2f position, const Vector2f velocity, const bool canFly, const float gravity, const float jumpheight) 
-	: Character(TileLocation, tilePositionInFile, position, velocity, gravity, jumpheight)
+Enemy::Enemy(const Texture &texture, const IntRect tilePositionInFile, const Vector2f position, const Vector2f velocity, const bool canFly, const float gravity, const float jumpheight)
+	: Character(texture, tilePositionInFile, position, velocity, gravity, jumpheight)
 {
 	this->canFly = canFly;
 	collidedWithLeft = true;

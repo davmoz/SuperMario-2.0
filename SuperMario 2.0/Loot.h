@@ -14,12 +14,11 @@ enum class LootType
 class Loot
 {
 private:
-	sf::Texture texture;
 	sf::Sprite appearence;
 	LootType type;
 
 public:
-	Loot(const std::string &tileLocation, sf::Vector2f position, LootType type);
+	Loot(const sf::Texture &texture, sf::Vector2f position, LootType type);
 	~Loot();
 	sf::Sprite getLootSprite() const;
 	LootType getType() const;

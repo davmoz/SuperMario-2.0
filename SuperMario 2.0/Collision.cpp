@@ -6,10 +6,12 @@
 using namespace std;
 using namespace sf;
 
-Collision::Collision(const string tileFileLocation, const string coordMapLocation)
+Collision::Collision(TextureManager &textures, const string tileFileLocation, const string coordMapLocation)
 {
-	mario = make_unique<Mario>(tileFileLocation, IntRect(0, TILE_SIZE, TILE_TEXTURE_SIZE, TILE_TEXTURE_SIZE), Vector2f(160.0f, 0), Vector2f(2.0f, 0.0f), DEFAULT_GRAVITY, DEFAULT_JUMP_HEIGHT);
-	map = make_unique<Map>(COLLISION_MAP_WIDTH, COLLISION_MAP_HEIGHT, (float)TILE_TEXTURE_SIZE, (float)TILE_SIZE, coordMapLocation, tileFileLocation);
+	const Texture &tileTexture = textures.get(tileFileLocation);
+	const Texture &backgroundTexture = textures.get("Tiles/Mario_BG.JPG");
+	mario = make_unique<Mario>(tileTexture, IntRect(0, TILE_SIZE, TILE_TEXTURE_SIZE, TILE_TEXTURE_SIZE), Vector2f(160.0f, 0), Vector2f(2.0f, 0.0f), DEFAULT_GRAVITY, DEFAULT_JUMP_HEIGHT);
+	map = make_unique<Map>(COLLISION_MAP_WIDTH, COLLISION_MAP_HEIGHT, (float)TILE_TEXTURE_SIZE, (float)TILE_SIZE, coordMapLocation, tileTexture, backgroundTexture);
 	loadCollisionMap(coordMapLocation);
 
 	for (int y = 0; y < COLLISION_MAP_HEIGHT; y++)
@@ -29,7 +31,7 @@ Collision::Collision(const string tileFileLocation, const string coordMapLocatio
 			}
 			if (spawnLoot)
 			{
-				loots.push_back(make_unique<Loot>(tileFileLocation, pos, lootType));
+				loots.push_back(make_unique<Loot>(tileTexture, pos, lootType));
 			}
 			else if (collisionMap[x][y] == tiles::EnemySpawn)
 			{
@@ -47,11 +49,11 @@ Collision::Collision(const string tileFileLocation, const string coordMapLocatio
 					canFly = true;
 					enemyRect = IntRect(0, 96, TILE_TEXTURE_SIZE, TILE_TEXTURE_SIZE);
 				}
-				enemies.push_back(make_unique<Enemy>(tileFileLocation, enemyRect, pos, Vector2f(1.0f, 0.0f), canFly, gravity, ENEMY_JUMP_HEIGHT));
+				enemies.push_back(make_unique<Enemy>(tileTexture, enemyRect, pos, Vector2f(1.0f, 0.0f), canFly, gravity, ENEMY_JUMP_HEIGHT));
 			}
 			else if (collisionMap[x][y] == tiles::BossSpawn)
 			{
-				enemies.push_back(make_unique<Boss>(tileFileLocation, IntRect(64, 0, TILE_TEXTURE_SIZE, TILE_TEXTURE_SIZE), pos, Vector2f(1.0f, 0.0f), DEFAULT_GRAVITY, BOSS_HEALTH));
+				enemies.push_back(make_unique<Boss>(tileTexture, IntRect(64, 0, TILE_TEXTURE_SIZE, TILE_TEXTURE_SIZE), pos, Vector2f(1.0f, 0.0f), DEFAULT_GRAVITY, BOSS_HEALTH));
 			}
 		}
 	}
