@@ -1,34 +1,31 @@
 # Known issues
 
-## Intermittent crash on startup (macOS, Apple Silicon)
+## macOS startup crash — fixed via openal-soft
 
-**Symptom:** the game occasionally crashes immediately on launch with
-`EXC_BAD_ACCESS` / `SIGSEGV` before the window is usable. Re-launching works.
+**History:** the game used to crash intermittently on launch on macOS (Apple
+Silicon) with `EXC_BAD_ACCESS` before the window was usable.
 
-**Cause:** this is *not* a bug in the game. Homebrew's `sfml@2` audio library
-links Apple's **deprecated `OpenAL.framework`**:
+**Cause:** Homebrew's `sfml@2` audio library links Apple's **deprecated
+`OpenAL.framework`**, which races inside CoreAudio's HAL
+(`AudioDeviceGetPropertyInfo`) when OpenAL first opens the audio device.
 
+**Fix (automatic):** the macOS build now ships a copy of `libsfml-audio`
+relinked against **openal-soft** next to the binary, so the game never touches
+the Apple framework. Just install openal-soft once:
+
+```sh
+brew install openal-soft
 ```
-$ otool -L libsfml-audio.2.6.dylib | grep -i openal
-    /System/Library/Frameworks/OpenAL.framework/.../OpenAL
+
+CMake detects it and applies the relink as a post-build step
+(`cmake/use_openal_soft.sh`). You can confirm the framework is gone:
+
+```sh
+otool -L build/SuperMario2 build/libsfml-audio.2.6.dylib | grep -i OpenAL.framework   # no output
 ```
 
-Apple deprecated that framework in macOS 10.15 and it races inside CoreAudio's
-HAL (`HAL_HardwarePlugIn_ObjectHasProperty` / `AudioDeviceGetPropertyInfo`)
-when OpenAL first opens the audio device. The crash happens on the first sound
-played, regardless of whether it is `sf::Music` or `sf::Sound`.
+If openal-soft is **not** installed, CMake prints a warning and the game falls
+back to the system framework (and the old intermittent crash). The bundled
+`run.sh` retry launcher remains as a fallback for that case.
 
-**Workarounds:**
-
-- Use the retry launcher, which re-runs past a failed audio init:
-  ```sh
-  ./run.sh        # from the "SuperMario 2.0" directory
-  ```
-- Or simply launch again — a successful start runs normally for the whole
-  session.
-
-**Not affected:** Linux/CI builds, which use `openal-soft` (`libopenal-dev`)
-instead of the Apple framework, do not exhibit this race.
-
-A permanent fix requires SFML to link a modern `openal-soft` on macOS, which is
-a packaging concern outside this repository's source.
+**Not affected:** Linux/CI uses `openal-soft` (`libopenal-dev`) already.

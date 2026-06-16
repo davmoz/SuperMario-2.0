@@ -63,6 +63,27 @@ add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD
         "$<TARGET_FILE_DIR:${PROJECT_NAME}>/Levels"
 )
 
+# macOS only: SFML 2.6's audio links Apple's deprecated OpenAL.framework, which
+# races in CoreAudio and crashes intermittently on launch. Ship a copy of
+# libsfml-audio relinked against openal-soft beside the binary so the game uses
+# a modern OpenAL instead. Requires `brew install openal-soft`.
+if(APPLE)
+    find_library(OPENAL_SOFT_LIB NAMES openal
+        PATHS /opt/homebrew/opt/openal-soft/lib /usr/local/opt/openal-soft/lib
+        NO_DEFAULT_PATH)
+    if(OPENAL_SOFT_LIB)
+        add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD
+            COMMAND bash "${CMAKE_SOURCE_DIR}/cmake/use_openal_soft.sh"
+                "$<TARGET_FILE:${PROJECT_NAME}>"
+                "$<TARGET_FILE:sfml-audio>"
+                "${OPENAL_SOFT_LIB}"
+            VERBATIM
+            COMMENT "Relinking libsfml-audio against openal-soft (macOS OpenAL.framework workaround)")
+    else()
+        message(WARNING "openal-soft not found - run 'brew install openal-soft' to avoid the intermittent macOS startup crash (see docs/KNOWN_ISSUES.md).")
+    endif()
+endif()
+
 # Headless unit tests for the pure-logic parts (no SFML / GL context needed).
 enable_testing()
 add_executable(SuperMario2_tests tests/tests.cpp LevelManager.cpp)

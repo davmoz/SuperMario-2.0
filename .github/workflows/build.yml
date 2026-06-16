@@ -41,7 +41,7 @@ jobs:
       - uses: actions/checkout@v4
 
       - name: Install SFML 2.x via Homebrew
-        run: brew install sfml@2 cmake
+        run: brew install sfml@2 openal-soft cmake
 
       - name: Configure
         working-directory: "SuperMario 2.0"
