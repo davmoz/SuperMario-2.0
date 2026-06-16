@@ -225,10 +225,11 @@ void Game::enterMenu(GameState menuState)
 
 void Game::positionMenu()
 {
+	// Menus live in screen space, centred on the window's default view.
+	const Vector2f center = window->getDefaultView().getCenter();
 	for (int i = 0; i < nrOfMenuOptions; i++)
 	{
-		menu[i].setPosition(window->getView().getCenter().x,
-			window->getView().getCenter().y / 2.5f * (i + 1));
+		menu[i].setPosition(center.x, center.y / 2.5f * (i + 1));
 		menu[i].setOrigin(menu[i].getLocalBounds().left + menu[i].getLocalBounds().width / 2.0f,
 			menu[i].getLocalBounds().top + menu[i].getLocalBounds().height / 2.0f);
 	}
@@ -236,8 +237,22 @@ void Game::positionMenu()
 
 void Game::drawMenu()
 {
-	positionMenu();
 	window->clear();
+	// Show the frozen level, dimmed, behind the pause menu.
+	if (state == GameState::PauseMenu)
+	{
+		collision->draw(window);
+		hud.draw(window, collision->getMarioStats(), levelManager.currentName(), lives);
+		window->setView(window->getDefaultView());
+		RectangleShape dim(window->getDefaultView().getSize());
+		dim.setFillColor(Color(0, 0, 0, 150));
+		window->draw(dim);
+	}
+	else
+	{
+		window->setView(window->getDefaultView());
+	}
+	positionMenu();
 	for (int i = 0; i < nrOfMenuOptions; i++)
 		window->draw(menu[i]);
 	window->display();
@@ -381,8 +396,9 @@ void Game::drawRegistration()
 	menu[3].setString("Press ENTER to save");
 	for (int i = 0; i < nrOfMenuOptions; i++)
 		menu[i].setFillColor(i == 1 ? Color::Yellow : Color::White);
+	window->setView(window->getDefaultView());
 	positionMenu();
-	window->clear();
+	window->clear(Color(20, 20, 40));
 	for (int i = 0; i < nrOfMenuOptions; i++)
 		window->draw(menu[i]);
 	window->display();
