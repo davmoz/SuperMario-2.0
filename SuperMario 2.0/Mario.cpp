@@ -34,6 +34,51 @@ void Mario::updateTimers()
 		boosted = false;
 		doubleVelocityX(boosted);
 	}
+	if (starActive && marioTime >= starEndTime)
+		starActive = false;
+	if (invulnerable && hitClock.getElapsedTime().asSeconds() > IFRAME_SECONDS)
+		invulnerable = false;
+
+	// Tint reflects the current power state (star wins, then big, then small).
+	if (starActive)
+		setAppearanceColor(sf::Color(255, 240, 80));
+	else if (big)
+		setAppearanceColor(sf::Color(140, 255, 140));
+	else
+		setAppearanceColor(sf::Color::White);
+}
+
+void Mario::grow()
+{
+	big = true;
+}
+
+void Mario::activateStar()
+{
+	starActive = true;
+	starEndTime = marioTime + STAR_DURATION;
+}
+
+bool Mario::isStarActive() const
+{
+	return starActive;
+}
+
+bool Mario::isInvulnerable() const
+{
+	return invulnerable;
+}
+
+bool Mario::absorbHit()
+{
+	if (big)
+	{
+		big = false;
+		invulnerable = true;
+		hitClock.restart();
+		return false; // survived, shrank to small
+	}
+	return true; // was small: Mario dies
 }
 
 void Mario::increaseCoins()

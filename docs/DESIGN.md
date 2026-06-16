@@ -17,7 +17,7 @@ code as the game evolves.
 | `Mario`     | Player character: coins, time, enemies-killed, speed boost, HUD text, high-score persistence. |
 | `Enemy`     | AI character: ground or flying, walks and reverses on wall collisions. Exposes `onStomped()`/`isBoss()` so subclasses can override stomp behaviour. |
 | `Boss`      | `Enemy` subclass for the endgame: larger, tinted, and survives several stomps (HP); defeating it completes the boss level. |
-| `Loot`      | A collectible: coin or power-up. |
+| `Loot`      | A typed collectible (`LootType`: coin, speed mushroom, grow mushroom, star). |
 | `Audio`     | Loads and plays music + sound effects. |
 | `Constants` | Shared tunables (tile sizes, physics, boost, animation). |
 
@@ -81,8 +81,10 @@ solidity and entity spawns). Both interpret the same encoding:
 | `3`          | loot box (solid, visual) |
 | `4 5 6 7`    | pipe top-left / top-right / bottom-left / bottom-right (solid) |
 | `8`          | enemy spawn |
-| `9`          | block containing a power-up |
+| `9`          | speed-mushroom spawn |
 | `10`         | boss spawn |
+| `11`         | grow-mushroom spawn |
+| `12`         | star spawn |
 | `-1`         | coin |
 | `-3 -4 -5 -6`| flag / finish tiles (`-4` triggers level completion) |
 

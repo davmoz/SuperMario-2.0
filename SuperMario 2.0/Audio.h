@@ -16,6 +16,7 @@ private:
 	sf::SoundBuffer shroomBuffer;
 	sf::SoundBuffer stompBuffer;
 	sf::SoundBuffer finishBuffer;
+	sf::SoundBuffer starBuffer;
 
 	sf::Sound jumpSound;
 	sf::Sound deadSound;
@@ -23,6 +24,7 @@ private:
 	sf::Sound shroomSound;
 	sf::Sound stompSound;
 	sf::Sound finishSound;
+	sf::Sound starSound;
 
 public:
 	Audio();
@@ -37,4 +39,5 @@ public:
 	void stompMusicPlay();
 	void finishMusicPlay();
 	void finishMusicPause();
+	void starMusicPlay();
 };

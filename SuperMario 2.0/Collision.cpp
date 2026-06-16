@@ -27,15 +27,20 @@ Collision::Collision(const string tileFileLocation, const string coordMapLocatio
 	{
 		for (int x = 0; x < COLLISION_MAP_WIDTH; x++)
 		{
-			if (collisionMap[x][y] == tiles::Coin)
+			bool spawnLoot = true;
+			LootType lootType = LootType::Coin;
+			switch (collisionMap[x][y])
+			{
+			case tiles::Coin:      lootType = LootType::Coin;         break;
+			case tiles::BlockLoot: lootType = LootType::SpeedShroom;  break;
+			case tiles::GrowSpawn: lootType = LootType::GrowMushroom; break;
+			case tiles::StarSpawn: lootType = LootType::Star;         break;
+			default:               spawnLoot = false;                 break;
+			}
+			if (spawnLoot)
 			{
 				expandArray(loot, nrOfLoot, lootArrayCapacity);
-				loot[nrOfLoot] = new Loot(tileFileLocation, IntRect(0, 64, TILE_TEXTURE_SIZE, TILE_TEXTURE_SIZE), Vector2f((float)TILE_SIZE * x, (float)TILE_SIZE * y), true);
-				nrOfLoot++;
-			}
-			else if (collisionMap[x][y] == tiles::BlockLoot) {
-				expandArray(loot, nrOfLoot, lootArrayCapacity);
-				loot[nrOfLoot] = new Loot(tileFileLocation, IntRect(0, TILE_TEXTURE_SIZE, TILE_TEXTURE_SIZE, TILE_TEXTURE_SIZE), Vector2f((float)TILE_SIZE * x, (float)TILE_SIZE * y), false);
+				loot[nrOfLoot] = new Loot(tileFileLocation, Vector2f((float)TILE_SIZE * x, (float)TILE_SIZE * y), lootType);
 				nrOfLoot++;
 			}
 			else if (collisionMap[x][y] == tiles::EnemySpawn)
@@ -299,10 +304,15 @@ bool Collision::checkMarioHostileCollision()
 		if (enemy[i] != nullptr)
 		{
 			collisionSide = mario->collidesWithChar(*enemy[i]);
-			if (collisionSide == "BOTTOM")
+			if (collisionSide.empty())
+				continue; // no contact this frame
+
+			const bool stomp = (collisionSide == "BOTTOM");
+			if (stomp || mario->isStarActive())
 			{
-				audio.stompMusicPlay();
-				mario->bounce();
+				// Stomping, or steamrolling while a star is active: damage it.
+				if (stomp)
+					mario->bounce();
 				const bool wasBoss = enemy[i]->isBoss();
 				if (enemy[i]->onStomped()) // defeated?
 				{
@@ -312,11 +322,16 @@ bool Collision::checkMarioHostileCollision()
 					delete enemy[i];
 					enemy[i] = nullptr;
 				}
-				// A boss that survives keeps fighting; Mario already bounced off.
+				audio.stompMusicPlay();
 			}
-			else if(collisionSide == "LEFT" || collisionSide == "RIGHT")
+			else if (!mario->isInvulnerable())
 			{
-				marioIsDead = true;
+				// A deadly side hit: a big Mario shrinks and survives; a small
+				// Mario dies.
+				if (mario->absorbHit())
+					marioIsDead = true;
+				else
+					audio.stompMusicPlay();
 			}
 		}
 	}
@@ -335,17 +350,26 @@ void Collision::checkMarioLootCollision()
 		{
 			if (mario->getSprite().getGlobalBounds().intersects(loot[i]->getLootSprite().getGlobalBounds()))
 			{
-				if (loot[i]->isCoin())
+				switch (loot[i]->getType())
 				{
+				case LootType::Coin:
 					audio.coinMusicPlay();
 					mario->increaseCoins();
-				}
-				else
-				{
+					break;
+				case LootType::SpeedShroom:
 					audio.shroomMusicPlay();
 					mario->changeMarioVelocityX();
+					break;
+				case LootType::GrowMushroom:
+					audio.shroomMusicPlay();
+					mario->grow();
+					break;
+				case LootType::Star:
+					audio.starMusicPlay();
+					mario->activateStar();
+					break;
 				}
-				
+
 				delete loot[i];
 				loot[i] = nullptr;
 			}

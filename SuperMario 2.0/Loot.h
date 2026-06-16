@@ -2,16 +2,25 @@
 #include <SFML/Graphics.hpp>
 #include <string>
 
+// The kinds of collectible that can sit in a level.
+enum class LootType
+{
+	Coin,         // adds to the coin count
+	SpeedShroom,  // temporary speed boost
+	GrowMushroom, // makes Mario big (absorbs one hit)
+	Star          // temporary invincibility
+};
+
 class Loot
 {
 private:
 	sf::Texture texture;
 	sf::Sprite appearence;
-	bool coin;
+	LootType type;
 
 public:
-	Loot(const std::string TileLocation, const sf::IntRect tilePositionInFile, const sf::Vector2f position, const bool isCoin);
+	Loot(const std::string &tileLocation, sf::Vector2f position, LootType type);
 	~Loot();
 	sf::Sprite getLootSprite() const;
-	bool isCoin() const;
+	LootType getType() const;
 };

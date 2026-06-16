@@ -25,6 +25,10 @@ const int STARTING_LIVES = 3;
 // Boss
 const int BOSS_HEALTH = 5;
 
+// Power-ups
+const int STAR_DURATION = 8;        // seconds of star invincibility
+const float IFRAME_SECONDS = 1.5f;  // grace period after taking a hit while big
+
 // Ground
 const float GROUND_HEIGHT = 550.0f;
 

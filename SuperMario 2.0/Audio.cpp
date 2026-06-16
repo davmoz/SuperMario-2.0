@@ -27,6 +27,7 @@ Audio::Audio()
 	loadSfx(shroomBuffer, shroomSound, "Music/shroom.wav");
 	loadSfx(stompBuffer, stompSound, "Music/stomp.wav");
 	loadSfx(finishBuffer, finishSound, "Music/finish.wav");
+	loadSfx(starBuffer, starSound, "Music/star.wav");
 }
 
 
@@ -83,4 +84,9 @@ void Audio::finishMusicPlay()
 void Audio::finishMusicPause()
 {
 	finishSound.pause();
+}
+
+void Audio::starMusicPlay()
+{
+	starSound.play();
 }
