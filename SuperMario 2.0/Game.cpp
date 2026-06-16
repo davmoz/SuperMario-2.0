@@ -464,6 +464,7 @@ void Game::drawVictory()
 	drawCenteredLine(window, menuFont, "Coins  " + to_string(finalStats.coins), 26, Color::White, cx, 310);
 	drawCenteredLine(window, menuFont, "Enemies defeated  " + to_string(finalStats.enemies), 26, Color::White, cx, 350);
 	drawCenteredLine(window, menuFont, "Time  " + to_string(finalStats.time), 26, Color::White, cx, 390);
-	drawCenteredLine(window, menuFont, "Press ENTER to record your score", 22, Color(255, 210, 60), cx, 470);
+	drawCenteredLine(window, menuFont, "SCORE  " + to_string(scoreFor(finalStats)), 30, Color(255, 210, 60), cx, 432);
+	drawCenteredLine(window, menuFont, "Press ENTER to record your score", 22, Color(255, 210, 60), cx, 480);
 	window->display();
 }

@@ -11,6 +11,7 @@ private:
 	sf::Font font;
 	sf::Text levelText;
 	sf::Text livesText;
+	sf::Text scoreText;
 	sf::Text coinsText;
 	sf::Text timeText;
 	sf::Text enemiesText;

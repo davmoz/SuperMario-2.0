@@ -12,6 +12,12 @@ struct PlayerStats
 	int enemies = 0;
 };
 
+// A single arcade score derived from the run totals.
+inline int scoreFor(const PlayerStats &s)
+{
+	return s.coins * 100 + s.enemies * 200;
+}
+
 class Mario : public Character
 {
 private:
