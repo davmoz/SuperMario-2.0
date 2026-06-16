@@ -1,4 +1,4 @@
-name: Build
+name: Build & Test
 
 on:
   push:
@@ -26,6 +26,10 @@ jobs:
         working-directory: "SuperMario 2.0"
         run: cmake --build build --parallel
 
+      - name: Run unit tests
+        working-directory: "SuperMario 2.0"
+        run: ctest --test-dir build --output-on-failure
+
       - name: Verify executable exists
         working-directory: "SuperMario 2.0"
         run: test -f build/SuperMario2 && echo "Build artifact OK"
@@ -46,6 +50,10 @@ jobs:
       - name: Build
         working-directory: "SuperMario 2.0"
         run: cmake --build build --parallel
+
+      - name: Run unit tests
+        working-directory: "SuperMario 2.0"
+        run: ctest --test-dir build --output-on-failure
 
       - name: Verify executable exists
         working-directory: "SuperMario 2.0"
