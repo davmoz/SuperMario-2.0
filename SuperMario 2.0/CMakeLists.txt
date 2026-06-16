@@ -62,3 +62,9 @@ add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD
         "${CMAKE_SOURCE_DIR}/Levels"
         "$<TARGET_FILE_DIR:${PROJECT_NAME}>/Levels"
 )
+
+# Headless unit tests for the pure-logic parts (no SFML / GL context needed).
+enable_testing()
+add_executable(SuperMario2_tests tests/tests.cpp LevelManager.cpp)
+target_include_directories(SuperMario2_tests PRIVATE "${CMAKE_SOURCE_DIR}")
+add_test(NAME unit COMMAND SuperMario2_tests)
