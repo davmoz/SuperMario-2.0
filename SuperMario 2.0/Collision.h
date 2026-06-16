@@ -3,6 +3,8 @@
 #include <fstream>
 #include <ctime>
 #include <string>
+#include <vector>
+#include <memory>
 #include "Mario.h"
 #include "Enemy.h"
 #include "Map.h"
@@ -13,23 +15,17 @@
 class Collision
 {
 private:
-	int enemyArrayCapacity;
-	int lootArrayCapacity;
-	int nrOfEnemies;
-	int nrOfLoot;
-
 	Audio audio;
-	Mario *mario;
-	Map *map;
-	Enemy* *enemy;
-	Loot * *loot;
+	std::unique_ptr<Mario> mario;
+	std::unique_ptr<Map> map;
+	std::vector<std::unique_ptr<Enemy>> enemies;
+	std::vector<std::unique_ptr<Loot>> loots;
 
 	int collisionMap[COLLISION_MAP_WIDTH][COLLISION_MAP_HEIGHT];
 	bool bossDefeated = false; // set when this level's boss is beaten
 
 public:
 	Collision(const std::string tileFileLocation, const std::string coordMapLocation);
-	~Collision();
 	void MarioMoveLeft();
 	void MarioMoveRight();
 	void moveViewLeft();
@@ -38,8 +34,6 @@ public:
 	void moveEnemy();
 	void loadCollisionMap(const std::string coordMapLocation);
 	const float groundheight = GROUND_HEIGHT;
-	template<typename T>
-	void expandArray(T **&arr, int nrOfItems, int &capacity);
 	void updateCharacter();
 	void updateCharTexture(const int nrOfTilesToView);
 	bool isCollidable(sf::Vector2f position) const;

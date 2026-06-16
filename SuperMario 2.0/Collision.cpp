@@ -8,25 +8,15 @@ using namespace sf;
 
 Collision::Collision(const string tileFileLocation, const string coordMapLocation)
 {
-	enemyArrayCapacity = 20;
-	lootArrayCapacity = 20;
-	nrOfEnemies = 0;
-	nrOfLoot = 0;
-	bool canFly;
-	float gravity;
-	mario = new Mario(tileFileLocation, IntRect(0, TILE_SIZE, TILE_TEXTURE_SIZE, TILE_TEXTURE_SIZE), Vector2f(160.0f, 0), Vector2f(2.0f, 0.0f), DEFAULT_GRAVITY, DEFAULT_JUMP_HEIGHT);
-	enemy = new Enemy*[enemyArrayCapacity];
-	for (int i = 0; i < enemyArrayCapacity; i++) enemy[i] = nullptr;
-	loot = new Loot*[lootArrayCapacity];
-	for (int i = 0; i < lootArrayCapacity; i++) loot[i] = nullptr;
-	map = new Map(COLLISION_MAP_WIDTH, COLLISION_MAP_HEIGHT, (float)TILE_TEXTURE_SIZE, (float)TILE_SIZE, coordMapLocation, tileFileLocation);
+	mario = make_unique<Mario>(tileFileLocation, IntRect(0, TILE_SIZE, TILE_TEXTURE_SIZE, TILE_TEXTURE_SIZE), Vector2f(160.0f, 0), Vector2f(2.0f, 0.0f), DEFAULT_GRAVITY, DEFAULT_JUMP_HEIGHT);
+	map = make_unique<Map>(COLLISION_MAP_WIDTH, COLLISION_MAP_HEIGHT, (float)TILE_TEXTURE_SIZE, (float)TILE_SIZE, coordMapLocation, tileFileLocation);
 	loadCollisionMap(coordMapLocation);
-	IntRect enemyRect;
 
 	for (int y = 0; y < COLLISION_MAP_HEIGHT; y++)
 	{
 		for (int x = 0; x < COLLISION_MAP_WIDTH; x++)
 		{
+			const Vector2f pos((float)TILE_SIZE * x, (float)TILE_SIZE * y);
 			bool spawnLoot = true;
 			LootType lootType = LootType::Coin;
 			switch (collisionMap[x][y])
@@ -39,12 +29,13 @@ Collision::Collision(const string tileFileLocation, const string coordMapLocatio
 			}
 			if (spawnLoot)
 			{
-				expandArray(loot, nrOfLoot, lootArrayCapacity);
-				loot[nrOfLoot] = new Loot(tileFileLocation, Vector2f((float)TILE_SIZE * x, (float)TILE_SIZE * y), lootType);
-				nrOfLoot++;
+				loots.push_back(make_unique<Loot>(tileFileLocation, pos, lootType));
 			}
 			else if (collisionMap[x][y] == tiles::EnemySpawn)
 			{
+				bool canFly;
+				float gravity;
+				IntRect enemyRect;
 				if (rand() % 4 > 1) {
 					gravity = DEFAULT_GRAVITY;
 					canFly = false;
@@ -56,42 +47,14 @@ Collision::Collision(const string tileFileLocation, const string coordMapLocatio
 					canFly = true;
 					enemyRect = IntRect(0, 96, TILE_TEXTURE_SIZE, TILE_TEXTURE_SIZE);
 				}
-
-				expandArray(enemy, nrOfEnemies, enemyArrayCapacity);
-				enemy[nrOfEnemies] = new Enemy(tileFileLocation, enemyRect, Vector2f((float)TILE_SIZE * x, (float)TILE_SIZE * y), Vector2f(1.0f, 0.0f), canFly, gravity, ENEMY_JUMP_HEIGHT);
-				nrOfEnemies++;
+				enemies.push_back(make_unique<Enemy>(tileFileLocation, enemyRect, pos, Vector2f(1.0f, 0.0f), canFly, gravity, ENEMY_JUMP_HEIGHT));
 			}
 			else if (collisionMap[x][y] == tiles::BossSpawn)
 			{
-				expandArray(enemy, nrOfEnemies, enemyArrayCapacity);
-				enemy[nrOfEnemies] = new Boss(tileFileLocation, IntRect(64, 0, TILE_TEXTURE_SIZE, TILE_TEXTURE_SIZE), Vector2f((float)TILE_SIZE * x, (float)TILE_SIZE * y), Vector2f(1.0f, 0.0f), DEFAULT_GRAVITY, BOSS_HEALTH);
-				nrOfEnemies++;
+				enemies.push_back(make_unique<Boss>(tileFileLocation, IntRect(64, 0, TILE_TEXTURE_SIZE, TILE_TEXTURE_SIZE), pos, Vector2f(1.0f, 0.0f), DEFAULT_GRAVITY, BOSS_HEALTH));
 			}
-
 		}
 	}
-}
-
-Collision::~Collision()
-{
-	delete mario;
-	delete map;
-	for (int i = 0; i < nrOfEnemies; i++)
-	{
-		if (enemy[i] != nullptr)
-		{
-			delete enemy[i];
-		}
-	}
-	delete[] enemy;
-	for (int i = 0; i < nrOfLoot; i++)
-	{
-		if (loot[i] != nullptr)
-		{
-			delete loot[i];
-		}
-	}
-	delete[] loot;
 }
 
 void Collision::MarioMoveLeft()
@@ -131,12 +94,10 @@ void Collision::jump() const
 
 void Collision::moveEnemy()
 {
-	for (int i = 0; i < nrOfEnemies; i++)
+	for (auto &e : enemies)
 	{
-		if (enemy[i] != nullptr)
-		{
-			enemy[i]->move(collidingWithRight(enemy[i]->getPosition()), collidingWithLeft(enemy[i]->getPosition()));
-		}
+		if (e)
+			e->move(collidingWithRight(e->getPosition()), collidingWithLeft(e->getPosition()));
 	}
 }
 
@@ -171,40 +132,23 @@ void Collision::loadCollisionMap(const string coordMapLocation)
 	fromFile.close();
 }
 
-template<typename T>
-void Collision::expandArray(T **&arr, int nrOfItems, int & capacity)
-{
-	if (nrOfItems == capacity)
-	{
-		T* *temp = new T*[capacity * 2]();   // value-initialise new slots to nullptr
-		for (int i = 0; i < nrOfItems; i++)
-		{
-			temp[i] = arr[i];
-		}
-		delete[] arr;
-		arr = temp;
-		capacity *= 2;
-	}
-}
 void Collision::updateCharacter()
 {
 	mario->updateTimers();
 	mario->updateCharacter(collidingWithTop(mario->getPosition()), collidingWithBottom(mario->getPosition()));
-	for (int i = 0; i < nrOfEnemies; i++)
+	for (auto &e : enemies)
 	{
-		if (enemy[i] != nullptr)
+		if (!e)
+			continue;
+		// Reclaim enemies that have fallen off the bottom of the world.
+		if (e->getPosition().y > ENEMY_DESPAWN_Y)
 		{
-			// Reclaim enemies that have fallen off the bottom of the world.
-			if (enemy[i]->getPosition().y > ENEMY_DESPAWN_Y)
-			{
-				delete enemy[i];
-				enemy[i] = nullptr;
-				continue;
-			}
-			enemy[i]->fly();
-			enemy[i]->updateTexture(-1);
-			enemy[i]->updateCharacter(collidingWithTop(enemy[i]->getPosition()), collidingWithBottom(enemy[i]->getPosition()));
+			e.reset();
+			continue;
 		}
+		e->fly();
+		e->updateTexture(-1);
+		e->updateCharacter(collidingWithTop(e->getPosition()), collidingWithBottom(e->getPosition()));
 	}
 }
 
@@ -298,41 +242,38 @@ bool Collision::collidingWithBottom(Vector2f currentPosition)
 bool Collision::checkMarioHostileCollision()
 {
 	bool marioIsDead = false;
-	string collisionSide = "";
-	for (int i = 0; i < nrOfEnemies; i++)
+	for (auto &e : enemies)
 	{
-		if (enemy[i] != nullptr)
-		{
-			collisionSide = mario->collidesWithChar(*enemy[i]);
-			if (collisionSide.empty())
-				continue; // no contact this frame
+		if (!e)
+			continue;
+		const string collisionSide = mario->collidesWithChar(*e);
+		if (collisionSide.empty())
+			continue; // no contact this frame
 
-			const bool stomp = (collisionSide == "BOTTOM");
-			if (stomp || mario->isStarActive())
+		const bool stomp = (collisionSide == "BOTTOM");
+		if (stomp || mario->isStarActive())
+		{
+			// Stomping, or steamrolling while a star is active: damage it.
+			if (stomp)
+				mario->bounce();
+			const bool wasBoss = e->isBoss();
+			if (e->onStomped()) // defeated?
 			{
-				// Stomping, or steamrolling while a star is active: damage it.
-				if (stomp)
-					mario->bounce();
-				const bool wasBoss = enemy[i]->isBoss();
-				if (enemy[i]->onStomped()) // defeated?
-				{
-					if (wasBoss)
-						bossDefeated = true;
-					mario->increaseEnemiesKilled();
-					delete enemy[i];
-					enemy[i] = nullptr;
-				}
+				if (wasBoss)
+					bossDefeated = true;
+				mario->increaseEnemiesKilled();
+				e.reset();
+			}
+			audio.stompMusicPlay();
+		}
+		else if (!mario->isInvulnerable())
+		{
+			// A deadly side hit: a big Mario shrinks and survives; a small
+			// Mario dies.
+			if (mario->absorbHit())
+				marioIsDead = true;
+			else
 				audio.stompMusicPlay();
-			}
-			else if (!mario->isInvulnerable())
-			{
-				// A deadly side hit: a big Mario shrinks and survives; a small
-				// Mario dies.
-				if (mario->absorbHit())
-					marioIsDead = true;
-				else
-					audio.stompMusicPlay();
-			}
 		}
 	}
 	if (mario->getPosition().y > groundheight)
@@ -344,35 +285,32 @@ bool Collision::checkMarioHostileCollision()
 
 void Collision::checkMarioLootCollision()
 {
-	for (int i = 0; i < nrOfLoot; i++)
+	for (auto &item : loots)
 	{
-		if (loot[i] != nullptr)
+		if (!item)
+			continue;
+		if (mario->getSprite().getGlobalBounds().intersects(item->getLootSprite().getGlobalBounds()))
 		{
-			if (mario->getSprite().getGlobalBounds().intersects(loot[i]->getLootSprite().getGlobalBounds()))
+			switch (item->getType())
 			{
-				switch (loot[i]->getType())
-				{
-				case LootType::Coin:
-					audio.coinMusicPlay();
-					mario->increaseCoins();
-					break;
-				case LootType::SpeedShroom:
-					audio.shroomMusicPlay();
-					mario->changeMarioVelocityX();
-					break;
-				case LootType::GrowMushroom:
-					audio.shroomMusicPlay();
-					mario->grow();
-					break;
-				case LootType::Star:
-					audio.starMusicPlay();
-					mario->activateStar();
-					break;
-				}
-
-				delete loot[i];
-				loot[i] = nullptr;
+			case LootType::Coin:
+				audio.coinMusicPlay();
+				mario->increaseCoins();
+				break;
+			case LootType::SpeedShroom:
+				audio.shroomMusicPlay();
+				mario->changeMarioVelocityX();
+				break;
+			case LootType::GrowMushroom:
+				audio.shroomMusicPlay();
+				mario->grow();
+				break;
+			case LootType::Star:
+				audio.starMusicPlay();
+				mario->activateStar();
+				break;
 			}
+			item.reset();
 		}
 	}
 }
@@ -392,19 +330,15 @@ void Collision::draw(RenderWindow * window)
 {
 	window->draw(*map);
 	mario->drawCharacter(window);
-	for (int i = 0; i < nrOfEnemies; i++)
+	for (auto &e : enemies)
 	{
-		if (enemy[i] != nullptr)
-		{
-			enemy[i]->drawCharacter(window);
-		}
+		if (e)
+			e->drawCharacter(window);
 	}
-	for (int i = 0; i < nrOfLoot; i++)
+	for (auto &item : loots)
 	{
-		if (loot[i] != nullptr)
-		{
-			window->draw(loot[i]->getLootSprite());
-		}
+		if (item)
+			window->draw(item->getLootSprite());
 	}
 }
 
